@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Installer</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #4b5563;
+      --accent: #0ea5e9;
+      --accent-strong: #0284c7;
+      --border: rgba(15, 23, 42, 0.08);
+      --shadow: 0 30px 80px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.12), transparent 25%),
+                  radial-gradient(circle at 80% 0%, rgba(2, 132, 199, 0.12), transparent 25%),
+                  var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card {
+      width: min(720px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 24px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 36px);
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    p.lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .download {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .button {
+      background: linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35);
+      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(14, 165, 233, 0.45);
+      filter: brightness(1.05);
+    }
+
+    .button:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 24px rgba(14, 165, 233, 0.4);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .tile {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .tile h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .tile p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    footer {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    @media (max-width: 540px) {
+      .card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>Download the Installer</h1>
+      <p class="lead">Get the latest build of your program. The installer is signed and ready to go.</p>
+    </header>
+
+    <section class="download">
+      <a class="button" href="https://cdn.actuallyleviticus.com/installer.exe">
+        <span>Download for Windows</span>
+      </a>
+      <div class="meta">Version 1.0.0 · Updated today · From cdn.actuallyleviticus.com · SHA256: add-your-hash-here</div>
+    </section>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <section class="grid">
+      <article class="tile">
+        <h3>Quick install</h3>
+        <p>Run the installer, accept the prompt, and follow the short setup flow.</p>
+      </article>
+      <article class="tile">
+        <h3>Safe download</h3>
+        <p>Binary is provided directly from this page; verify the hash above if needed.</p>
+      </article>
+      <article class="tile">
+        <h3>Need help?</h3>
+        <p>Contact support or open an issue if you hit any snags during install.</p>
+      </article>
+    </section>
+
+    <footer>
+      <span>Works on Windows 10 and newer.</span>
+      <span>Looking for macOS or Linux? Add a link here.</span>
+    </footer>
+  </main>
+</body>
+</html>
