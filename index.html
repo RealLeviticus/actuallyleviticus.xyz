@@ -191,6 +191,12 @@
       let downloadUrl = `${updatesBase}${defaultInstaller}`;
       downloadBtn.href = downloadUrl;
 
+      const setOnline = (url) => {
+        badge.textContent = 'Online';
+        badge.classList.remove('offline');
+        downloadBtn.href = url;
+      };
+
       const setOffline = () => {
         badge.textContent = 'Offline';
         badge.classList.add('offline');
@@ -198,6 +204,14 @@
       };
 
       try {
+        // First, try the known installer directly
+        const headResponse = await fetch(downloadUrl, { method: 'HEAD', cache: 'no-store' });
+        if (headResponse.ok) {
+          setOnline(downloadUrl);
+          return;
+        }
+
+        // If that fails, try listing the directory to find the latest installer
         const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
         if (!response.ok) return setOffline();
 
@@ -208,9 +222,7 @@
 
         if (exePath) {
           downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
-          badge.textContent = 'Online';
-          badge.classList.remove('offline');
-          downloadBtn.href = downloadUrl;
+          setOnline(downloadUrl);
           return;
         }
 
