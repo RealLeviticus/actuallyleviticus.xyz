@@ -191,6 +191,7 @@
       const setOffline = () => {
         badge.textContent = 'Offline';
         badge.classList.add('offline');
+        downloadBtn.href = updatesBase;
       };
 
       try {
@@ -199,8 +200,7 @@
 
         const body = await response.text();
         const targetMatch = body.match(/href="([^\"]*vatSys%20Plugin%20Installer%20Setup%20[\d._-]+\.exe)"/i);
-        const fallbackMatch = [...body.matchAll(/href="([^\"]+\.exe)"/gi)][0];
-        const exePath = (targetMatch && targetMatch[1]) || (fallbackMatch && fallbackMatch[1]);
+        const exePath = targetMatch && targetMatch[1];
 
         if (exePath) {
           const downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
