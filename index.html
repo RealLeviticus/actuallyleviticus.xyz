@@ -169,7 +169,7 @@
       <span class="badge" id="status-badge">Checking...</span>
     </div>
     <div class="hash">For Windows (Cause you know, that's all vatSys runs on)</div>
-    <a class="button" href="https://cdn.actuallyleviticus.xyz/InstallerUpdates/" id="download-btn">Download</a>
+    <a class="button" href="https://cdn.actuallyleviticus.xyz/InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%201.0.2.exe" id="download-btn">Download</a>
   </section>
 
   <script>
@@ -204,16 +204,12 @@
       };
 
       try {
-        // First, try the known installer directly
-        const headResponse = await fetch(downloadUrl, { method: 'HEAD', cache: 'no-store' });
-        if (headResponse.ok) {
-          setOnline(downloadUrl);
-          return;
-        }
+        // Default to online with the known installer link
+        setOnline(downloadUrl);
 
-        // If that fails, try listing the directory to find the latest installer
+        // Try listing the directory to find the latest installer
         const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
-        if (!response.ok) return setOffline();
+        if (!response.ok) return;
 
         const body = await response.text();
         // Match encoded or unencoded spaces in the installer name; accept any version suffix
@@ -225,8 +221,6 @@
           setOnline(downloadUrl);
           return;
         }
-
-        setOffline();
       } catch (error) {
         setOffline();
       }
