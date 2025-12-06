@@ -187,11 +187,14 @@
       const badge = document.getElementById('status-badge');
       const downloadBtn = document.getElementById('download-btn');
       const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
+      const defaultInstaller = 'vatSys%20Plugin%20Installer%20Setup%201.0.2.exe';
+      let downloadUrl = `${updatesBase}${defaultInstaller}`;
+      downloadBtn.href = downloadUrl;
 
       const setOffline = () => {
         badge.textContent = 'Offline';
         badge.classList.add('offline');
-        downloadBtn.href = updatesBase;
+        downloadBtn.href = downloadUrl;
       };
 
       try {
@@ -204,7 +207,7 @@
         const exePath = installerMatch && installerMatch[1];
 
         if (exePath) {
-          const downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
+          downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
           badge.textContent = 'Online';
           badge.classList.remove('offline');
           downloadBtn.href = downloadUrl;
