@@ -9,7 +9,7 @@
   <style>
     :root {
       --ink: #f6f8ff;
-      --muted: #9facbf;
+      --muted: #cfd6e1;
       --accent: #9bff46;
       --accent-2: #4ae0ff;
       --border: rgba(255, 255, 255, 0.14);
@@ -28,6 +28,7 @@
       justify-content: center;
       align-items: center;
       position: relative;
+      background: #000;
     }
 
     /* Background carousel */
@@ -52,17 +53,7 @@
       opacity: 1;
     }
 
-    /* Overlay for readability */
-    body::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(5, 7, 14, 0.65);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      z-index: 1;
-    }
-
+    /* Removed blur/dark overlay */
     .grid-lines {
       position: absolute;
       inset: 0;
@@ -70,22 +61,20 @@
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
       background-size: 180px 180px;
-      z-index: 2;
+      z-index: 1;
       pointer-events: none;
     }
 
     .card {
-      border: 1px solid var(--border);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      border: none;
+      background: transparent;
       border-radius: 16px;
       padding: 28px 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      box-shadow: none;
       display: grid;
       gap: 14px;
       position: relative;
-      z-index: 3;
+      z-index: 2;
       text-align: center;
     }
 
