@@ -173,72 +173,51 @@
   </section>
 
   <script>
-  // Background carousel rotation (unchanged)
-  const images = document.querySelectorAll('#carousel img');
-  let current = 0;
-  setInterval(() => {
-    images[current].classList.remove('active');
-    current = (current + 1) % images.length;
-    images[current].classList.add('active');
-  }, 6000);
+    // Background carousel rotation
+    const images = document.querySelectorAll('#carousel img');
+    let current = 0;
+    setInterval(() => {
+      images[current].classList.remove('active');
+      current = (current + 1) % images.length;
+      images[current].classList.add('active');
+    }, 6000);
 
-<<<<<<< HEAD
-    // Installer check: finds the vatSys installer exe and wires badge + button
+    // Installer check: finds the vatSys installer exe, sets badge + button
     async function checkInstaller() {
       const badge = document.getElementById('status-badge');
       const downloadBtn = document.getElementById('download-btn');
       const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
-=======
-  async function checkInstaller() {
-    const badge = document.getElementById('status-badge');
-    const downloadBtn = document.getElementById('download-btn');
-    const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
->>>>>>> 713e50d4377eda4662f4783802056f5d83284edd
 
-    const setOffline = () => {
-      badge.textContent = 'Offline';
-      badge.classList.add('offline');
-      downloadBtn.href = updatesBase;
-    };
+      const setOffline = () => {
+        badge.textContent = 'Offline';
+        badge.classList.add('offline');
+        downloadBtn.href = updatesBase;
+      };
 
-    try {
-      const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
-      if (!response.ok) return setOffline();
+      try {
+        const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
+        if (!response.ok) return setOffline();
 
-<<<<<<< HEAD
         const body = await response.text();
-
         // Match encoded or unencoded spaces in the installer name; accept any version suffix
-        const installerMatch = body.match(/href="([^"]*vatSys(?:%20|\s)Plugin(?:%20|\s)Installer(?:%20|\s)Setup(?:%20|\s)?[\d._-]*\.exe)"/i);
+        const installerMatch = body.match(/href="([^\"]*vatSys(?:%20|\s)Plugin(?:%20|\s)Installer(?:%20|\s)Setup(?:%20|\s)?[\d._-]*\.exe)"/i);
         const exePath = installerMatch && installerMatch[1];
-=======
-      const body = await response.text();
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(body, 'text/html');
-      const links = Array.from(doc.querySelectorAll('a'));
->>>>>>> 713e50d4377eda4662f4783802056f5d83284edd
 
-      // Find the first .exe that looks like the installer
-      const exeLink = links.find(a =>
-        /\.exe$/i.test(a.getAttribute('href') || '') &&
-        /vatsys\s*plugin\s*installer/i.test(a.textContent || a.getAttribute('href') || '')
-      );
+        if (exePath) {
+          const downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
+          badge.textContent = 'Online';
+          badge.classList.remove('offline');
+          downloadBtn.href = downloadUrl;
+          return;
+        }
 
-      if (exeLink) {
-        const downloadUrl = new URL(exeLink.getAttribute('href'), updatesBase).href;
-        badge.textContent = 'Online';
-        badge.classList.remove('offline');
-        downloadBtn.href = downloadUrl;
-        return;
+        setOffline();
+      } catch (error) {
+        setOffline();
       }
-
-      setOffline();
-    } catch (err) {
-      setOffline();
     }
-  }
 
-  checkInstaller();
-</script>
+    checkInstaller();
+  </script>
 </body>
 </html>
