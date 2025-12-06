@@ -192,13 +192,13 @@
       downloadBtn.href = downloadUrl;
 
       const setOnline = (url) => {
-        badge.textContent = 'Online';
+        badge.textContent = 'Available';
         badge.classList.remove('offline');
         downloadBtn.href = url;
       };
 
       const setOffline = () => {
-        badge.textContent = 'Offline';
+        badge.textContent = 'Unavailable';
         badge.classList.add('offline');
         downloadBtn.href = downloadUrl;
       };
