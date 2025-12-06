@@ -182,7 +182,7 @@
       images[current].classList.add('active');
     }, 6000);
 
-    // Installer check: marks badge online if a vatSys installer (.exe) exists in the updates directory
+    // Installer check: finds the vatSys installer exe and wires badge + button
     async function checkInstaller() {
       const badge = document.getElementById('status-badge');
       const downloadBtn = document.getElementById('download-btn');
@@ -199,8 +199,10 @@
         if (!response.ok) return setOffline();
 
         const body = await response.text();
-        const targetMatch = body.match(/href="([^\"]*vatSys%20Plugin%20Installer%20Setup%20[\d._-]+\.exe)"/i);
-        const exePath = targetMatch && targetMatch[1];
+
+        // Match encoded or unencoded spaces in the installer name; accept any version suffix
+        const installerMatch = body.match(/href="([^"]*vatSys(?:%20|\s)Plugin(?:%20|\s)Installer(?:%20|\s)Setup(?:%20|\s)?[\d._-]*\.exe)"/i);
+        const exePath = installerMatch && installerMatch[1];
 
         if (exePath) {
           const downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
