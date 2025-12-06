@@ -12,6 +12,8 @@
       --muted: #cfd6e1;
       --accent: #9bff46;
       --accent-2: #4ae0ff;
+      --dark-green: #3fa63f;
+      --red: #ff5a5a;
       --shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
@@ -92,10 +94,16 @@
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 10px;
-      border: 1px solid rgba(155, 255, 70, 0.55);
-      color: #0f1b0c;
-      background: rgba(155, 255, 70, 0.22);
       font-weight: 700;
+      color: #fff;
+      background: var(--dark-green);
+      border: 1px solid #1c4d1c;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .badge.offline {
+      background: var(--red);
+      border-color: #cc2b2b;
     }
 
     .hash {
@@ -157,21 +165,42 @@
   <section class="card" id="verify">
     <div class="card-header">
       <span>vatSys Plugin Installer</span>
-      <span class="badge">Online</span>
+      <span class="badge" id="status-badge">Checking...</span>
     </div>
     <div class="hash">For Windows (Cause you know, that's all vatSys runs on)</div>
-    <a class="button" href="https://cdn.actuallyleviticus.com/installer.exe">Download</a>
+    <a class="button" href="https://cdn.actuallyleviticus.com/installer.exe" id="download-btn">Download</a>
   </section>
 
   <script>
+    // Background carousel rotation
     const images = document.querySelectorAll('#carousel img');
     let current = 0;
-
     setInterval(() => {
       images[current].classList.remove('active');
       current = (current + 1) % images.length;
       images[current].classList.add('active');
     }, 6000);
+
+    // Installer check
+    async function checkInstaller() {
+      const badge = document.getElementById('status-badge');
+      const installerUrl = 'https://cdn.actuallyleviticus.com/installer.exe';
+      try {
+        const response = await fetch(installerUrl, { method: 'HEAD', cache: 'no-store' });
+        if (response.ok) {
+          badge.textContent = 'Online';
+          badge.classList.remove('offline');
+        } else {
+          badge.textContent = 'Offline';
+          badge.classList.add('offline');
+        }
+      } catch (error) {
+        badge.textContent = 'Offline';
+        badge.classList.add('offline');
+      }
+    }
+
+    checkInstaller();
   </script>
 </body>
 </html>
