@@ -8,14 +8,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --ink: #0f172a;
-      --muted: #4b5563;
-      --accent: #0ea5e9;
-      --accent-strong: #0284c7;
-      --border: rgba(15, 23, 42, 0.08);
-      --shadow: 0 30px 80px rgba(15, 23, 42, 0.08);
+      --bg: #0b1222;
+      --panel: rgba(255, 255, 255, 0.08);
+      --card: rgba(255, 255, 255, 0.1);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --ink: #e9edf8;
+      --muted: #9fb0c9;
+      --accent: #4ade80;
+      --accent-strong: #22d3ee;
+      --shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
     }
 
     * {
@@ -26,170 +27,350 @@
       margin: 0;
       font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
       color: var(--ink);
-      background: radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.12), transparent 25%),
-                  radial-gradient(circle at 80% 0%, rgba(2, 132, 199, 0.12), transparent 25%),
-                  var(--bg);
+      background: radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.25), transparent 32%),
+                  radial-gradient(circle at 80% 10%, rgba(74, 222, 128, 0.2), transparent 30%),
+                  linear-gradient(140deg, #0b1222 0%, #0f1729 60%, #0b1222 100%);
       min-height: 100vh;
+      padding: 40px 18px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 40% 60%, rgba(255, 255, 255, 0.06), transparent 45%);
+      filter: blur(70px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    body::after {
+      background: radial-gradient(circle at 70% 20%, rgba(74, 222, 128, 0.12), transparent 45%);
+      filter: blur(90px);
+      opacity: 0.8;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 40px 16px;
-    }
-
-    .card {
-      width: min(720px, 100%);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 32px;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--stroke);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       box-shadow: var(--shadow);
-      display: grid;
-      gap: 24px;
     }
 
-    header {
+    .brand {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent) 0%, var(--accent-strong) 90%);
+      box-shadow: 0 0 12px rgba(34, 211, 238, 0.8);
+    }
+
+    .text-link {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      border: 1px solid var(--stroke);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      transition: border 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+
+    .text-link:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 32px;
+      align-items: center;
+    }
+
+    .copy {
+      display: grid;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
     }
 
     h1 {
-      font-size: clamp(28px, 4vw, 36px);
-      line-height: 1.1;
       margin: 0;
+      font-size: clamp(32px, 5vw, 46px);
+      line-height: 1.05;
+      letter-spacing: -0.5px;
     }
 
     p.lead {
       margin: 0;
       color: var(--muted);
       font-size: 17px;
-      line-height: 1.5;
+      line-height: 1.6;
+      max-width: 560px;
     }
 
-    .download {
+    .pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      font-size: 13px;
+      letter-spacing: 0.1px;
+    }
+
+    .checks {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .checks li {
+      display: inline-flex;
       align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      padding: 10px 12px;
+      width: fit-content;
+    }
+
+    .checks .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.55);
+    }
+
+    .panel {
+      border: 1px solid var(--stroke);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--ink);
+      padding: 6px 10px;
+      border-radius: 10px;
+      background: rgba(74, 222, 128, 0.12);
+      border: 1px solid rgba(74, 222, 128, 0.5);
+    }
+
+    .hash {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .button {
       background: linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 100%);
-      color: white;
+      color: #0b1222;
       border: none;
-      border-radius: 12px;
-      padding: 14px 20px;
+      border-radius: 14px;
+      padding: 14px 18px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
-      box-shadow: 0 15px 35px rgba(14, 165, 233, 0.35);
-      transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+      box-shadow: 0 15px 45px rgba(34, 211, 238, 0.35);
+      transition: transform 150ms ease, box-shadow 150ms ease, filter 150ms ease;
     }
 
     .button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 18px 40px rgba(14, 165, 233, 0.45);
-      filter: brightness(1.05);
+      box-shadow: 0 18px 55px rgba(34, 211, 238, 0.45);
+      filter: brightness(1.02);
     }
 
     .button:active {
       transform: translateY(0);
-      box-shadow: 0 10px 24px rgba(14, 165, 233, 0.4);
+      box-shadow: 0 10px 28px rgba(34, 211, 238, 0.4);
     }
 
     .meta {
       color: var(--muted);
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .tile {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.9);
-    }
-
-    .tile h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-    }
-
-    .tile p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
     }
 
-    footer {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
+    .steps {
+      margin-top: 34px;
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: grid;
       gap: 12px;
+    }
+
+    .step-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid var(--border);
-      padding-top: 14px;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
     }
 
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border);
+    .footnote {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    @media (max-width: 540px) {
-      .card {
-        padding: 24px;
+    @media (max-width: 720px) {
+      body {
+        padding: 28px 14px 50px;
+      }
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .checks li {
+        width: 100%;
+      }
+      .panel {
+        padding: 18px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <header>
-      <h1>Download the Installer</h1>
-      <p class="lead">Get the latest build of your program. The installer is signed and ready to go.</p>
-    </header>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Actually Leviticus</span>
+      </div>
+      <a class="text-link" href="https://github.com/RealLeviticus" target="_blank" rel="noreferrer">GitHub</a>
+    </div>
 
-    <section class="download">
-      <a class="button" href="https://cdn.actuallyleviticus.com/installer.exe">
-        <span>Download for Windows</span>
-      </a>
-      <div class="meta">Version 1.0.0 · Updated today · From cdn.actuallyleviticus.com · SHA256: add-your-hash-here</div>
+    <main class="hero">
+      <section class="copy">
+        <p class="eyebrow">Installer</p>
+        <h1>Download the latest build</h1>
+        <p class="lead">Direct Windows installer delivered via CDN. Minimal friction, signed binary, and a hash you can verify.</p>
+        <div class="pills">
+          <span class="pill">Windows 10+</span>
+          <span class="pill">Direct CDN link</span>
+          <span class="pill">Signed installer</span>
+        </div>
+        <ul class="checks">
+          <li><span class="dot" aria-hidden="true"></span>1-click download, no ads</li>
+          <li><span class="dot" aria-hidden="true"></span>Version 1.0.0 · Updated today</li>
+          <li><span class="dot" aria-hidden="true"></span>Verify with SHA256</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <span>Windows installer</span>
+          <span class="status">Ready</span>
+        </div>
+        <div class="hash">Version 1.0.0 • From cdn.actuallyleviticus.com</div>
+        <a class="button" href="https://cdn.actuallyleviticus.com/installer.exe">
+          Download installer
+        </a>
+        <div class="meta">SHA256: add-your-hash-here. Keep a copy to verify integrity before running.</div>
+        <div class="footnote">Works on Windows 10 and newer. Need macOS or Linux? Add links here.</div>
+      </section>
+    </main>
+
+    <section class="steps">
+      <div class="step-row">
+        <span class="step-num">1</span>
+        <span>Download the installer with the button above.</span>
+      </div>
+      <div class="step-row">
+        <span class="step-num">2</span>
+        <span>(Optional) Validate the SHA256 hash matches before running.</span>
+      </div>
+      <div class="step-row">
+        <span class="step-num">3</span>
+        <span>Run the installer and follow the prompts to finish setup.</span>
+      </div>
     </section>
-
-    <div class="divider" aria-hidden="true"></div>
-
-    <section class="grid">
-      <article class="tile">
-        <h3>Quick install</h3>
-        <p>Run the installer, accept the prompt, and follow the short setup flow.</p>
-      </article>
-      <article class="tile">
-        <h3>Safe download</h3>
-        <p>Binary is provided directly from this page; verify the hash above if needed.</p>
-      </article>
-      <article class="tile">
-        <h3>Need help?</h3>
-        <p>Contact support or open an issue if you hit any snags during install.</p>
-      </article>
-    </section>
-
-    <footer>
-      <span>Works on Windows 10 and newer.</span>
-      <span>Looking for macOS or Linux? Add a link here.</span>
-    </footer>
-  </main>
+  </div>
 </body>
 </html>
