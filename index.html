@@ -91,20 +91,13 @@
       letter-spacing: 0.02em;
     }
 
-    .badge {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 10px;
-      font-weight: 700;
-      color: #fff;
-      background: var(--dark-green);
-      border: 1px solid #1c4d1c;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    .badge.offline {
-      background: var(--red);
-      border-color: #cc2b2b;
+    .button.unavailable {
+      background: #454b57;
+      color: #c9cdd6;
+      box-shadow: none;
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: none;
     }
 
     .hash {
@@ -166,7 +159,6 @@
   <section class="card" id="verify">
     <div class="card-header">
       <span>vatSys Plugin Installer</span>
-      <span class="badge" id="status-badge">Checking...</span>
     </div>
     <div class="hash">For Windows (Cause you know, that's all vatSys runs on)</div>
     <a class="button" href="https://cdn.actuallyleviticus.xyz/InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%201.0.2.exe" id="download-btn">Download</a>
@@ -182,30 +174,24 @@
       images[current].classList.add('active');
     }, 6000);
 
-    // Installer check: finds the vatSys installer exe, sets badge + button
+    // Installer check: sets the download button or disables it if no installer is found
     async function checkInstaller() {
-      const badge = document.getElementById('status-badge');
       const downloadBtn = document.getElementById('download-btn');
       const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
       const defaultInstaller = 'vatSys%20Plugin%20Installer%20Setup%201.0.2.exe';
       let downloadUrl = `${updatesBase}${defaultInstaller}`;
 
       const setAvailable = (url) => {
-        badge.textContent = 'Available';
-        badge.classList.remove('offline');
+        downloadBtn.textContent = 'Download';
+        downloadBtn.classList.remove('unavailable');
         downloadBtn.href = url;
       };
 
       const setUnavailable = () => {
-        badge.textContent = 'Unavailable';
-        badge.classList.add('offline');
-        downloadBtn.href = downloadUrl;
+        downloadBtn.textContent = 'Unavailable';
+        downloadBtn.classList.add('unavailable');
+        downloadBtn.href = '#';
       };
-
-      // Start in checking state
-      badge.textContent = 'Checking...';
-      badge.classList.remove('offline');
-      downloadBtn.href = downloadUrl;
 
       try {
         // First, see if the default installer is reachable
