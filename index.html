@@ -189,40 +189,51 @@
       const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
       const defaultInstaller = 'vatSys%20Plugin%20Installer%20Setup%201.0.2.exe';
       let downloadUrl = `${updatesBase}${defaultInstaller}`;
-      downloadBtn.href = downloadUrl;
 
-      const setOnline = (url) => {
+      const setAvailable = (url) => {
         badge.textContent = 'Available';
         badge.classList.remove('offline');
         downloadBtn.href = url;
       };
 
-      const setOffline = () => {
+      const setUnavailable = () => {
         badge.textContent = 'Unavailable';
         badge.classList.add('offline');
         downloadBtn.href = downloadUrl;
       };
 
-      try {
-        // Default to online with the known installer link
-        setOnline(downloadUrl);
+      // Start in checking state
+      badge.textContent = 'Checking...';
+      badge.classList.remove('offline');
+      downloadBtn.href = downloadUrl;
 
-        // Try listing the directory to find the latest installer
+      try {
+        // First, see if the default installer is reachable
+        const headResponse = await fetch(downloadUrl, { method: 'HEAD', cache: 'no-store' });
+        if (headResponse.ok) {
+          setAvailable(downloadUrl);
+          return;
+        }
+
+        // Otherwise, try to discover a versioned installer in the directory listing
         const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
-        if (!response.ok) return;
+        if (!response.ok) return setUnavailable();
 
         const body = await response.text();
-        // Match encoded or unencoded spaces in the installer name; accept any version suffix
+        // Match encoded or unencoded spaces; accept any version suffix
         const installerMatch = body.match(/href="([^\"]*vatSys(?:%20|\s)Plugin(?:%20|\s)Installer(?:%20|\s)Setup(?:%20|\s)?[\d._-]*\.exe)"/i);
         const exePath = installerMatch && installerMatch[1];
 
         if (exePath) {
-          downloadUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
-          setOnline(downloadUrl);
+          const resolvedUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
+          downloadUrl = resolvedUrl;
+          setAvailable(resolvedUrl);
           return;
         }
+
+        setUnavailable();
       } catch (error) {
-        setOffline();
+        setUnavailable();
       }
     }
 
