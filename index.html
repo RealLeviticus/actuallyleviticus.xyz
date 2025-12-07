@@ -48,7 +48,7 @@
       height: 100%;
       object-fit: cover;
       opacity: 0;
-      transition: opacity 2s ease-in-out;
+      transition: opacity 4s ease-in-out;
     }
 
     .bg-carousel img.active {
@@ -84,20 +84,12 @@
 
     .card-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       gap: 10px;
       font-weight: 700;
       letter-spacing: 0.02em;
-    }
-
-    .button.unavailable {
-      background: #454b57;
-      color: #c9cdd6;
-      box-shadow: none;
-      cursor: not-allowed;
-      pointer-events: none;
-      filter: none;
+      text-align: center;
     }
 
     .hash {
@@ -165,65 +157,14 @@
   </section>
 
   <script>
-    // Background carousel rotation
+    // Background carousel rotation (slower)
     const images = document.querySelectorAll('#carousel img');
     let current = 0;
     setInterval(() => {
       images[current].classList.remove('active');
       current = (current + 1) % images.length;
       images[current].classList.add('active');
-    }, 6000);
-
-    // Installer check: sets the download button or disables it if no installer is found
-    async function checkInstaller() {
-      const downloadBtn = document.getElementById('download-btn');
-      const updatesBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/';
-      const defaultInstaller = 'vatSys%20Plugin%20Installer%20Setup%201.0.2.exe';
-      let downloadUrl = `${updatesBase}${defaultInstaller}`;
-
-      const setAvailable = (url) => {
-        downloadBtn.textContent = 'Download';
-        downloadBtn.classList.remove('unavailable');
-        downloadBtn.href = url;
-      };
-
-      const setUnavailable = () => {
-        downloadBtn.textContent = 'Unavailable';
-        downloadBtn.classList.add('unavailable');
-        downloadBtn.href = '#';
-      };
-
-      try {
-        // First, see if the default installer is reachable
-        const headResponse = await fetch(downloadUrl, { method: 'HEAD', cache: 'no-store' });
-        if (headResponse.ok) {
-          setAvailable(downloadUrl);
-          return;
-        }
-
-        // Otherwise, try to discover a versioned installer in the directory listing
-        const response = await fetch(updatesBase, { method: 'GET', cache: 'no-store' });
-        if (!response.ok) return setUnavailable();
-
-        const body = await response.text();
-        // Match encoded or unencoded spaces; accept any version suffix
-        const installerMatch = body.match(/href="([^\"]*vatSys(?:%20|\s)Plugin(?:%20|\s)Installer(?:%20|\s)Setup(?:%20|\s)?[\d._-]*\.exe)"/i);
-        const exePath = installerMatch && installerMatch[1];
-
-        if (exePath) {
-          const resolvedUrl = exePath.startsWith('http') ? exePath : updatesBase + exePath.replace(/^\//, '');
-          downloadUrl = resolvedUrl;
-          setAvailable(resolvedUrl);
-          return;
-        }
-
-        setUnavailable();
-      } catch (error) {
-        setUnavailable();
-      }
-    }
-
-    checkInstaller();
+    }, 10000);
   </script>
 </body>
 </html>
