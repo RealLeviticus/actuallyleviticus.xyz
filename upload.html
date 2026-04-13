@@ -6,42 +6,47 @@
   <title>Upload Plugin · ActuallyLeviticus</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #f6f8ff;
-      --muted: #cfd6e1;
-      --accent: #9bff46;
-      --accent-2: #4ae0ff;
-      --bg: #080c14;
-      --card-bg: rgba(255,255,255,0.035);
-      --border: rgba(255,255,255,0.07);
-      --red: #ff5a5a;
-      --green: #3fa63f;
+      --ink: #f1fbff;
+      --muted: #a2b4bf;
+      --accent: #6af4a8;
+      --accent-2: #58d2ff;
+      --bg: #071015;
+      --card-bg: rgba(12,27,35,0.78);
+      --card-bg-soft: rgba(16,36,46,0.66);
+      --border: rgba(132,190,215,0.22);
+      --red: #ff7f7f;
+      --green: #85f0ab;
     }
     * { box-sizing: border-box; margin: 0; }
     body {
-      font-family: "Manrope", sans-serif;
-      background: var(--bg);
+      font-family: "Plus Jakarta Sans", sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(106,244,168,0.16), transparent 32%),
+        radial-gradient(circle at 88% 2%, rgba(88,210,255,0.14), transparent 28%),
+        linear-gradient(180deg, #071015, #03070b 58%, #020508);
       color: var(--ink);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 48px 20px 64px;
+      padding: 30px 24px 56px;
     }
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-      background-size: 180px 180px;
+        linear-gradient(rgba(106,244,168,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88,210,255,0.035) 1px, transparent 1px);
+      background-size: 150px 150px;
       pointer-events: none;
       z-index: 0;
+      mask-image: radial-gradient(circle at 50% -20%, rgba(0,0,0,0.9), transparent 74%);
     }
-    * { position: relative; z-index: 1; }
+    body > * { position: relative; z-index: 1; }
 
     /* ── Buttons ── */
     .btn {
@@ -49,34 +54,34 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 13px 24px;
+      padding: 12px 20px;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       font-family: inherit;
-      border: none;
+      border: 1px solid transparent;
       cursor: pointer;
-      transition: transform 120ms, filter 120ms;
+      transition: transform 140ms ease, filter 140ms ease, border-color 140ms ease;
       text-decoration: none;
     }
-    .btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
-    .btn:active { transform: translateY(0); filter: brightness(0.97); }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .btn:active { transform: translateY(0); filter: brightness(0.98); }
     .btn-vatsim {
-      background: #29b473;
-      color: #fff;
-      box-shadow: 0 8px 28px rgba(41,180,115,0.3);
+      background: linear-gradient(135deg, #2bbb78, #47d88f);
+      color: #f8fffc;
+      box-shadow: 0 12px 28px rgba(43,187,120,0.28);
     }
     .btn-accent {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #06101b;
-      box-shadow: 0 8px 28px rgba(74,224,255,0.2);
+      background: linear-gradient(130deg, var(--accent), var(--accent-2));
+      color: #05242d;
+      box-shadow: 0 12px 28px rgba(88,210,255,0.24);
     }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
 
     .btn-discord {
-      background: #5865F2;
-      color: #fff;
-      box-shadow: 0 8px 28px rgba(88,101,242,0.3);
+      background: linear-gradient(135deg, #5865f2, #717df7);
+      color: #f7f9ff;
+      box-shadow: 0 12px 28px rgba(88,101,242,0.3);
     }
 
     /* ── Login ── */
@@ -84,83 +89,128 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
-      max-width: 440px;
+      gap: 22px;
+      max-width: 620px;
       width: 100%;
+      margin-top: min(8vh, 66px);
     }
     .login-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      background: #29b473;
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(130deg, #2bbb78, #58d2ff);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 12px 32px rgba(41,180,115,0.3);
+      box-shadow: 0 18px 34px rgba(88,210,255,0.25);
     }
-    .login-wrap h1 { font-size: 22px; font-weight: 800; }
+    .login-wrap h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(30px, 3.1vw, 36px);
+      letter-spacing: -0.04em;
+    }
     .login-card {
-      background: var(--card-bg);
+      background: linear-gradient(180deg, var(--card-bg), var(--card-bg-soft));
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 32px;
       text-align: center;
       width: 100%;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
     }
-    .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 13px; line-height: 1.65; }
+    .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 14px; line-height: 1.72; }
     .access-notice {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
+      background: rgba(6,16,23,0.62);
+      border: 1px solid rgba(132,190,215,0.2);
+      border-radius: 12px;
+      padding: 11px 13px;
       margin-top: 16px;
       font-size: 12px;
       color: var(--muted);
       text-align: left;
+      line-height: 1.5;
     }
-    .access-notice svg { flex-shrink: 0; opacity: 0.6; }
+    .access-notice svg { flex-shrink: 0; opacity: 0.72; margin-top: 1px; }
 
     /* ── Topbar ── */
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 500px;
       width: 100%;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+      padding: 16px 20px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(12,27,35,0.88), rgba(8,20,27,0.82));
+      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
+      backdrop-filter: blur(10px);
     }
     .topbar-logo { display: flex; align-items: center; gap: 10px; }
     .topbar-logo-icon {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: #29b473;
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #2bbb78, #58d2ff);
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 20px rgba(88,210,255,0.22);
     }
-    .topbar-title { font-size: 16px; font-weight: 800; }
-    .topbar-right { text-align: right; }
+    .topbar-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+    }
+    .topbar-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .topbar-user { color: var(--muted); font-size: 12px; }
     .btn-signout {
       color: var(--muted); font-size: 12px; cursor: pointer;
       background: none; border: none; font-family: inherit;
-      padding: 4px 0; text-decoration: underline; text-underline-offset: 2px;
+      padding: 0; text-decoration: underline; text-underline-offset: 3px;
     }
     .btn-signout:hover { color: var(--ink); }
 
     /* ── Upload card ── */
-    .upload-wrap { max-width: 500px; width: 100%; }
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      width: 100%;
-      backdrop-filter: blur(8px);
+    .upload-wrap {
+      width: min(1180px, 100%);
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
     }
+    .upload-wrap > .topbar,
+    .upload-wrap > .banner { grid-column: 1 / -1; }
+    .upload-wrap > .card { grid-column: 1 / span 5; }
+    .upload-wrap > .plugins-section { grid-column: 6 / -1; width: 100%; max-width: none; margin-top: 0; }
+    .card {
+      background: linear-gradient(180deg, var(--card-bg), var(--card-bg-soft));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 100%;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
+    }
+    #plugin-name {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(6,16,23,0.72);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+    #plugin-name:focus {
+      border-color: rgba(88,210,255,0.6);
+      box-shadow: 0 0 0 3px rgba(88,210,255,0.12);
+    }
+    #plugin-name::placeholder { color: rgba(162,180,191,0.74); }
 
     /* ── Drop zone ── */
     .drop-zone {
@@ -293,10 +343,9 @@
     .banner {
       border-radius: 12px;
       padding: 12px 16px;
-      margin-bottom: 14px;
+      margin-bottom: 0;
       font-size: 13px;
       text-align: center;
-      max-width: 500px;
       width: 100%;
     }
     .banner-error { background: rgba(255,90,90,0.12); border: 1px solid rgba(255,90,90,0.3); color: var(--red); }
@@ -305,34 +354,50 @@
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
       color: var(--muted); font-size: 12px; text-decoration: none;
-      margin-bottom: 28px; opacity: 0.7;
+      margin-bottom: 12px;
       align-self: flex-start;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(132,190,215,0.2);
+      background: rgba(6,16,23,0.52);
+      transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
     }
-    .back-link:hover { opacity: 1; }
+    .back-link:hover {
+      color: var(--ink);
+      border-color: rgba(88,210,255,0.34);
+      background: rgba(9,22,30,0.76);
+    }
 
     /* ── My Plugins list ── */
-    .plugins-section {
-      margin-top: 16px;
-      max-width: 500px;
-      width: 100%;
+    .plugins-section { width: 100%; }
+    .plugins-section .card {
+      margin-top: 0;
+      min-height: clamp(380px, 68vh, 840px);
+      display: flex;
+      flex-direction: column;
     }
-    .plugins-section .card { margin-top: 0; }
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
     }
-    .section-header h2 { font-size: 15px; font-weight: 700; }
-    .count-badge {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2px 10px;
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 600;
+    .section-header h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(22px, 2.2vw, 28px);
+      letter-spacing: -0.03em;
     }
+    .count-badge {
+      background: rgba(88,210,255,0.08);
+      border: 1px solid rgba(88,210,255,0.28);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 12px;
+      color: #b3eaff;
+      font-weight: 700;
+      line-height: 1;
+    }
+    #plugin-list { flex: 1; overflow-y: auto; padding-right: 4px; }
     .plugin-item {
       padding: 14px 0;
       border-bottom: 1px solid var(--border);
@@ -362,8 +427,7 @@
       border-radius: 6px;
       font-size: 10px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.01em;
     }
     .dev-badge-on {
       background: rgba(255,165,0,0.15);
@@ -506,13 +570,45 @@
       height: 1px;
       background: var(--border);
     }
+
+    @media (max-width: 1080px) {
+      .upload-wrap {
+        width: min(760px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .plugins-section { width: 100%; }
+      .plugins-section .card { min-height: 360px; }
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 22px 14px 40px; }
+      .login-wrap { margin-top: 24px; gap: 16px; }
+      .login-card { padding: 24px; }
+      #login-error { margin-bottom: 12px; }
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .topbar-right { align-items: flex-start; text-align: left; }
+      .card { border-radius: 20px; padding: 18px; }
+      .plugin-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Login error banner (shown above login card) -->
+  <div id="login-error" class="banner banner-error" style="display:none;max-width:620px;width:100%;position:relative;z-index:1"></div>
+
   <!-- Login view -->
   <div id="login-view" style="display:none" class="login-wrap">
-    <a href="/" class="back-link" style="align-self:flex-start">
+    <a href="/" class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       Back to home
     </a>
@@ -561,7 +657,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         Plugin Name
       </div>
-      <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--ink);font-family:inherit;font-size:13px;outline:none;margin-bottom:16px;box-sizing:border-box;">
+      <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect">
 
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
         <div class="drop-icon">
@@ -631,7 +727,7 @@
       <label>Version</label>
       <input type="text" id="edit-version" placeholder="1.0.0">
       <div class="toggle-row">
-        <span>Development version</span>
+        <span>In Development</span>
         <div class="toggle" id="edit-dev-toggle" onclick="this.classList.toggle('on')"></div>
       </div>
       <div class="modal-actions">
@@ -669,7 +765,12 @@
         localStorage.setItem("uploadToken", token);
         history.replaceState(null, "", window.location.pathname);
       } else if (hash.startsWith("#error=")) {
-        showError(decodeURIComponent(hash.slice(7)));
+        const errMsg = decodeURIComponent(hash.slice(7));
+        // Show error on login screen since user isn't authenticated
+        const loginErr = document.getElementById("login-error");
+        loginErr.textContent = errMsg;
+        loginErr.style.display = "block";
+        setTimeout(() => loginErr.style.display = "none", 8000);
         history.replaceState(null, "", window.location.pathname);
       }
 
@@ -902,7 +1003,7 @@
           const totalSize = p.files ? p.files.reduce((s, f) => s + f.size, 0) : 0;
           const sizeStr = totalSize > 1048576 ? (totalSize / 1048576).toFixed(1) + " MB" : (totalSize / 1024).toFixed(0) + " KB";
           const devBadge = p.is_dev
-            ? '<span class="dev-badge dev-badge-on">DEV</span>'
+            ? '<span class="dev-badge dev-badge-on">In Development</span>'
             : '<span class="dev-badge dev-badge-off">Stable</span>';
           const desc = p.description ? `<div class="plugin-desc">${escapeHtml(p.description)}</div>` : "";
 

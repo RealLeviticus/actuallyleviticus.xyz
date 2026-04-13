@@ -1,6 +1,6 @@
 // Cloudflare Worker — Plugin Upload API
 // Bindings: DB (D1), PLUGINS_BUCKET (R2)
-// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VATSIM_CLIENT_ID, VATSIM_CLIENT_SECRET, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET
+// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VATSIM_CLIENT_ID, VATSIM_CLIENT_SECRET, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_BOT_TOKEN
 // Vars: ADMIN_EMAIL, SITE_ORIGIN
 
 export default {
@@ -110,6 +110,47 @@ async function verifyToken(token, secret) {
 function getBearer(request) {
   const auth = request.headers.get("Authorization") || "";
   return auth.startsWith("Bearer ") ? auth.slice(7) : null;
+}
+
+function discordAvatarUrl(discordId, avatarHash, discriminator = "0") {
+  const safeId = String(discordId || "").replace(/[^0-9]/g, "");
+  if (!safeId) return null;
+
+  if (avatarHash) {
+    return `https://cdn.discordapp.com/avatars/${safeId}/${avatarHash}.png?size=128`;
+  }
+
+  // Discord default avatar index differs for legacy vs migrated accounts.
+  let defaultIndex = 0;
+  if (discriminator && discriminator !== "0") {
+    const parsed = Number.parseInt(discriminator, 10);
+    defaultIndex = Number.isFinite(parsed) ? parsed % 5 : 0;
+  } else {
+    try {
+      defaultIndex = Number((BigInt(safeId) >> 22n) % 6n);
+    } catch {
+      defaultIndex = 0;
+    }
+  }
+
+  return `https://cdn.discordapp.com/embed/avatars/${defaultIndex}.png`;
+}
+
+async function fetchDiscordAvatarUrl(env, discordId) {
+  const safeId = String(discordId || "").replace(/[^0-9]/g, "");
+  if (!safeId || !env.DISCORD_BOT_TOKEN) return null;
+
+  try {
+    const res = await fetch(`https://discord.com/api/v10/users/${safeId}`, {
+      headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` },
+    });
+    if (!res.ok) return null;
+
+    const user = await res.json();
+    return discordAvatarUrl(safeId, user.avatar, user.discriminator);
+  } catch {
+    return null;
+  }
 }
 
 // ──────────────────────────────────────
@@ -264,10 +305,7 @@ async function discordCallback(request, env, url) {
   const user = await userRes.json();
   const discordId = String(user.id);
   const name = user.global_name || user.username;
-  const avatarHash = user.avatar;
-  const avatarUrl = avatarHash
-    ? `https://cdn.discordapp.com/avatars/${discordId}/${avatarHash}.png?size=128`
-    : null;
+  const avatarUrl = discordAvatarUrl(discordId, user.avatar, user.discriminator);
 
   // Check if allowed by discord_id
   const row = await env.DB.prepare("SELECT id, name FROM allowed_users WHERE discord_id = ?").bind(discordId).first();
@@ -323,19 +361,7 @@ async function adminAddUser(request, env, origin) {
   const sanitizedVatsim = vatsimCid ? String(vatsimCid).replace(/[^0-9]/g, "") || null : null;
   const sanitizedDiscord = discordId ? String(discordId).replace(/[^0-9]/g, "") || null : null;
 
-  // Fetch Discord avatar if discord ID provided
-  let avatarUrl = null;
-  if (sanitizedDiscord) {
-    try {
-      const res = await fetch(`https://discord.com/api/v10/users/${sanitizedDiscord}`, {
-        headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN || ""}` },
-      });
-      if (res.ok) {
-        const u = await res.json();
-        if (u.avatar) avatarUrl = `https://cdn.discordapp.com/avatars/${sanitizedDiscord}/${u.avatar}.png?size=128`;
-      }
-    } catch {}
-  }
+  const avatarUrl = sanitizedDiscord ? await fetchDiscordAvatarUrl(env, sanitizedDiscord) : null;
 
   await env.DB.prepare(
     "INSERT INTO allowed_users (name, vatsim_cid, discord_id, avatar_url) VALUES (?, ?, ?, ?)"
@@ -358,20 +384,15 @@ async function adminEditUser(request, env, origin) {
   const newVatsim = vatsimCid !== undefined ? (vatsimCid ? String(vatsimCid).replace(/[^0-9]/g, "") || null : null) : existing.vatsim_cid;
   const newDiscord = discordId !== undefined ? (discordId ? String(discordId).replace(/[^0-9]/g, "") || null : null) : existing.discord_id;
 
-  // Fetch Discord avatar if discord ID is being set/changed
   let avatarUrl = existing.avatar_url;
-  if (newDiscord && newDiscord !== existing.discord_id) {
-    try {
-      const res = await fetch(`https://discord.com/api/v10/users/${newDiscord}`, {
-        headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN || ""}` },
-      });
-      if (res.ok) {
-        const u = await res.json();
-        avatarUrl = u.avatar ? `https://cdn.discordapp.com/avatars/${newDiscord}/${u.avatar}.png?size=128` : null;
-      }
-    } catch {}
-  } else if (!newDiscord) {
+  if (!newDiscord) {
     avatarUrl = null;
+  } else if (newDiscord !== existing.discord_id) {
+    // Discord account changed: refresh avatar and clear stale previous avatar on lookup miss.
+    avatarUrl = await fetchDiscordAvatarUrl(env, newDiscord);
+  } else if (!existing.avatar_url) {
+    // Same Discord account but no avatar stored yet (e.g. ID linked later): backfill now.
+    avatarUrl = await fetchDiscordAvatarUrl(env, newDiscord);
   }
 
   await env.DB.prepare(
