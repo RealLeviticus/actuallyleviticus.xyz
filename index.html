@@ -165,6 +165,54 @@
       current = (current + 1) % images.length;
       images[current].classList.add('active');
     }, 10000);
+
+    // Auto-detect latest installer version from R2 bucket
+    (async () => {
+      const btn = document.getElementById('download-btn');
+      const cdnBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%20';
+      const ext = '.exe';
+
+      // Use cached result if less than 1 hour old
+      try {
+        const cache = JSON.parse(localStorage.getItem('latestInstaller'));
+        if (cache && Date.now() - cache.t < 3600000) {
+          btn.href = cache.url;
+          return;
+        }
+      } catch {}
+
+      // Build list of version candidates to probe
+      const versions = [];
+      for (let major = 1; major <= 2; major++)
+        for (let minor = 0; minor <= 5; minor++)
+          for (let patch = 0; patch <= 20; patch++)
+            versions.push({ major, minor, patch });
+
+      try {
+        const results = await Promise.allSettled(
+          versions.map(async ({ major, minor, patch }) => {
+            const ver = `${major}.${minor}.${patch}`;
+            const res = await fetch(`${cdnBase}${ver}${ext}`, { method: 'HEAD' });
+            if (!res.ok) throw new Error();
+            return { major, minor, patch, ver };
+          })
+        );
+
+        const found = results
+          .filter(r => r.status === 'fulfilled')
+          .map(r => r.value)
+          .sort((a, b) => (a.major - b.major) || (a.minor - b.minor) || (a.patch - b.patch));
+
+        if (found.length) {
+          const latest = found[found.length - 1];
+          const url = `${cdnBase}${latest.ver}${ext}`;
+          btn.href = url;
+          localStorage.setItem('latestInstaller', JSON.stringify({ url, t: Date.now() }));
+        }
+      } catch {
+        // Keep existing fallback href
+      }
+    })();
   </script>
 </body>
 </html>
