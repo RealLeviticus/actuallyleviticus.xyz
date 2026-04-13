@@ -73,6 +73,12 @@
     }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
 
+    .btn-discord {
+      background: #5865F2;
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(88,101,242,0.3);
+    }
+
     /* ── Login ── */
     .login-wrap {
       display: flex;
@@ -303,6 +309,203 @@
       align-self: flex-start;
     }
     .back-link:hover { opacity: 1; }
+
+    /* ── My Plugins list ── */
+    .plugins-section {
+      margin-top: 16px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .plugins-section .card { margin-top: 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-header h2 { font-size: 15px; font-weight: 700; }
+    .count-badge {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .plugin-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .plugin-item:last-child { border-bottom: none; }
+    .plugin-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .plugin-info { flex: 1; min-width: 0; }
+    .plugin-name {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .dev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .dev-badge-on {
+      background: rgba(255,165,0,0.15);
+      border: 1px solid rgba(255,165,0,0.3);
+      color: #ffa500;
+    }
+    .dev-badge-off {
+      background: rgba(63,166,63,0.12);
+      border: 1px solid rgba(63,166,63,0.3);
+      color: #6dde6d;
+    }
+    .plugin-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .plugin-meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .plugin-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .btn-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .btn-icon:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: var(--ink); }
+    .btn-icon.danger:hover { background: rgba(255,90,90,0.15); border-color: rgba(255,90,90,0.3); color: var(--red); }
+    .plugin-desc {
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    .empty-plugins {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    /* ── Edit modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .modal {
+      background: #0f1520;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 420px;
+      width: 90%;
+    }
+    .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+    .modal label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 14px; }
+    .modal label:first-of-type { margin-top: 0; }
+    .modal input, .modal textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .modal textarea { resize: vertical; min-height: 60px; }
+    .modal input:focus, .modal textarea:focus { border-color: rgba(74,224,255,0.5); }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding: 10px 0;
+    }
+    .toggle-row span { font-size: 13px; }
+    .toggle {
+      width: 40px; height: 22px;
+      border-radius: 11px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      transition: background 150ms;
+    }
+    .toggle.on { background: rgba(255,165,0,0.4); border-color: rgba(255,165,0,0.5); }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--ink);
+      transition: transform 150ms;
+    }
+    .toggle.on::after { transform: translateX(18px); }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .modal-actions .btn { flex: 1; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin: 8px 0 4px;
+      color: var(--muted);
+      font-size: 11px;
+      opacity: 0.5;
+    }
+    .login-divider::before, .login-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
   </style>
 </head>
 <body>
@@ -318,10 +521,15 @@
     </div>
     <h1>Upload a Plugin</h1>
     <div class="login-card">
-      <p>Sign in with your VATSIM account to upload a plugin to the vatSys Plugin Installer.</p>
-      <a class="btn btn-vatsim" href="https://api.actuallyleviticus.xyz/auth/vatsim">
+      <p>Sign in with your VATSIM or Discord account to upload a plugin to the vatSys Plugin Installer.</p>
+      <a class="btn btn-vatsim" href="https://api.actuallyleviticus.xyz/auth/vatsim" style="width:100%;margin-bottom:8px">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Sign in with VATSIM
+      </a>
+      <div class="login-divider">or</div>
+      <a class="btn btn-discord" href="https://api.actuallyleviticus.xyz/auth/discord" style="width:100%">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        Sign in with Discord
       </a>
       <div class="access-notice">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -396,6 +604,41 @@
       <p class="allowed-types" style="margin-top:8px">.png &nbsp;·&nbsp; .jpg &nbsp;·&nbsp; .jpeg &nbsp;·&nbsp; .webp &nbsp;·&nbsp; Max 5 MB</p>
       <input type="file" id="banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
     </div>
+
+    <!-- My Plugins -->
+    <div class="plugins-section">
+      <div class="card">
+        <div class="section-header">
+          <h2>My Plugins</h2>
+          <span class="count-badge" id="plugin-count">–</span>
+        </div>
+        <div id="plugin-list">
+          <div class="empty-plugins">Loading…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div id="edit-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>Edit Plugin</h3>
+      <input type="hidden" id="edit-plugin-name">
+      <label>Display Name</label>
+      <input type="text" id="edit-display-name">
+      <label>Description</label>
+      <textarea id="edit-description" placeholder="Short description of your plugin…"></textarea>
+      <label>Version</label>
+      <input type="text" id="edit-version" placeholder="1.0.0">
+      <div class="toggle-row">
+        <span>Development version</span>
+        <div class="toggle" id="edit-dev-toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-accent" onclick="savePluginEdit()">Save</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -421,12 +664,12 @@
         try {
           const payload = JSON.parse(atob(token));
           const data = JSON.parse(payload.data);
-          document.getElementById("uploader-name").textContent = `${data.name} (${data.cid})`;
+          document.getElementById("uploader-name").textContent = data.name;
         } catch {}
         document.getElementById("upload-view").style.display = "block";
         setupDragDrop();
         setupBanner();
-        loadExistingBanner();
+        loadMyPlugins();
       } else {
         document.getElementById("login-view").style.display = "block";
       }
@@ -528,6 +771,7 @@
         document.getElementById("file-name").textContent = "";
         document.getElementById("file-input").value = "";
         btn.textContent = "Upload";
+        loadMyPlugins();
       } catch (err) {
         showError(err.message);
         btn.textContent = "Upload";
@@ -613,6 +857,129 @@
       } finally {
         btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save Banner';
         btn.style.pointerEvents = "";
+      }
+    }
+
+    // ── Plugin Management ──
+
+    async function loadMyPlugins() {
+      try {
+        const res = await fetch(`${API}/my-plugins`, {
+          headers: { "Authorization": `Bearer ${token}` },
+        });
+        if (res.status === 401) { logout(); showError("Session expired"); return; }
+        const data = await res.json();
+        const list = document.getElementById("plugin-list");
+        document.getElementById("plugin-count").textContent = data.plugins.length;
+
+        if (!data.plugins.length) {
+          list.innerHTML = '<div class="empty-plugins">No plugins uploaded yet. Use the form above to upload your first plugin.</div>';
+          return;
+        }
+
+        list.innerHTML = data.plugins.map(p => {
+          const fileCount = p.files ? p.files.length : 0;
+          const totalSize = p.files ? p.files.reduce((s, f) => s + f.size, 0) : 0;
+          const sizeStr = totalSize > 1048576 ? (totalSize / 1048576).toFixed(1) + " MB" : (totalSize / 1024).toFixed(0) + " KB";
+          const devBadge = p.is_dev
+            ? '<span class="dev-badge dev-badge-on">DEV</span>'
+            : '<span class="dev-badge dev-badge-off">Stable</span>';
+          const desc = p.description ? `<div class="plugin-desc">${escapeHtml(p.description)}</div>` : "";
+
+          return `
+            <div class="plugin-item">
+              <div class="plugin-top">
+                <div class="plugin-info">
+                  <div class="plugin-name">${escapeHtml(p.display_name)} ${devBadge}</div>
+                  <div class="plugin-meta">
+                    <span>v${escapeHtml(p.version)}</span>
+                    <span>${fileCount} file${fileCount !== 1 ? "s" : ""} · ${sizeStr}</span>
+                    <span>${new Date(p.updated_at).toLocaleDateString()}</span>
+                  </div>
+                  ${desc}
+                </div>
+                <div class="plugin-actions">
+                  <button class="btn-icon" onclick="openEditModal('${escapeAttr(p.name)}','${escapeAttr(p.display_name)}','${escapeAttr(p.description)}','${escapeAttr(p.version)}',${p.is_dev})" title="Edit">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="btn-icon danger" onclick="deletePluginConfirm('${escapeAttr(p.name)}','${escapeAttr(p.display_name)}')" title="Delete">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (err) {
+        document.getElementById("plugin-list").innerHTML = '<div class="empty-plugins">Failed to load plugins</div>';
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function escapeAttr(str) {
+      return String(str || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
+
+    function openEditModal(name, displayName, description, version, isDev) {
+      document.getElementById("edit-plugin-name").value = name;
+      document.getElementById("edit-display-name").value = displayName;
+      document.getElementById("edit-description").value = description;
+      document.getElementById("edit-version").value = version;
+      const toggle = document.getElementById("edit-dev-toggle");
+      if (isDev) toggle.classList.add("on"); else toggle.classList.remove("on");
+      document.getElementById("edit-modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("edit-modal").style.display = "none";
+    }
+
+    async function savePluginEdit() {
+      const name = document.getElementById("edit-plugin-name").value;
+      const displayName = document.getElementById("edit-display-name").value.trim();
+      const description = document.getElementById("edit-description").value.trim();
+      const version = document.getElementById("edit-version").value.trim();
+      const isDev = document.getElementById("edit-dev-toggle").classList.contains("on");
+
+      if (!displayName) { showError("Display name is required"); return; }
+
+      try {
+        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ displayName, description, version, isDev }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Update failed");
+        closeModal();
+        showSuccess("Plugin updated!");
+        loadMyPlugins();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function deletePluginConfirm(name, displayName) {
+      if (!confirm(`Delete "${displayName}" and all its files? This cannot be undone.`)) return;
+      try {
+        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Delete failed");
+        showSuccess("Plugin deleted");
+        loadMyPlugins();
+      } catch (err) {
+        showError(err.message);
       }
     }
 

@@ -1,6 +1,6 @@
 // Cloudflare Worker — Plugin Upload API
 // Bindings: DB (D1), PLUGINS_BUCKET (R2)
-// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VATSIM_CLIENT_ID, VATSIM_CLIENT_SECRET
+// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VATSIM_CLIENT_ID, VATSIM_CLIENT_SECRET, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET
 // Vars: ADMIN_EMAIL, SITE_ORIGIN
 
 export default {
@@ -24,6 +24,10 @@ export default {
       if (path === "/auth/vatsim") return vatsimRedirect(env, url);
       if (path === "/auth/vatsim/callback") return vatsimCallback(request, env, url);
 
+      // --- Discord OAuth (Uploaders) ---
+      if (path === "/auth/discord") return discordRedirect(env, url);
+      if (path === "/auth/discord/callback") return discordCallback(request, env, url);
+
       // --- Admin endpoints (require admin token) ---
       if (path === "/admin/users" && request.method === "GET") return adminListUsers(request, env, origin);
       if (path === "/admin/users" && request.method === "POST") return adminAddUser(request, env, origin);
@@ -33,6 +37,11 @@ export default {
       if (path === "/upload" && request.method === "POST") return handleUpload(request, env, origin);
       if (path === "/upload/banner" && request.method === "POST") return handleBannerUpload(request, env, origin);
       if (path === "/upload/banner" && request.method === "GET") return getBanner(request, env, origin);
+
+      // --- Plugin management ---
+      if (path === "/my-plugins" && request.method === "GET") return getMyPlugins(request, env, origin);
+      if (path.startsWith("/plugins/") && request.method === "PUT") return updatePlugin(request, env, origin, path);
+      if (path.startsWith("/plugins/") && request.method === "DELETE") return deletePlugin(request, env, origin, path);
 
       // --- Latest installer ---
       if (path === "/latest-installer" && request.method === "GET") return latestInstaller(env, origin);
@@ -198,13 +207,72 @@ async function vatsimCallback(request, env, url) {
   const cid = String(user.data.cid);
   const name = `${user.data.personal.name_first} ${user.data.personal.name_last}`;
 
-  // Check if allowed
-  const row = await env.DB.prepare("SELECT vatsim_cid FROM allowed_users WHERE vatsim_cid = ?").bind(cid).first();
+  // Check if allowed (id = "vatsim:<cid>")
+  const userId = `vatsim:${cid}`;
+  const row = await env.DB.prepare("SELECT id FROM allowed_users WHERE id = ?").bind(userId).first();
   if (!row) return redirectWithError(env, "/upload.html", "Not authorized to upload");
 
   // Issue upload token (8h)
   const token = await createToken(
-    { role: "uploader", cid, name, exp: Date.now() + 28800000 },
+    { role: "uploader", id: userId, cid, name, authType: "vatsim", exp: Date.now() + 28800000 },
+    env.GOOGLE_CLIENT_SECRET
+  );
+
+  return Response.redirect(`${env.SITE_ORIGIN}/upload.html#token=${token}`, 302);
+}
+
+// ──────────────────────────────────────
+// Discord OAuth (Uploaders)
+// ──────────────────────────────────────
+
+function discordRedirect(env, url) {
+  const state = crypto.randomUUID();
+  const params = new URLSearchParams({
+    client_id: env.DISCORD_CLIENT_ID,
+    redirect_uri: `${url.origin}/auth/discord/callback`,
+    response_type: "code",
+    scope: "identify",
+    state,
+    prompt: "consent",
+  });
+  return Response.redirect(`https://discord.com/oauth2/authorize?${params}`, 302);
+}
+
+async function discordCallback(request, env, url) {
+  const code = url.searchParams.get("code");
+  if (!code) return redirectWithError(env, "/upload.html", "Missing code");
+
+  // Exchange code for token
+  const tokenRes = await fetch("https://discord.com/api/oauth2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: env.DISCORD_CLIENT_ID,
+      client_secret: env.DISCORD_CLIENT_SECRET,
+      redirect_uri: `${url.origin}/auth/discord/callback`,
+      code,
+    }),
+  });
+  const tokens = await tokenRes.json();
+  if (!tokens.access_token) return redirectWithError(env, "/upload.html", "Auth failed");
+
+  // Get user info
+  const userRes = await fetch("https://discord.com/api/users/@me", {
+    headers: { Authorization: `Bearer ${tokens.access_token}` },
+  });
+  const user = await userRes.json();
+  const discordId = String(user.id);
+  const name = user.global_name || user.username;
+
+  // Check if allowed (id = "discord:<id>")
+  const userId = `discord:${discordId}`;
+  const row = await env.DB.prepare("SELECT id FROM allowed_users WHERE id = ?").bind(userId).first();
+  if (!row) return redirectWithError(env, "/upload.html", "Not authorized to upload");
+
+  // Issue upload token (8h)
+  const token = await createToken(
+    { role: "uploader", id: userId, discordId, name, authType: "discord", exp: Date.now() + 28800000 },
     env.GOOGLE_CLIENT_SECRET
   );
 
@@ -239,14 +307,18 @@ async function adminAddUser(request, env, origin) {
   const admin = await requireAdmin(request, env);
   if (!admin) return json({ error: "Unauthorized" }, 401, origin);
 
-  const { cid, name } = await request.json();
-  if (!cid || !name) return json({ error: "cid and name required" }, 400, origin);
+  const { id, name, authType } = await request.json();
+  if (!id || !name || !authType) return json({ error: "id, name, and authType required" }, 400, origin);
+  if (!["vatsim", "discord"].includes(authType)) return json({ error: "authType must be vatsim or discord" }, 400, origin);
 
-  const sanitizedCid = String(cid).replace(/[^0-9]/g, "");
+  // Sanitize: vatsim ids are numeric, discord ids are numeric snowflakes
+  const sanitizedRawId = String(id).replace(/[^0-9]/g, "");
+  if (!sanitizedRawId) return json({ error: "Invalid ID" }, 400, origin);
+  const fullId = `${authType}:${sanitizedRawId}`;
   const sanitizedName = String(name).slice(0, 100);
 
-  await env.DB.prepare("INSERT OR IGNORE INTO allowed_users (vatsim_cid, name) VALUES (?, ?)")
-    .bind(sanitizedCid, sanitizedName).run();
+  await env.DB.prepare("INSERT OR IGNORE INTO allowed_users (id, auth_type, name) VALUES (?, ?, ?)")
+    .bind(fullId, authType, sanitizedName).run();
   return json({ ok: true }, 200, origin);
 }
 
@@ -254,11 +326,12 @@ async function adminRemoveUser(request, env, origin) {
   const admin = await requireAdmin(request, env);
   if (!admin) return json({ error: "Unauthorized" }, 401, origin);
 
-  const { cid } = await request.json();
-  if (!cid) return json({ error: "cid required" }, 400, origin);
+  const { id } = await request.json();
+  if (!id) return json({ error: "id required" }, 400, origin);
 
-  const sanitizedCid = String(cid).replace(/[^0-9]/g, "");
-  await env.DB.prepare("DELETE FROM allowed_users WHERE vatsim_cid = ?").bind(sanitizedCid).run();
+  // id comes as full "vatsim:123" or "discord:456" from the frontend
+  const sanitizedId = String(id).replace(/[^a-z0-9:_-]/gi, "").slice(0, 200);
+  await env.DB.prepare("DELETE FROM allowed_users WHERE id = ?").bind(sanitizedId).run();
   return json({ ok: true }, 200, origin);
 }
 
@@ -301,8 +374,15 @@ async function handleUpload(request, env, origin) {
 
   await env.PLUGINS_BUCKET.put(key, file.stream(), {
     httpMetadata: { contentType: file.type || "application/octet-stream" },
-    customMetadata: { uploadedBy: payload.cid, uploaderName: payload.name },
+    customMetadata: { uploadedBy: payload.id, uploaderName: payload.name },
   });
+
+  // Upsert plugin record in D1
+  await env.DB.prepare(`
+    INSERT INTO plugins (name, display_name, uploader_id, uploader_name)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(name) DO UPDATE SET updated_at = datetime('now')
+  `).bind(safeFolderName, pluginName, payload.id, payload.name).run();
 
   return json({ ok: true, key }, 200, origin);
 }
@@ -343,7 +423,7 @@ async function handleBannerUpload(request, env, origin) {
 
   await env.PLUGINS_BUCKET.put(key, file.stream(), {
     httpMetadata: { contentType: file.type || "image/png" },
-    customMetadata: { uploadedBy: payload.cid, uploaderName: payload.name },
+    customMetadata: { uploadedBy: payload.id, uploaderName: payload.name },
   });
 
   return json({ ok: true, key }, 200, origin);
@@ -363,6 +443,116 @@ async function getBanner(request, env, origin) {
 
   const banner = listed.objects[0];
   return json({ banner: { key: banner.key, size: banner.size } }, 200, origin);
+}
+
+// ──────────────────────────────────────
+// Plugin management (for uploaders)
+// ──────────────────────────────────────
+
+async function requireUploader(request, env) {
+  const token = getBearer(request);
+  if (!token) return null;
+  const payload = await verifyToken(token, env.GOOGLE_CLIENT_SECRET);
+  if (!payload || payload.role !== "uploader") return null;
+  return payload;
+}
+
+async function getMyPlugins(request, env, origin) {
+  const user = await requireUploader(request, env);
+  if (!user) return json({ error: "Unauthorized" }, 401, origin);
+
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM plugins WHERE uploader_id = ? ORDER BY updated_at DESC"
+  ).bind(user.id).all();
+
+  // Enrich with file info from R2
+  const enriched = await Promise.all(results.map(async (plugin) => {
+    const listed = await env.PLUGINS_BUCKET.list({ prefix: `${plugin.name}/` });
+    const files = listed.objects
+      .filter(o => !o.key.includes("/Banner/"))
+      .map(o => ({ key: o.key, size: o.size, uploaded: o.uploaded }));
+    const bannerObj = listed.objects.find(o => o.key.includes("/Banner/"));
+    return {
+      ...plugin,
+      files,
+      banner: bannerObj ? bannerObj.key : null,
+    };
+  }));
+
+  return json({ plugins: enriched }, 200, origin);
+}
+
+async function updatePlugin(request, env, origin, path) {
+  const user = await requireUploader(request, env);
+  if (!user) return json({ error: "Unauthorized" }, 401, origin);
+
+  // /plugins/<encoded-name>
+  const pluginName = decodeURIComponent(path.replace("/plugins/", ""));
+  const safeName = pluginName.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+
+  // Check ownership
+  const plugin = await env.DB.prepare(
+    "SELECT * FROM plugins WHERE name = ? AND uploader_id = ?"
+  ).bind(safeName, user.id).first();
+  if (!plugin) return json({ error: "Plugin not found or not yours" }, 404, origin);
+
+  const body = await request.json();
+  const updates = [];
+  const binds = [];
+
+  if (body.displayName !== undefined) {
+    updates.push("display_name = ?");
+    binds.push(String(body.displayName).slice(0, 100));
+  }
+  if (body.description !== undefined) {
+    updates.push("description = ?");
+    binds.push(String(body.description).slice(0, 500));
+  }
+  if (body.version !== undefined) {
+    updates.push("version = ?");
+    binds.push(String(body.version).replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 30));
+  }
+  if (body.isDev !== undefined) {
+    updates.push("is_dev = ?");
+    binds.push(body.isDev ? 1 : 0);
+  }
+
+  if (!updates.length) return json({ error: "Nothing to update" }, 400, origin);
+
+  updates.push("updated_at = datetime('now')");
+  binds.push(safeName, user.id);
+
+  await env.DB.prepare(
+    `UPDATE plugins SET ${updates.join(", ")} WHERE name = ? AND uploader_id = ?`
+  ).bind(...binds).run();
+
+  return json({ ok: true }, 200, origin);
+}
+
+async function deletePlugin(request, env, origin, path) {
+  const user = await requireUploader(request, env);
+  if (!user) return json({ error: "Unauthorized" }, 401, origin);
+
+  const pluginName = decodeURIComponent(path.replace("/plugins/", ""));
+  const safeName = pluginName.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+
+  // Check ownership
+  const plugin = await env.DB.prepare(
+    "SELECT * FROM plugins WHERE name = ? AND uploader_id = ?"
+  ).bind(safeName, user.id).first();
+  if (!plugin) return json({ error: "Plugin not found or not yours" }, 404, origin);
+
+  // Delete all files from R2
+  const listed = await env.PLUGINS_BUCKET.list({ prefix: `${safeName}/` });
+  if (listed.objects.length) {
+    await env.PLUGINS_BUCKET.delete(listed.objects.map(o => o.key));
+  }
+
+  // Delete from D1
+  await env.DB.prepare("DELETE FROM plugins WHERE name = ? AND uploader_id = ?")
+    .bind(safeName, user.id).run();
+
+  return json({ ok: true }, 200, origin);
 }
 
 // ──────────────────────────────────────

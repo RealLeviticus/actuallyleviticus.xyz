@@ -188,12 +188,26 @@
     /* ── Add form ── */
     .add-form {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
+      grid-template-columns: auto 1fr 1fr auto;
       gap: 8px;
       margin-bottom: 20px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border);
     }
+    .add-form select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 150ms;
+      cursor: pointer;
+      appearance: none;
+    }
+    .add-form select:focus { border-color: rgba(74,224,255,0.5); }
     .add-form input {
       padding: 10px 14px;
       border-radius: 10px;
@@ -243,6 +257,19 @@
       padding: 24px 0;
       opacity: 0.6;
     }
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .auth-vatsim { background: rgba(41,180,115,0.15); color: #29b473; border: 1px solid rgba(41,180,115,0.3); }
+    .auth-discord { background: rgba(88,101,242,0.15); color: #8b9aff; border: 1px solid rgba(88,101,242,0.3); }
 
     /* ── Banners ── */
     .banner {
@@ -258,6 +285,7 @@
 
     @media (max-width: 540px) {
       .add-form { grid-template-columns: 1fr 1fr; }
+      .add-form select { grid-column: 1 / -1; }
       .add-form .btn { grid-column: 1 / -1; }
     }
     @media (max-width: 380px) {
@@ -306,7 +334,11 @@
         <span class="count-badge" id="user-count">–</span>
       </div>
       <div class="add-form">
-        <input type="text" id="new-cid" placeholder="VATSIM CID" inputmode="numeric">
+        <select id="new-auth-type">
+          <option value="vatsim">VATSIM</option>
+          <option value="discord">Discord</option>
+        </select>
+        <input type="text" id="new-cid" placeholder="ID (CID or Discord ID)" inputmode="numeric">
         <input type="text" id="new-name" placeholder="Display name">
         <button class="btn btn-accent btn-sm" onclick="addUser()">Add</button>
       </div>
@@ -387,30 +419,37 @@
           list.innerHTML = '<li class="empty">No authorized uploaders yet. Add one above.</li>';
           return;
         }
-        list.innerHTML = data.users.map(u => `
+        list.innerHTML = data.users.map(u => {
+          const authType = u.auth_type || "vatsim";
+          const rawId = u.id.includes(":") ? u.id.split(":")[1] : u.id;
+          const badgeClass = authType === "discord" ? "auth-discord" : "auth-vatsim";
+          const badgeLabel = authType === "discord" ? "Discord" : "VATSIM";
+          const avatarText = rawId.slice(-2);
+          return `
           <li class="user-item">
             <div class="user-info">
-              <div class="user-avatar">${escapeHtml(u.vatsim_cid.slice(-2))}</div>
+              <div class="user-avatar">${escapeHtml(avatarText)}</div>
               <div>
-                <div class="user-name">${escapeHtml(u.name)}</div>
-                <div class="user-cid">CID ${escapeHtml(u.vatsim_cid)}</div>
+                <div class="user-name">${escapeHtml(u.name)} <span class="auth-badge ${badgeClass}">${badgeLabel}</span></div>
+                <div class="user-cid">${escapeHtml(rawId)}</div>
               </div>
             </div>
-            <button class="btn btn-danger" onclick="removeUser('${escapeHtml(u.vatsim_cid)}')">Remove</button>
-          </li>
-        `).join("");
+            <button class="btn btn-danger" onclick="removeUser('${escapeHtml(u.id)}')">Remove</button>
+          </li>`;
+        }).join("");
       } catch (err) {
         showError(err.message);
       }
     }
 
     async function addUser() {
-      const cid = document.getElementById("new-cid").value.trim();
+      const authType = document.getElementById("new-auth-type").value;
+      const id = document.getElementById("new-cid").value.trim();
       const name = document.getElementById("new-name").value.trim();
-      if (!cid || !name) { showError("Both CID and name are required"); return; }
-      if (!/^\d+$/.test(cid)) { showError("CID must be numeric"); return; }
+      if (!id || !name) { showError("Both ID and name are required"); return; }
+      if (!/^\d+$/.test(id)) { showError("ID must be numeric"); return; }
       try {
-        await apiCall("POST", "/admin/users", { cid, name });
+        await apiCall("POST", "/admin/users", { id, name, authType });
         document.getElementById("new-cid").value = "";
         document.getElementById("new-name").value = "";
         loadUsers();
@@ -419,10 +458,10 @@
       }
     }
 
-    async function removeUser(cid) {
-      if (!confirm(`Remove uploader ${cid}?`)) return;
+    async function removeUser(id) {
+      if (!confirm(`Remove uploader ${id}?`)) return;
       try {
-        await apiCall("DELETE", "/admin/users", { cid });
+        await apiCall("DELETE", "/admin/users", { id });
         loadUsers();
       } catch (err) {
         showError(err.message);
