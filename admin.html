@@ -271,6 +271,73 @@
     .auth-vatsim { background: rgba(41,180,115,0.15); color: #29b473; border: 1px solid rgba(41,180,115,0.3); }
     .auth-discord { background: rgba(88,101,242,0.15); color: #8b9aff; border: 1px solid rgba(88,101,242,0.3); }
 
+    .user-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .btn-edit {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: background 120ms, color 120ms;
+    }
+    .btn-edit:hover { background: rgba(255,255,255,0.1); color: var(--ink); }
+    .user-actions { display: flex; gap: 6px; }
+
+    /* ── Edit Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(4px);
+    }
+    .modal {
+      background: #0f1520;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 420px;
+      width: 90%;
+    }
+    .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+    .modal label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 14px; }
+    .modal label:first-of-type { margin-top: 0; }
+    .modal input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.05);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .modal input:focus { border-color: rgba(74,224,255,0.5); }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .modal-actions .btn { flex: 1; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
     /* ── Banners ── */
     .banner {
       border-radius: 12px;
@@ -285,7 +352,6 @@
 
     @media (max-width: 540px) {
       .add-form { grid-template-columns: 1fr 1fr; }
-      .add-form select { grid-column: 1 / -1; }
       .add-form .btn { grid-column: 1 / -1; }
     }
     @media (max-width: 380px) {
@@ -334,12 +400,9 @@
         <span class="count-badge" id="user-count">–</span>
       </div>
       <div class="add-form">
-        <select id="new-auth-type">
-          <option value="vatsim">VATSIM</option>
-          <option value="discord">Discord</option>
-        </select>
-        <input type="text" id="new-cid" placeholder="ID (CID or Discord ID)" inputmode="numeric">
         <input type="text" id="new-name" placeholder="Display name">
+        <input type="text" id="new-vatsim" placeholder="VATSIM CID (optional)" inputmode="numeric">
+        <input type="text" id="new-discord" placeholder="Discord ID (optional)" inputmode="numeric">
         <button class="btn btn-accent btn-sm" onclick="addUser()">Add</button>
       </div>
       <ul class="user-list" id="user-list">
@@ -348,27 +411,55 @@
     </div>
   </div>
 
+  <!-- Edit modal -->
+  <div id="edit-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>Edit User</h3>
+      <input type="hidden" id="edit-user-id">
+      <label>Display Name</label>
+      <input type="text" id="edit-name">
+      <label>VATSIM CID</label>
+      <input type="text" id="edit-vatsim" placeholder="Leave empty to unlink" inputmode="numeric">
+      <label>Discord ID</label>
+      <input type="text" id="edit-discord" placeholder="Leave empty to unlink" inputmode="numeric">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-accent" onclick="saveUserEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API = "https://api.actuallyleviticus.xyz";
     let token = null;
 
+    function isTokenValid(t) {
+      try {
+        const payload = JSON.parse(atob(t));
+        const data = JSON.parse(payload.data);
+        return data.exp && Date.now() < data.exp;
+      } catch { return false; }
+    }
+
     function init() {
-      // Check for token in hash
       const hash = window.location.hash;
       if (hash.startsWith("#token=")) {
         token = hash.slice(7);
-        sessionStorage.setItem("adminToken", token);
+        localStorage.setItem("adminToken", token);
         history.replaceState(null, "", window.location.pathname);
       } else if (hash.startsWith("#error=")) {
         showError(decodeURIComponent(hash.slice(7)));
         history.replaceState(null, "", window.location.pathname);
       }
 
-      // Check sessionStorage
-      if (!token) token = sessionStorage.getItem("adminToken");
+      if (!token) token = localStorage.getItem("adminToken");
+
+      if (token && !isTokenValid(token)) {
+        localStorage.removeItem("adminToken");
+        token = null;
+      }
 
       if (token) {
-        // Decode token to show email
         try {
           const payload = JSON.parse(atob(token));
           const data = JSON.parse(payload.data);
@@ -382,7 +473,7 @@
     }
 
     function logout() {
-      sessionStorage.removeItem("adminToken");
+      localStorage.removeItem("adminToken");
       token = null;
       document.getElementById("dashboard-view").style.display = "none";
       document.getElementById("login-view").style.display = "block";
@@ -420,21 +511,31 @@
           return;
         }
         list.innerHTML = data.users.map(u => {
-          const authType = u.auth_type || "vatsim";
-          const rawId = u.id.includes(":") ? u.id.split(":")[1] : u.id;
-          const badgeClass = authType === "discord" ? "auth-discord" : "auth-vatsim";
-          const badgeLabel = authType === "discord" ? "Discord" : "VATSIM";
-          const avatarText = rawId.slice(-2);
+          const badges = [];
+          if (u.vatsim_cid) badges.push('<span class="auth-badge auth-vatsim">VATSIM</span>');
+          if (u.discord_id) badges.push('<span class="auth-badge auth-discord">Discord</span>');
+
+          const ids = [];
+          if (u.vatsim_cid) ids.push('CID ' + escapeHtml(u.vatsim_cid));
+          if (u.discord_id) ids.push('Discord ' + escapeHtml(u.discord_id));
+
+          const avatarHtml = u.avatar_url
+            ? `<img src="${escapeHtml(u.avatar_url)}" alt="">`
+            : escapeHtml((u.vatsim_cid || u.discord_id || "??").slice(-2));
+
           return `
           <li class="user-item">
             <div class="user-info">
-              <div class="user-avatar">${escapeHtml(avatarText)}</div>
+              <div class="user-avatar">${avatarHtml}</div>
               <div>
-                <div class="user-name">${escapeHtml(u.name)} <span class="auth-badge ${badgeClass}">${badgeLabel}</span></div>
-                <div class="user-cid">${escapeHtml(rawId)}</div>
+                <div class="user-name">${escapeHtml(u.name)} ${badges.join(" ")}</div>
+                <div class="user-cid">${ids.join(" · ")}</div>
               </div>
             </div>
-            <button class="btn btn-danger" onclick="removeUser('${escapeHtml(u.id)}')">Remove</button>
+            <div class="user-actions">
+              <button class="btn-edit" onclick="openEditModal(${u.id},'${escapeAttr(u.name)}','${escapeAttr(u.vatsim_cid||"")}','${escapeAttr(u.discord_id||"")}')">Edit</button>
+              <button class="btn btn-danger" onclick="removeUser(${u.id},'${escapeAttr(u.name)}')">Remove</button>
+            </div>
           </li>`;
         }).join("");
       } catch (err) {
@@ -443,23 +544,55 @@
     }
 
     async function addUser() {
-      const authType = document.getElementById("new-auth-type").value;
-      const id = document.getElementById("new-cid").value.trim();
       const name = document.getElementById("new-name").value.trim();
-      if (!id || !name) { showError("Both ID and name are required"); return; }
-      if (!/^\d+$/.test(id)) { showError("ID must be numeric"); return; }
+      const vatsimCid = document.getElementById("new-vatsim").value.trim();
+      const discordId = document.getElementById("new-discord").value.trim();
+      if (!name) { showError("Name is required"); return; }
+      if (!vatsimCid && !discordId) { showError("At least one ID is required"); return; }
+      if (vatsimCid && !/^\d+$/.test(vatsimCid)) { showError("VATSIM CID must be numeric"); return; }
+      if (discordId && !/^\d+$/.test(discordId)) { showError("Discord ID must be numeric"); return; }
       try {
-        await apiCall("POST", "/admin/users", { id, name, authType });
-        document.getElementById("new-cid").value = "";
+        await apiCall("POST", "/admin/users", { name, vatsimCid: vatsimCid || null, discordId: discordId || null });
         document.getElementById("new-name").value = "";
+        document.getElementById("new-vatsim").value = "";
+        document.getElementById("new-discord").value = "";
         loadUsers();
       } catch (err) {
         showError(err.message);
       }
     }
 
-    async function removeUser(id) {
-      if (!confirm(`Remove uploader ${id}?`)) return;
+    function openEditModal(id, name, vatsimCid, discordId) {
+      document.getElementById("edit-user-id").value = id;
+      document.getElementById("edit-name").value = name;
+      document.getElementById("edit-vatsim").value = vatsimCid;
+      document.getElementById("edit-discord").value = discordId;
+      document.getElementById("edit-modal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("edit-modal").style.display = "none";
+    }
+
+    async function saveUserEdit() {
+      const id = parseInt(document.getElementById("edit-user-id").value);
+      const name = document.getElementById("edit-name").value.trim();
+      const vatsimCid = document.getElementById("edit-vatsim").value.trim();
+      const discordId = document.getElementById("edit-discord").value.trim();
+      if (!name) { showError("Name is required"); return; }
+      if (vatsimCid && !/^\d+$/.test(vatsimCid)) { showError("VATSIM CID must be numeric"); return; }
+      if (discordId && !/^\d+$/.test(discordId)) { showError("Discord ID must be numeric"); return; }
+      try {
+        await apiCall("PUT", "/admin/users", { id, name, vatsimCid: vatsimCid || "", discordId: discordId || "" });
+        closeModal();
+        loadUsers();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function removeUser(id, name) {
+      if (!confirm(`Remove uploader "${name}"?`)) return;
       try {
         await apiCall("DELETE", "/admin/users", { id });
         loadUsers();
@@ -472,6 +605,10 @@
       const div = document.createElement("div");
       div.textContent = str;
       return div.innerHTML;
+    }
+
+    function escapeAttr(str) {
+      return String(str || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
 
     init();

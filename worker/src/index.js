@@ -31,6 +31,7 @@ export default {
       // --- Admin endpoints (require admin token) ---
       if (path === "/admin/users" && request.method === "GET") return adminListUsers(request, env, origin);
       if (path === "/admin/users" && request.method === "POST") return adminAddUser(request, env, origin);
+      if (path === "/admin/users" && request.method === "PUT") return adminEditUser(request, env, origin);
       if (path === "/admin/users" && request.method === "DELETE") return adminRemoveUser(request, env, origin);
 
       // --- Upload endpoint ---
@@ -63,7 +64,7 @@ export default {
 function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
   };
@@ -207,14 +208,13 @@ async function vatsimCallback(request, env, url) {
   const cid = String(user.data.cid);
   const name = `${user.data.personal.name_first} ${user.data.personal.name_last}`;
 
-  // Check if allowed (id = "vatsim:<cid>")
-  const userId = `vatsim:${cid}`;
-  const row = await env.DB.prepare("SELECT id FROM allowed_users WHERE id = ?").bind(userId).first();
+  // Check if allowed by vatsim_cid
+  const row = await env.DB.prepare("SELECT id, name FROM allowed_users WHERE vatsim_cid = ?").bind(cid).first();
   if (!row) return redirectWithError(env, "/upload.html", "Not authorized to upload");
 
-  // Issue upload token (8h)
+  // Issue upload token (8h) — use DB id so plugins are tied to the person
   const token = await createToken(
-    { role: "uploader", id: userId, cid, name, authType: "vatsim", exp: Date.now() + 28800000 },
+    { role: "uploader", id: String(row.id), name: row.name, authType: "vatsim", exp: Date.now() + 28800000 },
     env.GOOGLE_CLIENT_SECRET
   );
 
@@ -264,15 +264,23 @@ async function discordCallback(request, env, url) {
   const user = await userRes.json();
   const discordId = String(user.id);
   const name = user.global_name || user.username;
+  const avatarHash = user.avatar;
+  const avatarUrl = avatarHash
+    ? `https://cdn.discordapp.com/avatars/${discordId}/${avatarHash}.png?size=128`
+    : null;
 
-  // Check if allowed (id = "discord:<id>")
-  const userId = `discord:${discordId}`;
-  const row = await env.DB.prepare("SELECT id FROM allowed_users WHERE id = ?").bind(userId).first();
+  // Check if allowed by discord_id
+  const row = await env.DB.prepare("SELECT id, name FROM allowed_users WHERE discord_id = ?").bind(discordId).first();
   if (!row) return redirectWithError(env, "/upload.html", "Not authorized to upload");
 
-  // Issue upload token (8h)
+  // Update avatar on login
+  if (avatarUrl) {
+    await env.DB.prepare("UPDATE allowed_users SET avatar_url = ? WHERE id = ?").bind(avatarUrl, row.id).run();
+  }
+
+  // Issue upload token (8h) — use DB id so plugins are tied to the person
   const token = await createToken(
-    { role: "uploader", id: userId, discordId, name, authType: "discord", exp: Date.now() + 28800000 },
+    { role: "uploader", id: String(row.id), name: row.name, authType: "discord", exp: Date.now() + 28800000 },
     env.GOOGLE_CLIENT_SECRET
   );
 
@@ -307,18 +315,69 @@ async function adminAddUser(request, env, origin) {
   const admin = await requireAdmin(request, env);
   if (!admin) return json({ error: "Unauthorized" }, 401, origin);
 
-  const { id, name, authType } = await request.json();
-  if (!id || !name || !authType) return json({ error: "id, name, and authType required" }, 400, origin);
-  if (!["vatsim", "discord"].includes(authType)) return json({ error: "authType must be vatsim or discord" }, 400, origin);
+  const { name, vatsimCid, discordId } = await request.json();
+  if (!name) return json({ error: "Name is required" }, 400, origin);
+  if (!vatsimCid && !discordId) return json({ error: "At least one ID (VATSIM CID or Discord ID) is required" }, 400, origin);
 
-  // Sanitize: vatsim ids are numeric, discord ids are numeric snowflakes
-  const sanitizedRawId = String(id).replace(/[^0-9]/g, "");
-  if (!sanitizedRawId) return json({ error: "Invalid ID" }, 400, origin);
-  const fullId = `${authType}:${sanitizedRawId}`;
   const sanitizedName = String(name).slice(0, 100);
+  const sanitizedVatsim = vatsimCid ? String(vatsimCid).replace(/[^0-9]/g, "") || null : null;
+  const sanitizedDiscord = discordId ? String(discordId).replace(/[^0-9]/g, "") || null : null;
 
-  await env.DB.prepare("INSERT OR IGNORE INTO allowed_users (id, auth_type, name) VALUES (?, ?, ?)")
-    .bind(fullId, authType, sanitizedName).run();
+  // Fetch Discord avatar if discord ID provided
+  let avatarUrl = null;
+  if (sanitizedDiscord) {
+    try {
+      const res = await fetch(`https://discord.com/api/v10/users/${sanitizedDiscord}`, {
+        headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN || ""}` },
+      });
+      if (res.ok) {
+        const u = await res.json();
+        if (u.avatar) avatarUrl = `https://cdn.discordapp.com/avatars/${sanitizedDiscord}/${u.avatar}.png?size=128`;
+      }
+    } catch {}
+  }
+
+  await env.DB.prepare(
+    "INSERT INTO allowed_users (name, vatsim_cid, discord_id, avatar_url) VALUES (?, ?, ?, ?)"
+  ).bind(sanitizedName, sanitizedVatsim, sanitizedDiscord, avatarUrl).run();
+
+  return json({ ok: true }, 200, origin);
+}
+
+async function adminEditUser(request, env, origin) {
+  const admin = await requireAdmin(request, env);
+  if (!admin) return json({ error: "Unauthorized" }, 401, origin);
+
+  const { id, name, vatsimCid, discordId } = await request.json();
+  if (!id) return json({ error: "User id required" }, 400, origin);
+
+  const existing = await env.DB.prepare("SELECT * FROM allowed_users WHERE id = ?").bind(id).first();
+  if (!existing) return json({ error: "User not found" }, 404, origin);
+
+  const newName = name ? String(name).slice(0, 100) : existing.name;
+  const newVatsim = vatsimCid !== undefined ? (vatsimCid ? String(vatsimCid).replace(/[^0-9]/g, "") || null : null) : existing.vatsim_cid;
+  const newDiscord = discordId !== undefined ? (discordId ? String(discordId).replace(/[^0-9]/g, "") || null : null) : existing.discord_id;
+
+  // Fetch Discord avatar if discord ID is being set/changed
+  let avatarUrl = existing.avatar_url;
+  if (newDiscord && newDiscord !== existing.discord_id) {
+    try {
+      const res = await fetch(`https://discord.com/api/v10/users/${newDiscord}`, {
+        headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN || ""}` },
+      });
+      if (res.ok) {
+        const u = await res.json();
+        avatarUrl = u.avatar ? `https://cdn.discordapp.com/avatars/${newDiscord}/${u.avatar}.png?size=128` : null;
+      }
+    } catch {}
+  } else if (!newDiscord) {
+    avatarUrl = null;
+  }
+
+  await env.DB.prepare(
+    "UPDATE allowed_users SET name = ?, vatsim_cid = ?, discord_id = ?, avatar_url = ? WHERE id = ?"
+  ).bind(newName, newVatsim, newDiscord, avatarUrl, id).run();
+
   return json({ ok: true }, 200, origin);
 }
 
@@ -329,9 +388,7 @@ async function adminRemoveUser(request, env, origin) {
   const { id } = await request.json();
   if (!id) return json({ error: "id required" }, 400, origin);
 
-  // id comes as full "vatsim:123" or "discord:456" from the frontend
-  const sanitizedId = String(id).replace(/[^a-z0-9:_-]/gi, "").slice(0, 200);
-  await env.DB.prepare("DELETE FROM allowed_users WHERE id = ?").bind(sanitizedId).run();
+  await env.DB.prepare("DELETE FROM allowed_users WHERE id = ?").bind(id).run();
   return json({ ok: true }, 200, origin);
 }
 

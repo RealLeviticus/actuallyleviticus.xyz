@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS allowed_users (
-  id TEXT PRIMARY KEY,
-  auth_type TEXT NOT NULL DEFAULT 'vatsim',
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
+  vatsim_cid TEXT UNIQUE,
+  discord_id TEXT UNIQUE,
+  avatar_url TEXT,
   added_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

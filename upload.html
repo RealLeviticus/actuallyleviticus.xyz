@@ -647,25 +647,45 @@
     let selectedFile = null;
     let selectedBanner = null;
 
+    function isTokenValid(t) {
+      try {
+        const payload = JSON.parse(atob(t));
+        const data = JSON.parse(payload.data);
+        return data.exp && Date.now() < data.exp;
+      } catch { return false; }
+    }
+
+    function getTokenData(t) {
+      try {
+        const payload = JSON.parse(atob(t));
+        return JSON.parse(payload.data);
+      } catch { return null; }
+    }
+
     function init() {
       const hash = window.location.hash;
       if (hash.startsWith("#token=")) {
         token = hash.slice(7);
-        sessionStorage.setItem("uploadToken", token);
+        localStorage.setItem("uploadToken", token);
         history.replaceState(null, "", window.location.pathname);
       } else if (hash.startsWith("#error=")) {
         showError(decodeURIComponent(hash.slice(7)));
         history.replaceState(null, "", window.location.pathname);
       }
 
-      if (!token) token = sessionStorage.getItem("uploadToken");
+      if (!token) token = localStorage.getItem("uploadToken");
+
+      // Check token validity
+      if (token && !isTokenValid(token)) {
+        localStorage.removeItem("uploadToken");
+        token = null;
+      }
 
       if (token) {
-        try {
-          const payload = JSON.parse(atob(token));
-          const data = JSON.parse(payload.data);
+        const data = getTokenData(token);
+        if (data) {
           document.getElementById("uploader-name").textContent = data.name;
-        } catch {}
+        }
         document.getElementById("upload-view").style.display = "block";
         setupDragDrop();
         setupBanner();
@@ -676,7 +696,7 @@
     }
 
     function logout() {
-      sessionStorage.removeItem("uploadToken");
+      localStorage.removeItem("uploadToken");
       token = null;
       document.getElementById("upload-view").style.display = "none";
       document.getElementById("login-view").style.display = "block";
