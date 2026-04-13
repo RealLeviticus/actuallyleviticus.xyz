@@ -200,7 +200,41 @@
       width: 100%;
       box-shadow: var(--shadow);
     }
-    #plugin-name {
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 12px;
+      margin-bottom: 14px;
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-field-wide {
+      grid-column: 1 / -1;
+    }
+    .input-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .field-hint {
+      color: #8197a3;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    #plugin-match-hint.matching,
+    #banner-target-label.active {
+      color: var(--success);
+      font-weight: 600;
+    }
+    #plugin-name,
+    #upload-display-name,
+    #upload-version,
+    #upload-description {
       width: 100%;
       padding: 10px 12px;
       border-radius: 10px;
@@ -210,15 +244,24 @@
       font-family: inherit;
       font-size: 13px;
       outline: none;
-      margin-bottom: 16px;
       box-sizing: border-box;
       transition: border-color 140ms ease, box-shadow 140ms ease;
     }
-    #plugin-name:focus {
+    #upload-description {
+      min-height: 86px;
+      resize: vertical;
+    }
+    #plugin-name:focus,
+    #upload-display-name:focus,
+    #upload-version:focus,
+    #upload-description:focus {
       border-color: #9fbeab;
       box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
     }
-    #plugin-name::placeholder { color: #8ea0aa; }
+    #plugin-name::placeholder,
+    #upload-display-name::placeholder,
+    #upload-version::placeholder,
+    #upload-description::placeholder { color: #8ea0aa; }
 
     /* ── Drop zone ── */
     .upload-dev-row {
@@ -480,6 +523,8 @@
     .plugin-actions {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
       flex-shrink: 0;
     }
     .btn-icon {
@@ -634,6 +679,7 @@
       .login-wrap { margin-top: 24px; gap: 16px; }
       .login-card { padding: 18px; }
       #login-error { margin-bottom: 12px; }
+      .form-grid { grid-template-columns: 1fr; }
       .topbar {
         flex-direction: column;
         align-items: flex-start;
@@ -644,6 +690,10 @@
       .plugin-top {
         flex-direction: column;
         align-items: flex-start;
+      }
+      .plugin-actions {
+        width: 100%;
+        justify-content: flex-start;
       }
     }
   </style>
@@ -702,9 +752,27 @@
     <div class="card">
       <div class="section-label" style="margin-bottom:8px">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Plugin Name
+        Plugin Setup
       </div>
-      <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect">
+      <div class="form-grid">
+        <div class="form-field form-field-wide">
+          <label class="input-label" for="plugin-name">Plugin Key</label>
+          <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect">
+          <p class="field-hint" id="plugin-match-hint">New plugin key. Use letters, numbers, dashes, or underscores.</p>
+        </div>
+        <div class="form-field">
+          <label class="input-label" for="upload-display-name">Display Name</label>
+          <input type="text" id="upload-display-name" placeholder="e.g. Mumble Reconnect">
+        </div>
+        <div class="form-field">
+          <label class="input-label" for="upload-version">Version</label>
+          <input type="text" id="upload-version" placeholder="1.0.0">
+        </div>
+        <div class="form-field form-field-wide">
+          <label class="input-label" for="upload-description">Description</label>
+          <textarea id="upload-description" placeholder="What does this plugin do?"></textarea>
+        </div>
+      </div>
       <div class="upload-dev-row">
         <span>In Development</span>
         <div class="toggle" id="upload-dev-toggle" onclick="this.classList.toggle('on')"></div>
@@ -731,6 +799,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
         Plugin Banner
       </div>
+      <p class="field-hint" id="banner-target-label" style="margin-bottom:8px">Banner target: enter or select a plugin key above.</p>
       <div class="banner-preview-wrap" id="banner-preview-wrap">
         <div class="banner-placeholder" id="banner-placeholder" onclick="document.getElementById('banner-input').click()">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -750,6 +819,8 @@
       </div>
       <p class="allowed-types" style="margin-top:8px">.png &nbsp;·&nbsp; .jpg &nbsp;·&nbsp; .jpeg &nbsp;·&nbsp; .webp &nbsp;·&nbsp; Max 5 MB</p>
       <input type="file" id="banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
+      <input type="file" id="quick-banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
+      <input type="file" id="replace-file-input" accept=".dll,.xml,.json,.zip" style="display:none">
     </div>
 
     <!-- My Plugins -->
@@ -790,9 +861,17 @@
 
   <script>
     const API = "https://api.actuallyleviticus.xyz";
+    const FILE_EXTS = [".dll", ".xml", ".json", ".zip"];
+    const BANNER_EXTS = [".png", ".jpg", ".jpeg", ".webp"];
+    const MAX_PLUGIN_BYTES = 50 * 1024 * 1024;
+    const MAX_BANNER_BYTES = 5 * 1024 * 1024;
+    const VERSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,29}$/;
     let token = null;
     let selectedFile = null;
     let selectedBanner = null;
+    let pluginLookup = new Map();
+    let replaceTargetPlugin = null;
+    let quickBannerTargetPlugin = null;
 
     function isTokenValid(t) {
       try {
@@ -807,6 +886,60 @@
         const payload = JSON.parse(atob(t));
         return JSON.parse(payload.data);
       } catch { return null; }
+    }
+
+    function sanitizePluginKey(value) {
+      return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+    }
+
+    function getFileExt(name) {
+      const idx = String(name || "").lastIndexOf(".");
+      return idx >= 0 ? name.slice(idx).toLowerCase() : "";
+    }
+
+    function getPluginMatch(pluginNameInput) {
+      const safe = sanitizePluginKey(String(pluginNameInput || "").trim());
+      if (!safe) return null;
+      return pluginLookup.get(safe) || null;
+    }
+
+    function setToggleState(el, isOn) {
+      if (!el) return;
+      if (isOn) el.classList.add("on");
+      else el.classList.remove("on");
+    }
+
+    function getToggleState(el) {
+      return !!(el && el.classList.contains("on"));
+    }
+
+    function validatePluginFile(file) {
+      const ext = getFileExt(file.name);
+      if (!FILE_EXTS.includes(ext)) {
+        throw new Error(`File type "${ext}" not allowed. Use: ${FILE_EXTS.join(", ")}`);
+      }
+      if (file.size > MAX_PLUGIN_BYTES) {
+        throw new Error("File too large (max 50 MB)");
+      }
+    }
+
+    function validateBannerFile(file) {
+      const ext = getFileExt(file.name);
+      if (!BANNER_EXTS.includes(ext)) {
+        throw new Error(`Banner must be an image (${BANNER_EXTS.join(", ")})`);
+      }
+      if (file.size > MAX_BANNER_BYTES) {
+        throw new Error("Banner too large (max 5 MB)");
+      }
+    }
+
+    function toCdnUrl(key) {
+      if (!key) return "";
+      const encoded = String(key)
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/");
+      return `https://cdn.actuallyleviticus.xyz/${encoded}`;
     }
 
     function init() {
@@ -839,9 +972,12 @@
           document.getElementById("uploader-name").textContent = data.name;
         }
         document.getElementById("upload-view").style.display = "grid";
+        document.getElementById("upload-version").value = "1.0.0";
         setupDragDrop();
         setupBanner();
-        loadMyPlugins();
+        setupQuickActions();
+        setupFormSync();
+        loadMyPlugins().then(() => syncUploadFormWithPluginKey());
       } else {
         document.getElementById("login-view").style.display = "flex";
       }
@@ -869,6 +1005,125 @@
       document.getElementById("error-banner").style.display = "none";
     }
 
+    function renderBannerPreview(url) {
+      const img = document.getElementById("banner-img");
+      const placeholder = document.getElementById("banner-placeholder");
+      img.src = url;
+      img.style.display = "block";
+      placeholder.style.display = "none";
+    }
+
+    function clearBannerPreview(clearPending = false) {
+      const img = document.getElementById("banner-img");
+      const placeholder = document.getElementById("banner-placeholder");
+      const saveBtn = document.getElementById("save-banner-btn");
+      img.src = "";
+      img.style.display = "none";
+      placeholder.style.display = "flex";
+      saveBtn.style.display = "none";
+      if (clearPending) {
+        selectedBanner = null;
+        document.getElementById("banner-input").value = "";
+      }
+    }
+
+    function setupFormSync() {
+      const pluginNameInput = document.getElementById("plugin-name");
+      pluginNameInput.addEventListener("input", syncUploadFormWithPluginKey);
+      pluginNameInput.addEventListener("change", syncUploadFormWithPluginKey);
+    }
+
+    function syncUploadFormWithPluginKey() {
+      const pluginNameInput = document.getElementById("plugin-name");
+      const displayNameInput = document.getElementById("upload-display-name");
+      const versionInput = document.getElementById("upload-version");
+      const descriptionInput = document.getElementById("upload-description");
+      const devToggle = document.getElementById("upload-dev-toggle");
+      const matchHint = document.getElementById("plugin-match-hint");
+      const bannerTarget = document.getElementById("banner-target-label");
+      const rawName = pluginNameInput.value.trim();
+
+      if (!rawName) {
+        matchHint.textContent = "New plugin key. Use letters, numbers, dashes, or underscores.";
+        matchHint.classList.remove("matching");
+        bannerTarget.textContent = "Banner target: enter or select a plugin key above.";
+        bannerTarget.classList.remove("active");
+        clearBannerPreview(true);
+        return;
+      }
+
+      const safeName = sanitizePluginKey(rawName);
+      const existing = getPluginMatch(rawName);
+
+      if (existing) {
+        displayNameInput.value = existing.display_name || existing.name;
+        versionInput.value = existing.version || "1.0.0";
+        descriptionInput.value = existing.description || "";
+        setToggleState(devToggle, !!existing.is_dev);
+        matchHint.textContent = `Editing existing plugin "${existing.display_name}" (${existing.name}).`;
+        matchHint.classList.add("matching");
+        bannerTarget.textContent = `Banner target: ${existing.display_name} (${existing.name})`;
+        bannerTarget.classList.add("active");
+        loadExistingBanner(existing);
+        return;
+      }
+
+      if (!displayNameInput.value.trim()) displayNameInput.value = rawName;
+      if (!versionInput.value.trim()) versionInput.value = "1.0.0";
+      matchHint.textContent = `Creating new plugin folder "${safeName}".`;
+      matchHint.classList.remove("matching");
+      bannerTarget.textContent = `Banner target: ${safeName}`;
+      bannerTarget.classList.add("active");
+      if (!selectedBanner) clearBannerPreview(false);
+    }
+
+    function setupQuickActions() {
+      const quickBannerInput = document.getElementById("quick-banner-input");
+      quickBannerInput.addEventListener("change", async () => {
+        if (!quickBannerInput.files.length || !quickBannerTargetPlugin) return;
+        const file = quickBannerInput.files[0];
+        quickBannerInput.value = "";
+
+        try {
+          validateBannerFile(file);
+          await uploadBannerForPlugin(quickBannerTargetPlugin.name, file);
+          showSuccess(`Banner updated for "${quickBannerTargetPlugin.display_name}"`);
+          await loadMyPlugins();
+          syncUploadFormWithPluginKey();
+        } catch (err) {
+          showError(err.message);
+        } finally {
+          quickBannerTargetPlugin = null;
+        }
+      });
+
+      const replaceInput = document.getElementById("replace-file-input");
+      replaceInput.addEventListener("change", async () => {
+        if (!replaceInput.files.length || !replaceTargetPlugin) return;
+        const file = replaceInput.files[0];
+        replaceInput.value = "";
+
+        try {
+          validatePluginFile(file);
+          await uploadPluginFile({
+            file,
+            pluginName: replaceTargetPlugin.name,
+            displayName: replaceTargetPlugin.display_name || replaceTargetPlugin.name,
+            description: replaceTargetPlugin.description || "",
+            version: replaceTargetPlugin.version || "1.0.0",
+            isDev: !!replaceTargetPlugin.is_dev,
+          });
+          showSuccess(`Package replaced for "${replaceTargetPlugin.display_name}"`);
+          await loadMyPlugins();
+          syncUploadFormWithPluginKey();
+        } catch (err) {
+          showError(err.message);
+        } finally {
+          replaceTargetPlugin = null;
+        }
+      });
+    }
+
     function setupDragDrop() {
       const zone = document.getElementById("drop-zone");
       const input = document.getElementById("file-input");
@@ -889,63 +1144,96 @@
     }
 
     function selectFile(file) {
-      const allowedExts = [".dll", ".xml", ".json", ".zip"];
-      const ext = file.name.lastIndexOf(".") >= 0 ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
-      if (!allowedExts.includes(ext)) {
-        showError(`File type "${ext}" not allowed. Use: ${allowedExts.join(", ")}`);
+      try {
+        validatePluginFile(file);
+      } catch (err) {
+        showError(err.message);
         return;
       }
-      if (file.size > 50 * 1024 * 1024) {
-        showError("File too large (max 50 MB)");
-        return;
-      }
+
       selectedFile = file;
       document.getElementById("file-name").textContent = file.name;
       document.getElementById("upload-btn").disabled = false;
+    }
+
+    async function uploadPluginFile({ file, pluginName, displayName, description, version, isDev }) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("pluginName", pluginName);
+      formData.append("displayName", displayName);
+      formData.append("description", description);
+      formData.append("version", version);
+      formData.append("isDev", isDev ? "1" : "0");
+
+      const res = await fetch(`${API}/upload`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (res.status === 401) {
+        logout();
+        throw new Error("Session expired");
+      }
+      if (!res.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+      return data;
     }
 
     async function uploadFile() {
       if (!selectedFile || !token) return;
 
       const pluginName = document.getElementById("plugin-name").value.trim();
-      if (!pluginName) { showError("Enter a plugin name first"); return; }
+      const displayName = document.getElementById("upload-display-name").value.trim() || pluginName;
+      const description = document.getElementById("upload-description").value.trim();
+      const versionInput = document.getElementById("upload-version");
+      const version = versionInput.value.trim() || "1.0.0";
+      const isDev = getToggleState(document.getElementById("upload-dev-toggle"));
+
+      if (!pluginName) {
+        showError("Enter a plugin key first");
+        return;
+      }
+      if (!displayName) {
+        showError("Display name is required");
+        return;
+      }
+      if (!VERSION_PATTERN.test(version)) {
+        showError("Version can only use letters, numbers, dots, underscores, and dashes (max 30 chars)");
+        return;
+      }
+      versionInput.value = version;
 
       const btn = document.getElementById("upload-btn");
       const bar = document.getElementById("progress-bar");
       const fill = document.getElementById("progress-fill");
 
       btn.disabled = true;
-      btn.textContent = "Uploading…";
+      btn.textContent = "Uploading...";
       bar.style.display = "block";
-      fill.style.width = "20%";
+      fill.style.width = "22%";
 
       try {
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("pluginName", pluginName);
-        const isDev = document.getElementById("upload-dev-toggle").classList.contains("on");
-        formData.append("isDev", isDev ? "1" : "0");
-
-        const res = await fetch(`${API}/upload`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${token}` },
-          body: formData,
+        const data = await uploadPluginFile({
+          file: selectedFile,
+          pluginName,
+          displayName,
+          description,
+          version,
+          isDev,
         });
 
         fill.style.width = "100%";
-        const data = await res.json();
-
-        if (!res.ok) {
-          if (res.status === 401) { logout(); showError("Session expired"); return; }
-          throw new Error(data.error || "Upload failed");
-        }
-
-        showSuccess(`Uploaded successfully as "${data.key}"`);
+        showSuccess(`Plugin uploaded: ${data.key}`);
         selectedFile = null;
         document.getElementById("file-name").textContent = "";
         document.getElementById("file-input").value = "";
         btn.textContent = "Upload";
-        loadMyPlugins();
+        btn.disabled = true;
+        await loadMyPlugins();
+        syncUploadFormWithPluginKey();
       } catch (err) {
         showError(err.message);
         btn.textContent = "Upload";
@@ -954,78 +1242,89 @@
         setTimeout(() => {
           bar.style.display = "none";
           fill.style.width = "0%";
-        }, 1500);
+        }, 1200);
       }
     }
 
     // ── Banner ──
 
     function setupBanner() {
-      const input = document.getElementById("banner-input");
-      input.addEventListener("change", () => {
-        if (input.files.length) selectBannerFile(input.files[0]);
+      const bannerInput = document.getElementById("banner-input");
+      bannerInput.addEventListener("change", () => {
+        if (bannerInput.files.length) selectBannerFile(bannerInput.files[0]);
       });
     }
 
     function selectBannerFile(file) {
-      const allowedExts = [".png", ".jpg", ".jpeg", ".webp"];
-      const ext = file.name.lastIndexOf(".") >= 0 ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
-      if (!allowedExts.includes(ext)) {
-        showError(`Banner must be an image (${allowedExts.join(", ")})`);
+      try {
+        validateBannerFile(file);
+      } catch (err) {
+        showError(err.message);
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        showError("Banner too large (max 5 MB)");
-        return;
-      }
+
       selectedBanner = file;
 
-      // Show preview
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.getElementById("banner-img");
-        img.src = e.target.result;
-        img.style.display = "block";
-        document.getElementById("banner-placeholder").style.display = "none";
-      };
+      reader.onload = (e) => renderBannerPreview(e.target.result);
       reader.readAsDataURL(file);
       document.getElementById("save-banner-btn").style.display = "inline-flex";
     }
 
-    async function loadExistingBanner() {
-      // Banner is per-plugin, so we can't load until a plugin name is entered
+    function loadExistingBanner(existingPlugin = null) {
+      const plugin = existingPlugin || getPluginMatch(document.getElementById("plugin-name").value.trim());
+      if (!plugin || !plugin.banner) {
+        if (!selectedBanner) clearBannerPreview(false);
+        return;
+      }
+      renderBannerPreview(`${toCdnUrl(plugin.banner)}?t=${Date.now()}`);
+      document.getElementById("save-banner-btn").style.display = selectedBanner ? "inline-flex" : "none";
+    }
+
+    async function uploadBannerForPlugin(pluginName, file) {
+      const formData = new FormData();
+      formData.append("banner", file);
+      formData.append("pluginName", pluginName);
+
+      const res = await fetch(`${API}/upload/banner`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData,
+      });
+      const result = await res.json();
+
+      if (res.status === 401) {
+        logout();
+        throw new Error("Session expired");
+      }
+      if (!res.ok) {
+        throw new Error(result.error || "Banner upload failed");
+      }
+
+      return result;
     }
 
     async function uploadBanner() {
       if (!selectedBanner || !token) return;
 
       const pluginName = document.getElementById("plugin-name").value.trim();
-      if (!pluginName) { showError("Enter a plugin name first"); return; }
+      if (!pluginName) {
+        showError("Enter a plugin key first");
+        return;
+      }
 
       const btn = document.getElementById("save-banner-btn");
-      btn.textContent = "Saving…";
+      btn.textContent = "Saving...";
       btn.style.pointerEvents = "none";
 
       try {
-        const formData = new FormData();
-        formData.append("banner", selectedBanner);
-        formData.append("pluginName", pluginName);
-
-        const res = await fetch(`${API}/upload/banner`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${token}` },
-          body: formData,
-        });
-
-        const result = await res.json();
-        if (!res.ok) {
-          if (res.status === 401) { logout(); showError("Session expired"); return; }
-          throw new Error(result.error || "Banner upload failed");
-        }
-
-        showSuccess("Banner saved!");
+        await uploadBannerForPlugin(pluginName, selectedBanner);
+        showSuccess("Banner saved");
         selectedBanner = null;
+        document.getElementById("banner-input").value = "";
         btn.style.display = "none";
+        await loadMyPlugins();
+        syncUploadFormWithPluginKey();
       } catch (err) {
         showError(err.message);
       } finally {
@@ -1041,23 +1340,31 @@
         const res = await fetch(`${API}/my-plugins`, {
           headers: { "Authorization": `Bearer ${token}` },
         });
-        if (res.status === 401) { logout(); showError("Session expired"); return; }
+        if (res.status === 401) {
+          logout();
+          showError("Session expired");
+          return;
+        }
         const data = await res.json();
-        const list = document.getElementById("plugin-list");
-        document.getElementById("plugin-count").textContent = data.plugins.length;
+        const plugins = Array.isArray(data.plugins) ? data.plugins : [];
+        pluginLookup = new Map(plugins.map((p) => [p.name, p]));
 
-        if (!data.plugins.length) {
+        const list = document.getElementById("plugin-list");
+        document.getElementById("plugin-count").textContent = plugins.length;
+
+        if (!plugins.length) {
           list.innerHTML = '<div class="empty-plugins">No plugins uploaded yet. Use the form above to upload your first plugin.</div>';
           return;
         }
 
-        list.innerHTML = data.plugins.map(p => {
+        list.innerHTML = plugins.map(p => {
           const fileCount = p.files ? p.files.length : 0;
           const totalSize = p.files ? p.files.reduce((s, f) => s + f.size, 0) : 0;
           const sizeStr = totalSize > 1048576 ? (totalSize / 1048576).toFixed(1) + " MB" : (totalSize / 1024).toFixed(0) + " KB";
           const devBadge = p.is_dev
             ? '<span class="dev-badge dev-badge-on">In Development</span>'
             : '<span class="dev-badge dev-badge-off">Stable</span>';
+          const bannerStatus = p.banner ? "Banner set" : "No banner";
           const desc = p.description ? `<div class="plugin-desc">${escapeHtml(p.description)}</div>` : "";
 
           return `
@@ -1066,17 +1373,25 @@
                 <div class="plugin-info">
                   <div class="plugin-name">${escapeHtml(p.display_name)} ${devBadge}</div>
                   <div class="plugin-meta">
+                    <span>Key: ${escapeHtml(p.name)}</span>
                     <span>v${escapeHtml(p.version)}</span>
                     <span>${fileCount} file${fileCount !== 1 ? "s" : ""} · ${sizeStr}</span>
+                    <span>${escapeHtml(bannerStatus)}</span>
                     <span>${new Date(p.updated_at).toLocaleDateString()}</span>
                   </div>
                   ${desc}
                 </div>
                 <div class="plugin-actions">
-                  <button class="btn-icon" onclick="openEditModal('${escapeAttr(p.name)}','${escapeAttr(p.display_name)}','${escapeAttr(p.description)}','${escapeAttr(p.version)}',${p.is_dev})" title="Edit">
+                  <button class="btn-icon" onclick="openEditModalByName('${escapeAttr(p.name)}')" title="Edit details">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
-                  <button class="btn-icon danger" onclick="deletePluginConfirm('${escapeAttr(p.name)}','${escapeAttr(p.display_name)}')" title="Delete">
+                  <button class="btn-icon" onclick="promptReplaceFile('${escapeAttr(p.name)}')" title="Replace package file">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="promptQuickBanner('${escapeAttr(p.name)}')" title="Change banner">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  </button>
+                  <button class="btn-icon danger" onclick="deletePluginConfirm('${escapeAttr(p.name)}')" title="Delete plugin">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
@@ -1096,16 +1411,25 @@
     }
 
     function escapeAttr(str) {
-      return String(str || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      return String(str || "")
+        .replace(/\\/g, "\\\\")
+        .replace(/\r?\n/g, "\\n")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, "&quot;");
     }
 
-    function openEditModal(name, displayName, description, version, isDev) {
-      document.getElementById("edit-plugin-name").value = name;
-      document.getElementById("edit-display-name").value = displayName;
-      document.getElementById("edit-description").value = description;
-      document.getElementById("edit-version").value = version;
-      const toggle = document.getElementById("edit-dev-toggle");
-      if (isDev) toggle.classList.add("on"); else toggle.classList.remove("on");
+    function openEditModalByName(name) {
+      const plugin = pluginLookup.get(sanitizePluginKey(name));
+      if (!plugin) {
+        showError("Plugin not found");
+        return;
+      }
+
+      document.getElementById("edit-plugin-name").value = plugin.name;
+      document.getElementById("edit-display-name").value = plugin.display_name || plugin.name;
+      document.getElementById("edit-description").value = plugin.description || "";
+      document.getElementById("edit-version").value = plugin.version || "1.0.0";
+      setToggleState(document.getElementById("edit-dev-toggle"), !!plugin.is_dev);
       document.getElementById("edit-modal").style.display = "flex";
     }
 
@@ -1117,10 +1441,19 @@
       const name = document.getElementById("edit-plugin-name").value;
       const displayName = document.getElementById("edit-display-name").value.trim();
       const description = document.getElementById("edit-description").value.trim();
-      const version = document.getElementById("edit-version").value.trim();
-      const isDev = document.getElementById("edit-dev-toggle").classList.contains("on");
+      const versionInput = document.getElementById("edit-version");
+      const version = versionInput.value.trim() || "1.0.0";
+      const isDev = getToggleState(document.getElementById("edit-dev-toggle"));
 
-      if (!displayName) { showError("Display name is required"); return; }
+      if (!displayName) {
+        showError("Display name is required");
+        return;
+      }
+      if (!VERSION_PATTERN.test(version)) {
+        showError("Version can only use letters, numbers, dots, underscores, and dashes (max 30 chars)");
+        return;
+      }
+      versionInput.value = version;
 
       try {
         const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
@@ -1132,16 +1465,44 @@
           body: JSON.stringify({ displayName, description, version, isDev }),
         });
         const data = await res.json();
+        if (res.status === 401) { logout(); showError("Session expired"); return; }
         if (!res.ok) throw new Error(data.error || "Update failed");
         closeModal();
-        showSuccess("Plugin updated!");
-        loadMyPlugins();
+        showSuccess("Plugin details updated");
+        await loadMyPlugins();
+        syncUploadFormWithPluginKey();
       } catch (err) {
         showError(err.message);
       }
     }
 
-    async function deletePluginConfirm(name, displayName) {
+    function promptReplaceFile(name) {
+      const plugin = pluginLookup.get(sanitizePluginKey(name));
+      if (!plugin) {
+        showError("Plugin not found");
+        return;
+      }
+      document.getElementById("plugin-name").value = plugin.name;
+      syncUploadFormWithPluginKey();
+      replaceTargetPlugin = plugin;
+      document.getElementById("replace-file-input").click();
+    }
+
+    function promptQuickBanner(name) {
+      const plugin = pluginLookup.get(sanitizePluginKey(name));
+      if (!plugin) {
+        showError("Plugin not found");
+        return;
+      }
+      document.getElementById("plugin-name").value = plugin.name;
+      syncUploadFormWithPluginKey();
+      quickBannerTargetPlugin = plugin;
+      document.getElementById("quick-banner-input").click();
+    }
+
+    async function deletePluginConfirm(name) {
+      const plugin = pluginLookup.get(sanitizePluginKey(name));
+      const displayName = plugin ? plugin.display_name : name;
       if (!confirm(`Delete "${displayName}" and all its files? This cannot be undone.`)) return;
       try {
         const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
@@ -1149,9 +1510,11 @@
           headers: { "Authorization": `Bearer ${token}` },
         });
         const data = await res.json();
+        if (res.status === 401) { logout(); showError("Session expired"); return; }
         if (!res.ok) throw new Error(data.error || "Delete failed");
         showSuccess("Plugin deleted");
-        loadMyPlugins();
+        await loadMyPlugins();
+        syncUploadFormWithPluginKey();
       } catch (err) {
         showError(err.message);
       }

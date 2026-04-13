@@ -427,14 +427,46 @@ async function handleUpload(request, env, origin) {
   const formData = await request.formData();
   const file = formData.get("file");
   const pluginName = formData.get("pluginName");
+  const displayNameRaw = formData.get("displayName");
+  const descriptionRaw = formData.get("description");
+  const versionRaw = formData.get("version");
   const isDevRaw = formData.get("isDev");
   if (!file || !(file instanceof File)) return json({ error: "No file provided" }, 400, origin);
   if (!pluginName) return json({ error: "Plugin name is required" }, 400, origin);
-  const isDev = typeof isDevRaw === "string" && /^(1|true|yes|on)$/i.test(isDevRaw.trim());
 
   // Sanitize plugin name: only allow alphanumeric, dash, underscore
   const safeFolderName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
   if (!safeFolderName) return json({ error: "Invalid plugin name" }, 400, origin);
+
+  const hasDisplayName = typeof displayNameRaw === "string" && displayNameRaw.trim().length > 0;
+  const hasDescription = typeof descriptionRaw === "string";
+  const hasVersion = typeof versionRaw === "string" && versionRaw.trim().length > 0;
+  const hasIsDev = typeof isDevRaw === "string" && isDevRaw.trim().length > 0;
+  const requestedIsDev = hasIsDev && /^(1|true|yes|on)$/i.test(isDevRaw.trim());
+
+  // If plugin already exists, only the owner can replace files or update metadata.
+  const existingPlugin = await env.DB.prepare(
+    "SELECT uploader_id, display_name, description, version, is_dev FROM plugins WHERE name = ?"
+  ).bind(safeFolderName).first();
+  if (existingPlugin && String(existingPlugin.uploader_id) !== String(payload.id)) {
+    return json({ error: "You do not own this plugin" }, 403, origin);
+  }
+
+  const displayName = hasDisplayName
+    ? String(displayNameRaw).trim().slice(0, 100)
+    : (existingPlugin?.display_name || String(pluginName).slice(0, 100));
+  const description = hasDescription
+    ? String(descriptionRaw || "").trim().slice(0, 500)
+    : (existingPlugin?.description || "");
+  let version = hasVersion
+    ? String(versionRaw).replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 30)
+    : (existingPlugin?.version || "1.0.0");
+  if (!version) {
+    version = existingPlugin?.version || "1.0.0";
+  }
+  const isDev = hasIsDev
+    ? (requestedIsDev ? 1 : 0)
+    : (existingPlugin ? (existingPlugin.is_dev ? 1 : 0) : 0);
 
   // Validate file type
   const allowedExts = [".dll", ".xml", ".json", ".zip"];
@@ -459,12 +491,15 @@ async function handleUpload(request, env, origin) {
 
   // Upsert plugin record in D1
   await env.DB.prepare(`
-    INSERT INTO plugins (name, display_name, is_dev, uploader_id, uploader_name)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO plugins (name, display_name, description, version, is_dev, uploader_id, uploader_name)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(name) DO UPDATE SET
+      display_name = excluded.display_name,
+      description = excluded.description,
+      version = excluded.version,
       is_dev = excluded.is_dev,
       updated_at = datetime('now')
-  `).bind(safeFolderName, pluginName, isDev ? 1 : 0, payload.id, payload.name).run();
+  `).bind(safeFolderName, displayName, description, version, isDev, payload.id, payload.name).run();
 
   return json({ ok: true, key }, 200, origin);
 }
@@ -488,6 +523,16 @@ async function handleBannerUpload(request, env, origin) {
 
   const safeFolderName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
   if (!safeFolderName) return json({ error: "Invalid plugin name" }, 400, origin);
+
+  const plugin = await env.DB.prepare(
+    "SELECT uploader_id FROM plugins WHERE name = ?"
+  ).bind(safeFolderName).first();
+  if (!plugin) {
+    return json({ error: "Upload your plugin package first before setting a banner" }, 404, origin);
+  }
+  if (String(plugin.uploader_id) !== String(payload.id)) {
+    return json({ error: "You do not own this plugin" }, 403, origin);
+  }
 
   // Validate image type
   const allowedExts = [".png", ".jpg", ".jpeg", ".webp"];
@@ -583,16 +628,20 @@ async function updatePlugin(request, env, origin, path) {
   const binds = [];
 
   if (body.displayName !== undefined) {
+    const cleanedDisplayName = String(body.displayName).trim().slice(0, 100);
+    if (!cleanedDisplayName) return json({ error: "Display name cannot be empty" }, 400, origin);
     updates.push("display_name = ?");
-    binds.push(String(body.displayName).slice(0, 100));
+    binds.push(cleanedDisplayName);
   }
   if (body.description !== undefined) {
     updates.push("description = ?");
     binds.push(String(body.description).slice(0, 500));
   }
   if (body.version !== undefined) {
+    const cleanedVersion = String(body.version).replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 30);
+    if (!cleanedVersion) return json({ error: "Invalid version" }, 400, origin);
     updates.push("version = ?");
-    binds.push(String(body.version).replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 30));
+    binds.push(cleanedVersion);
   }
   if (body.isDev !== undefined) {
     updates.push("is_dev = ?");
