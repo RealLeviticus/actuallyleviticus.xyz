@@ -6,126 +6,136 @@
   <title>Upload Plugin · ActuallyLeviticus</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #f1fbff;
-      --muted: #a2b4bf;
-      --accent: #6af4a8;
-      --accent-2: #58d2ff;
-      --bg: #071015;
-      --card-bg: rgba(12,27,35,0.78);
-      --card-bg-soft: rgba(16,36,46,0.66);
-      --border: rgba(132,190,215,0.22);
-      --red: #ff7f7f;
-      --green: #85f0ab;
+      --bg: #f4f4f4;
+      --surface: #ffffff;
+      --surface-soft: #f8fbfa;
+      --text: #194559;
+      --muted: #5f7684;
+      --line: #d8e1e6;
+      --brand: #88b597;
+      --brand-strong: #6ea37f;
+      --brand-wash: #eef6f1;
+      --discord: #5865f2;
+      --danger: #b94747;
+      --danger-wash: #fff1f1;
+      --success: #2f8c57;
+      --success-wash: #edf8f1;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 14px 36px rgba(25, 69, 89, 0.08);
     }
     * { box-sizing: border-box; margin: 0; }
     body {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      background:
-        radial-gradient(circle at 12% 8%, rgba(106,244,168,0.16), transparent 32%),
-        radial-gradient(circle at 88% 2%, rgba(88,210,255,0.14), transparent 28%),
-        linear-gradient(180deg, #071015, #03070b 58%, #020508);
-      color: var(--ink);
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #f8faf9 0%, var(--bg) 100%);
+      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 24px 56px;
+      padding: 22px 16px 36px;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(106,244,168,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(88,210,255,0.035) 1px, transparent 1px);
-      background-size: 150px 150px;
-      pointer-events: none;
-      z-index: 0;
-      mask-image: radial-gradient(circle at 50% -20%, rgba(0,0,0,0.9), transparent 74%);
-    }
-    body > * { position: relative; z-index: 1; }
 
-    /* ── Buttons ── */
     .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: transform 140ms ease, filter 140ms ease, border-color 140ms ease;
       text-decoration: none;
+      transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
     }
-    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
-    .btn:active { transform: translateY(0); filter: brightness(0.98); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
     .btn-vatsim {
-      background: linear-gradient(135deg, #2bbb78, #47d88f);
-      color: #f8fffc;
-      box-shadow: 0 12px 28px rgba(43,187,120,0.28);
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
     }
-    .btn-accent {
-      background: linear-gradient(130deg, var(--accent), var(--accent-2));
-      color: #05242d;
-      box-shadow: 0 12px 28px rgba(88,210,255,0.24);
+    .btn-vatsim:hover {
+      background: var(--brand-strong);
+      border-color: var(--brand-strong);
     }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
-
+    .btn-accent,
+    .btn-primary {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+    .btn-accent:hover,
+    .btn-primary:hover {
+      background: var(--brand-strong);
+      border-color: var(--brand-strong);
+    }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
     .btn-discord {
-      background: linear-gradient(135deg, #5865f2, #717df7);
-      color: #f7f9ff;
-      box-shadow: 0 12px 28px rgba(88,101,242,0.3);
+      background: var(--discord);
+      border-color: var(--discord);
+      color: #fff;
+    }
+    .btn-discord:hover {
+      background: #4c58d7;
+      border-color: #4c58d7;
     }
 
-    /* ── Login ── */
     .login-wrap {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 22px;
-      max-width: 620px;
-      width: 100%;
-      margin-top: min(8vh, 66px);
+      gap: 18px;
+      width: min(640px, 100%);
+      margin: 5vh auto 0;
+      text-align: center;
     }
     .login-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: linear-gradient(130deg, #2bbb78, #58d2ff);
+      width: 62px;
+      height: 62px;
+      border-radius: 16px;
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 18px 34px rgba(88,210,255,0.25);
+      color: var(--brand-strong);
     }
     .login-wrap h1 {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(30px, 3.1vw, 36px);
-      letter-spacing: -0.04em;
+      font-size: clamp(28px, 4vw, 36px);
+      letter-spacing: -0.03em;
+    }
+    .login-wrap p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.68;
     }
     .login-card {
-      background: linear-gradient(180deg, var(--card-bg), var(--card-bg-soft));
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 32px;
-      text-align: center;
       width: 100%;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
     }
-    .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 14px; line-height: 1.72; }
+    .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 14px; line-height: 1.7; }
     .access-notice {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
-      background: rgba(6,16,23,0.62);
-      border: 1px solid rgba(132,190,215,0.2);
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
       border-radius: 12px;
       padding: 11px 13px;
       margin-top: 16px;
@@ -134,33 +144,32 @@
       text-align: left;
       line-height: 1.5;
     }
-    .access-notice svg { flex-shrink: 0; opacity: 0.72; margin-top: 1px; }
+    .access-notice svg { flex-shrink: 0; margin-top: 1px; }
 
-    /* ── Topbar ── */
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       width: 100%;
       margin-bottom: 0;
-      padding: 16px 20px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(12,27,35,0.88), rgba(8,20,27,0.82));
-      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
-      backdrop-filter: blur(10px);
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
     .topbar-logo { display: flex; align-items: center; gap: 10px; }
     .topbar-logo-icon {
       width: 40px; height: 40px; border-radius: 12px;
-      background: linear-gradient(135deg, #2bbb78, #58d2ff);
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
+      color: var(--brand-strong);
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 10px 20px rgba(88,210,255,0.22);
     }
     .topbar-title {
       font-family: "Space Grotesk", sans-serif;
       font-size: 20px;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
     }
     .topbar-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
     .topbar-user { color: var(--muted); font-size: 12px; }
@@ -169,11 +178,11 @@
       background: none; border: none; font-family: inherit;
       padding: 0; text-decoration: underline; text-underline-offset: 3px;
     }
-    .btn-signout:hover { color: var(--ink); }
+    .btn-signout:hover { color: var(--text); }
 
-    /* ── Upload card ── */
     .upload-wrap {
       width: min(1180px, 100%);
+      margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 14px;
@@ -184,21 +193,20 @@
     .upload-wrap > .card { grid-column: 1 / span 5; }
     .upload-wrap > .plugins-section { grid-column: 6 / -1; width: 100%; max-width: none; margin-top: 0; }
     .card {
-      background: linear-gradient(180deg, var(--card-bg), var(--card-bg-soft));
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
       width: 100%;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 28px 58px rgba(1,8,12,0.42);
+      box-shadow: var(--shadow);
     }
     #plugin-name {
       width: 100%;
-      padding: 11px 13px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(6,16,23,0.72);
-      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
       font-family: inherit;
       font-size: 13px;
       outline: none;
@@ -207,50 +215,69 @@
       transition: border-color 140ms ease, box-shadow 140ms ease;
     }
     #plugin-name:focus {
-      border-color: rgba(88,210,255,0.6);
-      box-shadow: 0 0 0 3px rgba(88,210,255,0.12);
+      border-color: #9fbeab;
+      box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
     }
-    #plugin-name::placeholder { color: rgba(162,180,191,0.74); }
+    #plugin-name::placeholder { color: #8ea0aa; }
 
     /* ── Drop zone ── */
+    .upload-dev-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+    .upload-dev-row span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
     .drop-zone {
-      border: 2px dashed rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 48px 24px 36px;
+      border: 2px dashed #bfd0d8;
+      border-radius: var(--radius-md);
+      padding: 36px 18px 28px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 200ms, background 200ms;
+      transition: border-color 160ms ease, background-color 160ms ease;
       margin-bottom: 16px;
+      background: var(--surface-soft);
     }
     .drop-zone:hover, .drop-zone.drag-over {
-      border-color: var(--accent);
-      background: rgba(155,255,70,0.03);
+      border-color: #9fbeab;
+      background: #f1f8f4;
     }
     .drop-icon {
-      width: 48px; height: 48px;
+      width: 50px; height: 50px;
       border-radius: 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--muted);
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
+      margin: 0 auto 14px;
     }
     .drop-zone p {
       color: var(--muted);
       font-size: 13px;
       margin-bottom: 4px;
+      line-height: 1.5;
     }
-    .drop-zone .browse { color: var(--accent-2); font-weight: 600; }
+    .drop-zone .browse { color: var(--brand-strong); font-weight: 700; }
     .file-name {
-      color: var(--accent);
+      color: var(--brand-strong);
       font-weight: 700;
       font-size: 13px;
       margin-top: 10px;
       word-break: break-all;
     }
     .allowed-types {
-      color: var(--muted);
+      color: #8ea0aa;
       font-size: 11px;
-      opacity: 0.55;
       text-align: center;
       margin-bottom: 16px;
     }
@@ -258,7 +285,7 @@
     /* ── Banner section ── */
     .section-divider {
       border: none;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--line);
       margin: 20px 0;
     }
     .section-label {
@@ -268,20 +295,21 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text);
     }
-    .section-label svg { opacity: 0.5; }
+    .section-label svg { opacity: 0.62; }
     .banner-preview-wrap {
       position: relative;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       overflow: hidden;
       margin-bottom: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
     }
     .banner-preview-wrap img {
       display: block;
       width: 100%;
-      height: 120px;
+      height: 132px;
       object-fit: cover;
     }
     .banner-placeholder {
@@ -289,13 +317,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 120px;
+      height: 132px;
       color: var(--muted);
       font-size: 12px;
-      opacity: 0.5;
       cursor: pointer;
+      text-align: center;
+      padding: 10px;
     }
-    .banner-placeholder svg { margin-bottom: 6px; opacity: 0.4; }
+    .banner-placeholder svg { margin-bottom: 6px; opacity: 0.55; }
     .banner-actions {
       display: flex;
       gap: 8px;
@@ -310,8 +339,8 @@
       font-size: 12px;
       font-weight: 600;
       font-family: inherit;
-      border: 1px solid var(--border);
-      background: transparent;
+      border: 1px solid var(--line);
+      background: #fff;
       color: var(--muted);
       cursor: pointer;
       transition: border-color 120ms, color 120ms, background 120ms;
@@ -319,21 +348,21 @@
       flex: 1;
     }
     .btn-outline:hover {
-      border-color: rgba(255,255,255,0.2);
-      color: var(--ink);
-      background: rgba(255,255,255,0.04);
+      border-color: #a8c4b2;
+      color: var(--text);
+      background: #f9fdfb;
     }
 
     .progress-bar {
       width: 100%; height: 4px;
-      background: var(--border);
+      background: #e8eef1;
       border-radius: 2px;
       overflow: hidden;
       margin-bottom: 16px;
     }
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      background: linear-gradient(90deg, var(--brand), #9bc4a9);
       border-radius: 2px;
       transition: width 200ms;
       width: 0%;
@@ -348,8 +377,8 @@
       text-align: center;
       width: 100%;
     }
-    .banner-error { background: rgba(255,90,90,0.12); border: 1px solid rgba(255,90,90,0.3); color: var(--red); }
-    .banner-success { background: rgba(63,166,63,0.12); border: 1px solid rgba(63,166,63,0.35); color: #6dde6d; }
+    .banner-error { background: var(--danger-wash); border: 1px solid #f2cbcb; color: var(--danger); }
+    .banner-success { background: var(--success-wash); border: 1px solid #cfead8; color: var(--success); }
 
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
@@ -358,14 +387,14 @@
       align-self: flex-start;
       padding: 8px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(132,190,215,0.2);
-      background: rgba(6,16,23,0.52);
+      border: 1px solid var(--line);
+      background: #fff;
       transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
     }
     .back-link:hover {
-      color: var(--ink);
-      border-color: rgba(88,210,255,0.34);
-      background: rgba(9,22,30,0.76);
+      color: var(--text);
+      border-color: #a8c4b2;
+      background: #f9fdfb;
     }
 
     /* ── My Plugins list ── */
@@ -388,19 +417,19 @@
       letter-spacing: -0.03em;
     }
     .count-badge {
-      background: rgba(88,210,255,0.08);
-      border: 1px solid rgba(88,210,255,0.28);
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
       border-radius: 999px;
       padding: 5px 11px;
       font-size: 12px;
-      color: #b3eaff;
+      color: var(--brand-strong);
       font-weight: 700;
       line-height: 1;
     }
     #plugin-list { flex: 1; overflow-y: auto; padding-right: 4px; }
     .plugin-item {
       padding: 14px 0;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--line);
     }
     .plugin-item:last-child { border-bottom: none; }
     .plugin-top {
@@ -430,14 +459,14 @@
       letter-spacing: 0.01em;
     }
     .dev-badge-on {
-      background: rgba(255,165,0,0.15);
-      border: 1px solid rgba(255,165,0,0.3);
-      color: #ffa500;
+      background: #fff4e8;
+      border: 1px solid #f3d8be;
+      color: #9a5a1c;
     }
     .dev-badge-off {
-      background: rgba(63,166,63,0.12);
-      border: 1px solid rgba(63,166,63,0.3);
-      color: #6dde6d;
+      background: #edf8f1;
+      border: 1px solid #cfead8;
+      color: #2f8c57;
     }
     .plugin-meta {
       font-size: 12px;
@@ -456,15 +485,15 @@
     .btn-icon {
       width: 32px; height: 32px;
       border-radius: 8px;
-      border: 1px solid var(--border);
-      background: transparent;
+      border: 1px solid var(--line);
+      background: #fff;
       color: var(--muted);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: background 120ms, border-color 120ms, color 120ms;
     }
-    .btn-icon:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: var(--ink); }
-    .btn-icon.danger:hover { background: rgba(255,90,90,0.15); border-color: rgba(255,90,90,0.3); color: var(--red); }
+    .btn-icon:hover { background: #f9fdfb; border-color: #a8c4b2; color: var(--text); }
+    .btn-icon.danger:hover { background: var(--danger-wash); border-color: #f2cbcb; color: var(--danger); }
     .plugin-desc {
       font-size: 12px;
       color: var(--muted);
@@ -476,73 +505,88 @@
       padding: 24px;
       color: var(--muted);
       font-size: 13px;
-      opacity: 0.6;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-md);
+      background: #fcfdfd;
     }
 
     /* ── Edit modal ── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(16, 41, 53, 0.28);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 100;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(2px);
     }
     .modal {
-      background: #0f1520;
-      border: 1px solid var(--border);
+      background: #fff;
+      border: 1px solid var(--line);
       border-radius: 20px;
-      padding: 28px;
+      padding: 22px;
       max-width: 420px;
       width: 90%;
+      box-shadow: var(--shadow);
     }
-    .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
+    .modal h3 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
     .modal label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 14px; }
     .modal label:first-of-type { margin-top: 0; }
     .modal input, .modal textarea {
       width: 100%;
       padding: 10px 14px;
       border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.05);
-      color: var(--ink);
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
       font-family: inherit;
       font-size: 13px;
       outline: none;
       box-sizing: border-box;
     }
     .modal textarea { resize: vertical; min-height: 60px; }
-    .modal input:focus, .modal textarea:focus { border-color: rgba(74,224,255,0.5); }
+    .modal input:focus, .modal textarea:focus {
+      border-color: #9fbeab;
+      box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
+    }
     .toggle-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 14px;
-      padding: 10px 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
     }
-    .toggle-row span { font-size: 13px; }
+    .toggle-row span { font-size: 12px; color: var(--muted); font-weight: 600; }
     .toggle {
-      width: 40px; height: 22px;
-      border-radius: 11px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid var(--border);
+      width: 44px; height: 24px;
+      border-radius: 999px;
+      background: #e8eef1;
+      border: 1px solid #c8d6dd;
       cursor: pointer;
       position: relative;
       transition: background 150ms;
     }
-    .toggle.on { background: rgba(255,165,0,0.4); border-color: rgba(255,165,0,0.5); }
+    .toggle.on { background: var(--brand); border-color: var(--brand); }
     .toggle::after {
       content: "";
       position: absolute;
       top: 2px; left: 2px;
-      width: 16px; height: 16px;
+      width: 18px; height: 18px;
       border-radius: 50%;
-      background: var(--ink);
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       transition: transform 150ms;
     }
-    .toggle.on::after { transform: translateX(18px); }
+    .toggle.on::after { transform: translateX(20px); }
     .modal-actions {
       display: flex;
       gap: 8px;
@@ -550,9 +594,9 @@
     }
     .modal-actions .btn { flex: 1; }
     .btn-secondary {
-      background: rgba(255,255,255,0.06);
+      background: #fff;
       color: var(--muted);
-      border: 1px solid var(--border);
+      border: 1px solid var(--line);
     }
     .login-divider {
       display: flex;
@@ -562,13 +606,16 @@
       margin: 8px 0 4px;
       color: var(--muted);
       font-size: 11px;
-      opacity: 0.5;
     }
     .login-divider::before, .login-divider::after {
       content: "";
       flex: 1;
       height: 1px;
-      background: var(--border);
+      background: var(--line);
+    }
+
+    #login-error {
+      margin: 0 auto 12px;
     }
 
     @media (max-width: 1080px) {
@@ -583,9 +630,9 @@
     }
 
     @media (max-width: 620px) {
-      body { padding: 22px 14px 40px; }
+      body { padding: 12px 10px 24px; }
       .login-wrap { margin-top: 24px; gap: 16px; }
-      .login-card { padding: 24px; }
+      .login-card { padding: 18px; }
       #login-error { margin-bottom: 12px; }
       .topbar {
         flex-direction: column;
@@ -593,7 +640,7 @@
         gap: 12px;
       }
       .topbar-right { align-items: flex-start; text-align: left; }
-      .card { border-radius: 20px; padding: 18px; }
+      .card { border-radius: 20px; padding: 14px; }
       .plugin-top {
         flex-direction: column;
         align-items: flex-start;
@@ -613,7 +660,7 @@
       Back to home
     </a>
     <div class="login-icon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </div>
     <h1>Upload a Plugin</h1>
     <div class="login-card">
@@ -639,7 +686,7 @@
     <div class="topbar">
       <div class="topbar-logo">
         <div class="topbar-logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         </div>
         <span class="topbar-title">Upload Plugin</span>
       </div>
@@ -658,6 +705,10 @@
         Plugin Name
       </div>
       <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect">
+      <div class="upload-dev-row">
+        <span>In Development</span>
+        <div class="toggle" id="upload-dev-toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
 
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
         <div class="drop-icon">
@@ -787,12 +838,12 @@
         if (data) {
           document.getElementById("uploader-name").textContent = data.name;
         }
-        document.getElementById("upload-view").style.display = "block";
+        document.getElementById("upload-view").style.display = "grid";
         setupDragDrop();
         setupBanner();
         loadMyPlugins();
       } else {
-        document.getElementById("login-view").style.display = "block";
+        document.getElementById("login-view").style.display = "flex";
       }
     }
 
@@ -800,7 +851,7 @@
       localStorage.removeItem("uploadToken");
       token = null;
       document.getElementById("upload-view").style.display = "none";
-      document.getElementById("login-view").style.display = "block";
+      document.getElementById("login-view").style.display = "flex";
     }
 
     function showError(msg) {
@@ -872,6 +923,8 @@
         const formData = new FormData();
         formData.append("file", selectedFile);
         formData.append("pluginName", pluginName);
+        const isDev = document.getElementById("upload-dev-toggle").classList.contains("on");
+        formData.append("isDev", isDev ? "1" : "0");
 
         const res = await fetch(`${API}/upload`, {
           method: "POST",

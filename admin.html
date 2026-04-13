@@ -6,254 +6,299 @@
   <title>Admin · Plugin Management</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #f1fbff;
-      --muted: #9fb4bf;
-      --accent: #6ff2b0;
-      --accent-2: #53c8ff;
-      --bg: #071015;
-      --panel: rgba(12, 27, 35, 0.78);
-      --panel-soft: rgba(16, 36, 46, 0.68);
-      --border: rgba(132, 190, 215, 0.22);
-      --shadow: 0 28px 58px rgba(1, 8, 12, 0.42);
-      --danger: #ff7f7f;
+      --bg: #f4f4f4;
+      --surface: #ffffff;
+      --surface-soft: #f8fbfa;
+      --text: #194559;
+      --muted: #5f7684;
+      --line: #d8e1e6;
+      --brand: #88b597;
+      --brand-strong: #6ea37f;
+      --brand-wash: #eef6f1;
+      --danger: #b94747;
+      --danger-wash: #fff1f1;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 14px 36px rgba(25, 69, 89, 0.08);
     }
+
     * { box-sizing: border-box; margin: 0; }
+
     body {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      background:
-        radial-gradient(circle at 15% 8%, rgba(111, 242, 176, 0.16), transparent 32%),
-        radial-gradient(circle at 85% 0%, rgba(83, 200, 255, 0.14), transparent 28%),
-        linear-gradient(180deg, #071015, #03070b 58%, #020508);
-      color: var(--ink);
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #f8faf9 0%, var(--bg) 100%);
+      color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 24px 56px;
+      padding: 24px 18px 40px;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(111, 242, 176, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(83, 200, 255, 0.035) 1px, transparent 1px);
-      background-size: 160px 160px;
-      mask-image: radial-gradient(circle at 50% -20%, rgba(0, 0, 0, 0.9), transparent 75%);
-      z-index: 0;
+
+    .page {
+      width: min(1120px, 100%);
+      margin: 0 auto;
     }
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at 70% 80%, rgba(111, 242, 176, 0.08), transparent 42%);
-      z-index: 0;
-    }
-    body > * { position: relative; z-index: 1; }
 
     .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 20px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: transform 140ms ease, filter 140ms ease, border-color 140ms ease;
       text-decoration: none;
+      transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
     }
-    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
-    .btn:active { transform: translateY(0); filter: brightness(0.98); }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
     .btn-google {
-      background: #ffffff;
-      color: #18232a;
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--line);
+      box-shadow: var(--shadow);
     }
-    .btn-accent {
-      background: linear-gradient(130deg, var(--accent), var(--accent-2));
-      color: #05242d;
-      box-shadow: 0 12px 28px rgba(83, 200, 255, 0.24);
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
     }
+
+    .btn-primary:hover { background: var(--brand-strong); border-color: var(--brand-strong); }
+
     .btn-danger {
-      background: rgba(255, 127, 127, 0.14);
+      background: var(--danger-wash);
       color: var(--danger);
-      border-color: rgba(255, 127, 127, 0.34);
-      padding: 8px 13px;
-      border-radius: 10px;
+      border-color: #f2cbcb;
+      padding: 8px 12px;
       font-size: 12px;
-      font-weight: 600;
     }
-    .btn-danger:hover { background: rgba(255, 127, 127, 0.22); }
-    .btn-sm { padding: 11px 16px; font-size: 13px; }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--muted);
+      border-color: var(--line);
+    }
+
+    .btn-secondary:hover { color: var(--text); }
+
+    .banner {
+      border-radius: 12px;
+      padding: 11px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      border: 1px solid transparent;
+    }
+
+    .banner-error {
+      background: var(--danger-wash);
+      color: var(--danger);
+      border-color: #f2cbcb;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+    }
 
     .login-wrap {
       width: min(560px, 100%);
+      margin: 8vh auto 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
-      margin-top: min(9vh, 72px);
+      gap: 18px;
+      text-align: center;
     }
+
     .login-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      width: 62px;
+      height: 62px;
+      border-radius: 16px;
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 18px 34px rgba(83, 200, 255, 0.24);
+      color: var(--brand-strong);
     }
+
     .login-wrap h1 {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(30px, 3.2vw, 36px);
-      letter-spacing: -0.04em;
-      text-align: center;
+      font-size: clamp(28px, 4vw, 36px);
+      letter-spacing: -0.03em;
     }
+
+    .login-wrap p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
     .login-card {
       width: 100%;
-      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 34px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-    .login-card p {
-      color: var(--muted);
-      margin-bottom: 24px;
-      font-size: 14px;
-      line-height: 1.75;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
     }
 
     .dashboard {
-      width: min(1120px, 100%);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
+
     .topbar {
-      width: 100%;
+      padding: 16px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 20px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(12, 27, 35, 0.88), rgba(8, 20, 27, 0.82));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
-    }
-    .topbar-logo {
-      display: flex;
-      align-items: center;
       gap: 12px;
     }
-    .topbar-logo-icon {
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
       width: 40px;
       height: 40px;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
+      color: var(--brand-strong);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 20px rgba(83, 200, 255, 0.22);
+      flex-shrink: 0;
     }
-    .topbar-title {
+
+    .brand-title {
       font-family: "Space Grotesk", sans-serif;
       font-size: 20px;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
+      line-height: 1;
     }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
     .topbar-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
-      text-align: right;
+      gap: 6px;
     }
+
     .topbar-email {
       color: var(--muted);
       font-size: 12px;
     }
+
     .btn-signout {
+      appearance: none;
+      border: 0;
+      background: transparent;
       color: var(--muted);
+      font: inherit;
       font-size: 12px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-family: inherit;
-      padding: 0;
       text-decoration: underline;
       text-underline-offset: 3px;
+      cursor: pointer;
+      padding: 0;
     }
-    .btn-signout:hover { color: var(--ink); }
 
-    .section {
-      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      min-height: clamp(420px, 65vh, 760px);
+    .btn-signout:hover { color: var(--text); }
+
+    .main-card {
+      padding: 20px;
       display: flex;
       flex-direction: column;
+      gap: 18px;
+      min-height: 70vh;
     }
-    .section-header {
+
+    .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      gap: 8px;
     }
-    .section-header h2 {
+
+    .section-head h2 {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(22px, 2.2vw, 28px);
-      letter-spacing: -0.03em;
-    }
-    .count-badge {
-      background: rgba(83, 200, 255, 0.08);
-      border: 1px solid rgba(83, 200, 255, 0.28);
-      border-radius: 999px;
-      padding: 5px 11px;
-      font-size: 12px;
-      color: #b3eaff;
-      font-weight: 700;
+      font-size: clamp(24px, 2.8vw, 30px);
+      letter-spacing: -0.02em;
       line-height: 1;
+    }
+
+    .section-hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--brand-wash);
+      border: 1px solid #d7e7dd;
+      color: var(--brand-strong);
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .add-form {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr auto;
+      grid-template-columns: 1.15fr 1fr 1fr auto;
       gap: 10px;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(132, 190, 215, 0.18);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
     }
-    .add-form input {
-      padding: 11px 13px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(6, 16, 23, 0.72);
-      color: var(--ink);
-      font-family: inherit;
+
+    .input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
       font-size: 13px;
       outline: none;
       transition: border-color 140ms ease, box-shadow 140ms ease;
     }
-    .add-form input::placeholder { color: rgba(159, 180, 191, 0.72); }
-    .add-form input:focus {
-      border-color: rgba(83, 200, 255, 0.6);
-      box-shadow: 0 0 0 3px rgba(83, 200, 255, 0.12);
+
+    .input::placeholder { color: #8ea0aa; }
+
+    .input:focus {
+      border-color: #9fbeab;
+      box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
     }
 
     .user-list {
@@ -261,79 +306,80 @@
       padding: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 10px;
       align-content: start;
       overflow-y: auto;
       flex: 1;
-      padding-right: 4px;
+      padding-right: 2px;
     }
+
     .user-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
       padding: 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(132, 190, 215, 0.16);
-      background: rgba(7, 18, 24, 0.7);
-      transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: border-color 140ms ease, transform 140ms ease;
     }
+
     .user-item:hover {
-      border-color: rgba(83, 200, 255, 0.34);
-      background: rgba(10, 23, 31, 0.82);
+      border-color: #a9c6b3;
       transform: translateY(-1px);
     }
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 12px;
       min-width: 0;
     }
+
     .user-avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(111, 242, 176, 0.22), rgba(83, 200, 255, 0.22));
-      border: 1px solid rgba(111, 242, 176, 0.3);
+      border: 1px solid #d7e7dd;
+      background: var(--brand-wash);
+      color: var(--brand-strong);
+      font-size: 12px;
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: #b7ffde;
-      flex-shrink: 0;
       overflow: hidden;
+      flex-shrink: 0;
     }
+
     .user-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: inherit;
+      display: block;
     }
+
     .user-name {
       font-size: 14px;
       font-weight: 700;
+      color: var(--text);
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 6px;
-      flex-wrap: wrap;
     }
+
     .user-cid {
-      font-size: 12px;
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
       margin-top: 3px;
-      line-height: 1.35;
-      word-break: break-word;
-    }
-    .empty {
       color: var(--muted);
-      font-size: 13px;
-      text-align: center;
-      padding: 30px 0;
-      opacity: 0.72;
+      font-size: 12px;
+      line-height: 1.4;
+      word-break: break-word;
+      font-variant-numeric: tabular-nums;
     }
+
     .auth-badge {
       display: inline-flex;
       align-items: center;
@@ -341,212 +387,232 @@
       border-radius: 999px;
       font-size: 10px;
       font-weight: 700;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      line-height: 1;
+      border: 1px solid transparent;
     }
+
     .auth-vatsim {
-      background: rgba(111, 242, 176, 0.17);
-      color: #8dffcc;
-      border: 1px solid rgba(111, 242, 176, 0.34);
+      background: #edf7f0;
+      border-color: #d5eadc;
+      color: #467b5b;
     }
+
     .auth-discord {
-      background: rgba(104, 139, 255, 0.18);
-      color: #bdcbff;
-      border: 1px solid rgba(121, 152, 255, 0.36);
+      background: #eef1ff;
+      border-color: #d9e0ff;
+      color: #4e5fb3;
     }
+
     .user-actions {
       display: flex;
+      align-items: center;
       gap: 6px;
       flex-shrink: 0;
     }
+
     .btn-edit {
-      background: rgba(255, 255, 255, 0.05);
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
       color: var(--muted);
-      border: 1px solid rgba(132, 190, 215, 0.2);
-      padding: 8px 12px;
-      font-size: 12px;
       border-radius: 10px;
-      cursor: pointer;
-      font-family: inherit;
+      padding: 8px 12px;
+      font: inherit;
+      font-size: 12px;
       font-weight: 600;
-      transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+      cursor: pointer;
     }
+
     .btn-edit:hover {
-      border-color: rgba(83, 200, 255, 0.36);
-      background: rgba(83, 200, 255, 0.12);
-      color: var(--ink);
+      border-color: #a9c6b3;
+      color: var(--text);
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 28px 18px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius-md);
+      background: #fcfdfd;
     }
 
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(1, 7, 12, 0.72);
+      z-index: 100;
+      background: rgba(16, 41, 53, 0.28);
+      backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
-      backdrop-filter: blur(6px);
       padding: 20px;
     }
+
     .modal {
-      background: linear-gradient(180deg, rgba(12, 27, 35, 0.94), rgba(9, 21, 29, 0.92));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 26px;
-      max-width: 440px;
-      width: min(100%, 440px);
+      width: min(460px, 100%);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
       box-shadow: var(--shadow);
+      padding: 22px;
     }
+
     .modal h3 {
       font-family: "Space Grotesk", sans-serif;
       font-size: 24px;
       letter-spacing: -0.02em;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
+
     .modal label {
+      display: block;
       font-size: 12px;
       color: var(--muted);
-      display: block;
-      margin-bottom: 6px;
-      margin-top: 14px;
+      margin: 12px 0 6px;
     }
+
     .modal label:first-of-type { margin-top: 0; }
-    .modal input {
-      width: 100%;
-      padding: 11px 13px;
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      background: rgba(6, 16, 23, 0.72);
-      color: var(--ink);
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-      box-sizing: border-box;
-    }
-    .modal input:focus {
-      border-color: rgba(83, 200, 255, 0.6);
-      box-shadow: 0 0 0 3px rgba(83, 200, 255, 0.12);
-    }
+
     .modal-actions {
       display: flex;
       gap: 8px;
-      margin-top: 20px;
+      margin-top: 18px;
     }
+
     .modal-actions .btn { flex: 1; }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--muted);
-      border-color: rgba(132, 190, 215, 0.18);
+
+    @media (max-width: 900px) {
+      .add-form {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .add-form .btn {
+        grid-column: 1 / -1;
+      }
+
+      .user-list {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .banner {
-      border-radius: 12px;
-      padding: 11px 14px;
-      font-size: 13px;
-      text-align: center;
-      width: 100%;
-      margin: 0;
-    }
-    .banner-error {
-      background: rgba(255, 127, 127, 0.14);
-      border: 1px solid rgba(255, 127, 127, 0.34);
-      color: var(--danger);
-    }
+    @media (max-width: 640px) {
+      body { padding: 14px 12px 26px; }
 
-    @media (max-width: 920px) {
-      body { padding: 24px 16px 44px; }
-      .section { min-height: auto; }
-      .add-form { grid-template-columns: 1fr 1fr; }
-      .add-form .btn { grid-column: 1 / -1; }
-      .user-list { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 560px) {
-      .login-wrap { margin-top: 26px; gap: 18px; }
-      .login-card { padding: 24px; }
+      .login-wrap {
+        margin-top: 26px;
+      }
+
+      .login-card {
+        padding: 20px;
+      }
+
       .topbar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
       }
-      .topbar-right { align-items: flex-start; text-align: left; }
-      .section { padding: 18px; border-radius: 20px; }
-      .add-form { grid-template-columns: 1fr; }
+
+      .topbar-right {
+        align-items: flex-start;
+      }
+
+      .main-card {
+        padding: 14px;
+      }
+
+      .add-form {
+        grid-template-columns: 1fr;
+      }
+
       .user-item {
         flex-direction: column;
         align-items: flex-start;
       }
-      .user-actions { width: 100%; }
-      .user-actions > * { flex: 1; }
+
+      .user-actions {
+        width: 100%;
+      }
+
+      .user-actions > * {
+        flex: 1;
+      }
     }
   </style>
 </head>
 <body>
-
-  <!-- Login view -->
-  <div id="login-view" style="display:none" class="login-wrap">
-    <div class="login-icon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#06101b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+  <div class="page">
+    <div id="login-view" style="display:none" class="login-wrap">
+      <div class="login-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h1>Plugin Admin</h1>
+      <p>Manage who can upload plugins for the vatSys installer.</p>
+      <div class="card login-card">
+        <a class="btn btn-google" href="https://api.actuallyleviticus.xyz/auth/google">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#34A853" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.04 24.04 0 0 0 0 21.56l7.98-6.19z"/><path fill="#FBBC05" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google
+        </a>
+      </div>
     </div>
-    <h1>Plugin Admin</h1>
-    <div class="login-card">
-      <p>Sign in with your Google account to manage who can upload plugins to the vatSys Plugin Installer.</p>
-      <a class="btn btn-google" href="https://api.actuallyleviticus.xyz/auth/google">
-        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#34A853" d="M10.53 28.59a14.5 14.5 0 0 1 0-9.18l-7.98-6.19a24.04 24.04 0 0 0 0 21.56l7.98-6.19z"/><path fill="#FBBC05" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Sign in with Google
-      </a>
-    </div>
-  </div>
 
-  <!-- Dashboard view -->
-  <div id="dashboard-view" style="display:none" class="dashboard">
-    <div class="topbar">
-      <div class="topbar-logo">
-        <div class="topbar-logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06101b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <div id="dashboard-view" style="display:none" class="dashboard">
+      <div class="card topbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="brand-title">Plugin Admin</div>
+            <div class="brand-sub">Uploader access control</div>
+          </div>
         </div>
-        <span class="topbar-title">Plugin Admin</span>
+        <div class="topbar-right">
+          <div class="topbar-email" id="admin-email"></div>
+          <button class="btn-signout" onclick="logout()">Sign out</button>
+        </div>
       </div>
-      <div class="topbar-right">
-        <div class="topbar-email" id="admin-email"></div>
-        <button class="btn-signout" onclick="logout()">Sign out</button>
-      </div>
-    </div>
 
-    <div id="error-banner" class="banner banner-error" style="display:none"></div>
+      <div id="error-banner" class="banner banner-error" style="display:none"></div>
 
-    <!-- Allowed Users -->
-    <div class="section">
-      <div class="section-header">
-        <h2>Allowed Uploaders</h2>
-        <span class="count-badge" id="user-count">–</span>
+      <div class="card main-card">
+        <div class="section-head">
+          <div>
+            <h2>Allowed Uploaders</h2>
+            <div class="section-hint">Add or edit uploaders using VATSIM CID and/or Discord ID.</div>
+          </div>
+          <span class="count" id="user-count">-</span>
+        </div>
+
+        <div class="add-form">
+          <input class="input" type="text" id="new-name" placeholder="Display name">
+          <input class="input" type="text" id="new-vatsim" placeholder="VATSIM CID (optional)" inputmode="numeric">
+          <input class="input" type="text" id="new-discord" placeholder="Discord ID (optional)" inputmode="numeric">
+          <button class="btn btn-primary" onclick="addUser()">Add Uploader</button>
+        </div>
+
+        <ul class="user-list" id="user-list">
+          <li class="empty">Loading...</li>
+        </ul>
       </div>
-      <div class="add-form">
-        <input type="text" id="new-name" placeholder="Display name">
-        <input type="text" id="new-vatsim" placeholder="VATSIM CID (optional)" inputmode="numeric">
-        <input type="text" id="new-discord" placeholder="Discord ID (optional)" inputmode="numeric">
-        <button class="btn btn-accent btn-sm" onclick="addUser()">Add</button>
-      </div>
-      <ul class="user-list" id="user-list">
-        <li class="empty">Loading…</li>
-      </ul>
     </div>
   </div>
 
-  <!-- Edit modal -->
   <div id="edit-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
     <div class="modal">
       <h3>Edit User</h3>
       <input type="hidden" id="edit-user-id">
       <label>Display Name</label>
-      <input type="text" id="edit-name">
+      <input class="input" type="text" id="edit-name">
       <label>VATSIM CID</label>
-      <input type="text" id="edit-vatsim" placeholder="Leave empty to unlink" inputmode="numeric">
+      <input class="input" type="text" id="edit-vatsim" placeholder="Leave empty to unlink" inputmode="numeric">
       <label>Discord ID</label>
-      <input type="text" id="edit-discord" placeholder="Leave empty to unlink" inputmode="numeric">
+      <input class="input" type="text" id="edit-discord" placeholder="Leave empty to unlink" inputmode="numeric">
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-accent" onclick="saveUserEdit()">Save</button>
+        <button class="btn btn-primary" onclick="saveUserEdit()">Save</button>
       </div>
     </div>
   </div>
@@ -587,10 +653,10 @@
           const data = JSON.parse(payload.data);
           document.getElementById("admin-email").textContent = data.email;
         } catch {}
-        document.getElementById("dashboard-view").style.display = "block";
+        document.getElementById("dashboard-view").style.display = "flex";
         loadUsers();
       } else {
-        document.getElementById("login-view").style.display = "block";
+        document.getElementById("login-view").style.display = "flex";
       }
     }
 
@@ -598,7 +664,7 @@
       localStorage.removeItem("adminToken");
       token = null;
       document.getElementById("dashboard-view").style.display = "none";
-      document.getElementById("login-view").style.display = "block";
+      document.getElementById("login-view").style.display = "flex";
     }
 
     function showError(msg) {

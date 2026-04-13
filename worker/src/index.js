@@ -427,8 +427,10 @@ async function handleUpload(request, env, origin) {
   const formData = await request.formData();
   const file = formData.get("file");
   const pluginName = formData.get("pluginName");
+  const isDevRaw = formData.get("isDev");
   if (!file || !(file instanceof File)) return json({ error: "No file provided" }, 400, origin);
   if (!pluginName) return json({ error: "Plugin name is required" }, 400, origin);
+  const isDev = typeof isDevRaw === "string" && /^(1|true|yes|on)$/i.test(isDevRaw.trim());
 
   // Sanitize plugin name: only allow alphanumeric, dash, underscore
   const safeFolderName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
@@ -457,10 +459,12 @@ async function handleUpload(request, env, origin) {
 
   // Upsert plugin record in D1
   await env.DB.prepare(`
-    INSERT INTO plugins (name, display_name, uploader_id, uploader_name)
-    VALUES (?, ?, ?, ?)
-    ON CONFLICT(name) DO UPDATE SET updated_at = datetime('now')
-  `).bind(safeFolderName, pluginName, payload.id, payload.name).run();
+    INSERT INTO plugins (name, display_name, is_dev, uploader_id, uploader_name)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(name) DO UPDATE SET
+      is_dev = excluded.is_dev,
+      updated_at = datetime('now')
+  `).bind(safeFolderName, pluginName, isDev ? 1 : 0, payload.id, payload.name).run();
 
   return json({ ok: true, key }, 200, origin);
 }
