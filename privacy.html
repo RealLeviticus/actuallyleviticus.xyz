@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy · ActuallyLeviticus</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #f6f8ff;
+      --muted: #cfd6e1;
+      --accent: #9bff46;
+      --accent-2: #4ae0ff;
+      --bg: #0a0e17;
+      --card-bg: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: "Manrope", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 48px 20px;
+      line-height: 1.7;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .last-updated {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 36px;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 32px;
+      margin-bottom: 10px;
+      color: var(--accent-2);
+    }
+    p, li {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    li { margin-bottom: 6px; }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Back to home</a>
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last updated: April 13, 2026</p>
+
+    <p>This Privacy Policy describes how ActuallyLeviticus ("we", "us", "our") collects, uses, and handles your personal information when you use our website at <strong>actuallyleviticus.xyz</strong> and its associated services.</p>
+
+    <p>This website is an independent project and is <strong>not endorsed by, affiliated with, or officially connected to VATSIM</strong> in any way.</p>
+
+    <h2>1. Information We Collect</h2>
+    <p>We collect the minimum information necessary to operate the plugin upload service:</p>
+
+    <p><strong>Via VATSIM Connect (OAuth):</strong></p>
+    <ul>
+      <li><strong>VATSIM CID</strong> — your unique VATSIM member identifier</li>
+      <li><strong>First and last name</strong> — as registered on your VATSIM account</li>
+    </ul>
+
+    <p><strong>Via Google Sign-In (admin only):</strong></p>
+    <ul>
+      <li><strong>Email address</strong> — used solely to verify admin identity</li>
+    </ul>
+
+    <p><strong>Uploaded files:</strong></p>
+    <ul>
+      <li>Plugin files you upload, along with metadata (file name, upload time, uploader CID)</li>
+    </ul>
+
+    <p>We do <strong>not</strong> collect passwords, payment information, IP addresses, or browsing analytics.</p>
+
+    <h2>2. How We Use Your Information</h2>
+    <ul>
+      <li><strong>Authentication:</strong> Your VATSIM CID is checked against an approved list to determine upload access.</li>
+      <li><strong>Attribution:</strong> Your CID and name are stored alongside uploaded plugins for accountability.</li>
+      <li><strong>Session tokens:</strong> Short-lived, signed tokens are generated for authenticated sessions. These are stored only in your browser's session storage and expire automatically (8 hours for uploaders, 24 hours for admins).</li>
+    </ul>
+
+    <h2>3. Data Storage</h2>
+    <ul>
+      <li>Approved uploader records (CID and display name) are stored in a Cloudflare D1 database.</li>
+      <li>Uploaded plugin files are stored in Cloudflare R2 object storage.</li>
+      <li>All data is hosted on Cloudflare's infrastructure. No data is transferred to third parties.</li>
+    </ul>
+
+    <h2>4. Data Sharing</h2>
+    <p>We do <strong>not</strong> sell, rent, or share your personal data with any third parties. Data is only used internally for the purposes described above.</p>
+
+    <h2>5. Data Retention</h2>
+    <ul>
+      <li>Approved uploader records are retained until manually removed by the admin.</li>
+      <li>Uploaded plugin files are retained until manually deleted.</li>
+      <li>Session tokens expire automatically and are not stored server-side.</li>
+    </ul>
+
+    <h2>6. Your Rights</h2>
+    <p>You may request:</p>
+    <ul>
+      <li><strong>Access</strong> to the personal data we hold about you.</li>
+      <li><strong>Deletion</strong> of your data, including removal from the approved uploader list and deletion of uploaded files.</li>
+      <li><strong>Correction</strong> of any inaccurate information.</li>
+    </ul>
+    <p>To make a request, contact us at the email below.</p>
+
+    <h2>7. Security</h2>
+    <p>All communication with this website is encrypted via TLS/SSL. Authentication tokens are cryptographically signed using HMAC-SHA256. We follow security best practices to protect your data.</p>
+
+    <h2>8. Cookies</h2>
+    <p>This website does <strong>not</strong> use cookies. Session data is stored in your browser's <code>sessionStorage</code> and is cleared when you close the tab.</p>
+
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be reflected by the "Last updated" date at the top of this page.</p>
+
+    <h2>10. Contact</h2>
+    <p>If you have questions about this Privacy Policy or wish to exercise your data rights, contact:</p>
+    <p><a href="mailto:therealleviticus@gmail.com">therealleviticus@gmail.com</a></p>
+  </div>
+</body>
+</html>
