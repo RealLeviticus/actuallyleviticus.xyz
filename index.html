@@ -189,7 +189,7 @@
       <span>vatSys Plugin Installer</span>
     </div>
     <div class="hash">For Windows (Cause you know, that's all vatSys runs on)</div>
-    <a class="button" href="https://cdn.actuallyleviticus.xyz/InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%201.0.6.exe" id="download-btn">Download</a>
+    <a class="button" href="#" id="download-btn">Download</a>
     <hr class="divider">
     <a class="button-upload" href="upload.html">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -213,52 +213,16 @@
       images[current].classList.add('active');
     }, 10000);
 
-    // Auto-detect latest installer version from R2 bucket
+    // Load latest installer version from Worker API
     (async () => {
-      const btn = document.getElementById('download-btn');
-      const cdnBase = 'https://cdn.actuallyleviticus.xyz/InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%20';
-      const ext = '.exe';
-
-      // Use cached result if less than 1 hour old
       try {
-        const cache = JSON.parse(localStorage.getItem('latestInstaller'));
-        if (cache && Date.now() - cache.t < 3600000) {
-          btn.href = cache.url;
-          return;
-        }
+        const res = await fetch('https://api.actuallyleviticus.xyz/latest-installer');
+        if (!res.ok) return;
+        const { url, version } = await res.json();
+        const btn = document.getElementById('download-btn');
+        btn.href = url;
+        btn.textContent = `Download v${version}`;
       } catch {}
-
-      // Build list of version candidates to probe
-      const versions = [];
-      for (let major = 1; major <= 2; major++)
-        for (let minor = 0; minor <= 5; minor++)
-          for (let patch = 0; patch <= 20; patch++)
-            versions.push({ major, minor, patch });
-
-      try {
-        const results = await Promise.allSettled(
-          versions.map(async ({ major, minor, patch }) => {
-            const ver = `${major}.${minor}.${patch}`;
-            const res = await fetch(`${cdnBase}${ver}${ext}`, { method: 'HEAD' });
-            if (!res.ok) throw new Error();
-            return { major, minor, patch, ver };
-          })
-        );
-
-        const found = results
-          .filter(r => r.status === 'fulfilled')
-          .map(r => r.value)
-          .sort((a, b) => (a.major - b.major) || (a.minor - b.minor) || (a.patch - b.patch));
-
-        if (found.length) {
-          const latest = found[found.length - 1];
-          const url = `${cdnBase}${latest.ver}${ext}`;
-          btn.href = url;
-          localStorage.setItem('latestInstaller', JSON.stringify({ url, t: Date.now() }));
-        }
-      } catch {
-        // Keep existing fallback href
-      }
     })();
   </script>
 </body>

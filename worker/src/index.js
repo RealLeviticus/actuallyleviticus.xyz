@@ -32,6 +32,9 @@ export default {
       // --- Upload endpoint ---
       if (path === "/upload" && request.method === "POST") return handleUpload(request, env, origin);
 
+      // --- Latest installer ---
+      if (path === "/latest-installer" && request.method === "GET") return latestInstaller(env, origin);
+
       // --- List plugins ---
       if (path === "/plugins" && request.method === "GET") return listPlugins(env, origin);
 
@@ -294,6 +297,60 @@ async function handleUpload(request, env, origin) {
   });
 
   return json({ ok: true, key }, 200, origin);
+}
+
+// ──────────────────────────────────────
+// Latest installer
+// ──────────────────────────────────────
+
+async function latestInstaller(env, origin) {
+  // The installer bucket is cdn.actuallyleviticus.xyz (a separate public R2 bucket).
+  // We resolve the latest by listing the InstallerUpdates/ prefix in the plugins bucket
+  // OR — more reliably — by parsing known CDN listing via the public URL pattern.
+  // Since we don't have a binding to the CDN bucket, we fetch the public CDN directory
+  // and parse installer filenames to find the highest semver.
+  const PREFIX = "InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%20";
+  const CDN = "https://cdn.actuallyleviticus.xyz/";
+
+  // Probe versions server-side (no CORS issue from Worker)
+  const versions = [];
+  for (let major = 1; major <= 3; major++)
+    for (let minor = 0; minor <= 9; minor++)
+      for (let patch = 0; patch <= 30; patch++)
+        versions.push({ major, minor, patch });
+
+  const results = await Promise.allSettled(
+    versions.map(async ({ major, minor, patch }) => {
+      const ver = `${major}.${minor}.${patch}`;
+      const res = await fetch(
+        `${CDN}InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%20${ver}.exe`,
+        { method: "HEAD" }
+      );
+      if (!res.ok) throw new Error();
+      return { major, minor, patch, ver };
+    })
+  );
+
+  const found = results
+    .filter(r => r.status === "fulfilled")
+    .map(r => r.value)
+    .sort((a, b) => (a.major - b.major) || (a.minor - b.minor) || (a.patch - b.patch));
+
+  if (!found.length) {
+    return json({ error: "No installer found" }, 404, origin);
+  }
+
+  const latest = found[found.length - 1];
+  const url = `${CDN}InstallerUpdates/vatSys%20Plugin%20Installer%20Setup%20${latest.ver}.exe`;
+
+  return new Response(JSON.stringify({ version: latest.ver, url }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=300", // Cache at edge for 5 min
+      ...corsHeaders(origin),
+    },
+  });
 }
 
 // ──────────────────────────────────────
