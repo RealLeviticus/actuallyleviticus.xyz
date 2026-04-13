@@ -13,10 +13,294 @@
       --muted: #cfd6e1;
       --accent: #9bff46;
       --accent-2: #4ae0ff;
-      --bg: #0a0e17;
-      --card-bg: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
+      --bg: #080c14;
+      --card-bg: rgba(255,255,255,0.035);
+      --border: rgba(255,255,255,0.07);
     }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: "Manrope", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 52px 20px 80px;
+      line-height: 1.75;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 180px 180px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 36px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      opacity: 0.65;
+      transition: opacity 120ms;
+    }
+    .back-link:hover { opacity: 1; }
+
+    /* Header */
+    .page-header {
+      margin-bottom: 40px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--ink) 60%, rgba(246,248,255,0.5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .last-updated {
+      color: var(--muted);
+      font-size: 12px;
+      opacity: 0.6;
+    }
+    .disclaimer {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      background: rgba(155,255,70,0.05);
+      border: 1px solid rgba(155,255,70,0.15);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .disclaimer svg { flex-shrink: 0; margin-top: 1px; opacity: 0.7; }
+
+    /* Sections */
+    .section {
+      margin-bottom: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+    }
+    .section h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-2);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: rgba(74,224,255,0.12);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-2);
+      flex-shrink: 0;
+    }
+    p, li {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      line-height: 1.7;
+    }
+    p:last-child, li:last-child { margin-bottom: 0; }
+    ul {
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 0;
+    }
+    li::before {
+      content: "·";
+      color: var(--accent-2);
+      font-weight: 800;
+      font-size: 18px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+    strong { color: var(--ink); font-weight: 600; }
+    code {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 12px;
+      font-family: "SF Mono", "Cascadia Code", monospace;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Contact */
+    .contact-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+    .contact-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(155,255,70,0.12), rgba(74,224,255,0.12));
+      border: 1px solid rgba(74,224,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-label { font-size: 11px; color: var(--muted); opacity: 0.6; margin-bottom: 2px; }
+    .contact-email { font-size: 14px; font-weight: 600; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <a href="/" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to home
+    </a>
+
+    <div class="page-header">
+      <h1>Privacy Policy</h1>
+      <p class="last-updated">Last updated: April 13, 2026</p>
+      <div class="disclaimer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        This is an independent project and is <strong>&nbsp;not endorsed by, affiliated with, or officially connected to VATSIM&nbsp;</strong> in any way.
+      </div>
+    </div>
+
+    <p style="margin-bottom:20px">This Privacy Policy describes how ActuallyLeviticus ("we", "us", "our") collects, uses, and handles your personal information when you use <strong>actuallyleviticus.xyz</strong> and its associated services.</p>
+
+    <div class="section">
+      <h2><span class="section-num">1</span>Information We Collect</h2>
+      <p>We collect the minimum information necessary to operate the plugin upload service.</p>
+      <p><strong>Via VATSIM Connect (OAuth):</strong></p>
+      <ul>
+        <li><div><strong>VATSIM CID</strong> — your unique VATSIM member identifier</div></li>
+        <li><div><strong>First and last name</strong> — as registered on your VATSIM account</div></li>
+      </ul>
+      <p style="margin-top:12px"><strong>Via Google Sign-In (admin only):</strong></p>
+      <ul>
+        <li><div><strong>Email address</strong> — used solely to verify admin identity</div></li>
+      </ul>
+      <p style="margin-top:12px"><strong>Uploaded files:</strong></p>
+      <ul>
+        <li><div>Plugin files you upload, along with metadata (file name, upload time, uploader CID)</div></li>
+      </ul>
+      <p style="margin-top:12px">We do <strong>not</strong> collect passwords, payment information, IP addresses, or browsing analytics.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">2</span>How We Use Your Information</h2>
+      <ul>
+        <li><div><strong>Authentication:</strong> Your VATSIM CID is checked against an approved list to determine upload access.</div></li>
+        <li><div><strong>Attribution:</strong> Your CID and name are stored alongside uploaded plugins for accountability.</div></li>
+        <li><div><strong>Session tokens:</strong> Short-lived signed tokens are stored only in your browser's session storage and expire automatically (8 hours for uploaders, 24 hours for admins).</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">3</span>Data Storage</h2>
+      <ul>
+        <li><div>Approved uploader records (CID and display name) are stored in a Cloudflare D1 database.</div></li>
+        <li><div>Uploaded plugin files are stored in Cloudflare R2 object storage.</div></li>
+        <li><div>All data is hosted on Cloudflare's infrastructure. No data is transferred to third parties.</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">4</span>Data Sharing</h2>
+      <p>We do <strong>not</strong> sell, rent, or share your personal data with any third parties. Data is only used internally for the purposes described above.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">5</span>Data Retention</h2>
+      <ul>
+        <li><div>Approved uploader records are retained until manually removed by the admin.</div></li>
+        <li><div>Uploaded plugin files are retained until manually deleted.</div></li>
+        <li><div>Session tokens expire automatically and are not stored server-side.</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">6</span>Your Rights</h2>
+      <p>You may request:</p>
+      <ul>
+        <li><div><strong>Access</strong> to the personal data we hold about you.</div></li>
+        <li><div><strong>Deletion</strong> of your data, including removal from the approved uploader list and any uploaded files.</div></li>
+        <li><div><strong>Correction</strong> of any inaccurate information.</div></li>
+      </ul>
+      <p style="margin-top:12px">To make a request, contact us at the email below.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">7</span>Security</h2>
+      <p>All communication with this website is encrypted via TLS/SSL. Authentication tokens are cryptographically signed using HMAC-SHA256. We follow security best practices to protect your data.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">8</span>Cookies</h2>
+      <p>This website does <strong>not</strong> use cookies. Session data is stored in your browser's <code>sessionStorage</code> and is cleared when you close the tab.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">9</span>Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. Changes will be reflected by the "Last updated" date at the top of this page.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="section-num">10</span>Contact</h2>
+      <p>If you have questions about this Privacy Policy or wish to exercise your data rights:</p>
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Email</div>
+          <a href="mailto:therealleviticus@gmail.com" class="contact-email">therealleviticus@gmail.com</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
     * { box-sizing: border-box; margin: 0; }
     body {
       font-family: "Manrope", sans-serif;
