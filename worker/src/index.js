@@ -31,6 +31,8 @@ export default {
 
       // --- Upload endpoint ---
       if (path === "/upload" && request.method === "POST") return handleUpload(request, env, origin);
+      if (path === "/upload/banner" && request.method === "POST") return handleBannerUpload(request, env, origin);
+      if (path === "/upload/banner" && request.method === "GET") return getBanner(request, env, origin);
 
       // --- Latest installer ---
       if (path === "/latest-installer" && request.method === "GET") return latestInstaller(env, origin);
@@ -273,7 +275,13 @@ async function handleUpload(request, env, origin) {
 
   const formData = await request.formData();
   const file = formData.get("file");
+  const pluginName = formData.get("pluginName");
   if (!file || !(file instanceof File)) return json({ error: "No file provided" }, 400, origin);
+  if (!pluginName) return json({ error: "Plugin name is required" }, 400, origin);
+
+  // Sanitize plugin name: only allow alphanumeric, dash, underscore
+  const safeFolderName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+  if (!safeFolderName) return json({ error: "Invalid plugin name" }, 400, origin);
 
   // Validate file type
   const allowedExts = [".dll", ".xml", ".json", ".zip"];
@@ -287,9 +295,9 @@ async function handleUpload(request, env, origin) {
     return json({ error: "File too large (max 50MB)" }, 400, origin);
   }
 
-  // Sanitize filename: only allow alphanumeric, dash, underscore, dot
+  // Sanitize filename
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const key = `${payload.cid}/${safeName}`;
+  const key = `${safeFolderName}/${safeName}`;
 
   await env.PLUGINS_BUCKET.put(key, file.stream(), {
     httpMetadata: { contentType: file.type || "application/octet-stream" },
@@ -297,6 +305,64 @@ async function handleUpload(request, env, origin) {
   });
 
   return json({ ok: true, key }, 200, origin);
+}
+
+// ──────────────────────────────────────
+// Banner upload
+// ──────────────────────────────────────
+
+async function handleBannerUpload(request, env, origin) {
+  const token = getBearer(request);
+  if (!token) return json({ error: "Unauthorized" }, 401, origin);
+
+  const payload = await verifyToken(token, env.GOOGLE_CLIENT_SECRET);
+  if (!payload || payload.role !== "uploader") return json({ error: "Unauthorized" }, 401, origin);
+
+  const formData = await request.formData();
+  const file = formData.get("banner");
+  const pluginName = formData.get("pluginName");
+  if (!file || !(file instanceof File)) return json({ error: "No banner file provided" }, 400, origin);
+  if (!pluginName) return json({ error: "Plugin name is required" }, 400, origin);
+
+  const safeFolderName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+  if (!safeFolderName) return json({ error: "Invalid plugin name" }, 400, origin);
+
+  // Validate image type
+  const allowedExts = [".png", ".jpg", ".jpeg", ".webp"];
+  const ext = file.name.lastIndexOf(".") >= 0 ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
+  if (!allowedExts.includes(ext)) {
+    return json({ error: `Banner must be an image (${allowedExts.join(", ")})` }, 400, origin);
+  }
+
+  // Max 5MB for banners
+  if (file.size > 5 * 1024 * 1024) {
+    return json({ error: "Banner too large (max 5MB)" }, 400, origin);
+  }
+
+  const key = `${safeFolderName}/Banner/banner${ext}`;
+
+  await env.PLUGINS_BUCKET.put(key, file.stream(), {
+    httpMetadata: { contentType: file.type || "image/png" },
+    customMetadata: { uploadedBy: payload.cid, uploaderName: payload.name },
+  });
+
+  return json({ ok: true, key }, 200, origin);
+}
+
+async function getBanner(request, env, origin) {
+  const url = new URL(request.url);
+  const pluginName = url.searchParams.get("plugin");
+  if (!pluginName) return json({ error: "plugin name required" }, 400, origin);
+
+  const safeName = String(pluginName).replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+  const listed = await env.PLUGINS_BUCKET.list({ prefix: `${safeName}/Banner/` });
+
+  if (!listed.objects.length) {
+    return json({ banner: null }, 200, origin);
+  }
+
+  const banner = listed.objects[0];
+  return json({ banner: { key: banner.key, size: banner.size } }, 200, origin);
 }
 
 // ──────────────────────────────────────

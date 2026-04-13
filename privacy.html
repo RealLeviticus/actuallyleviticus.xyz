@@ -125,33 +125,40 @@
       color: var(--accent-2);
       flex-shrink: 0;
     }
-    p, li {
+    .section p {
       font-size: 13.5px;
       color: var(--muted);
       margin-bottom: 10px;
       line-height: 1.7;
     }
-    p:last-child, li:last-child { margin-bottom: 0; }
+    .section p:last-child { margin-bottom: 0; }
+    li {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
     ul {
       padding-left: 0;
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      margin-top: 4px;
     }
     li {
       display: flex;
-      gap: 10px;
-      align-items: flex-start;
+      gap: 8px;
+      align-items: baseline;
       margin-bottom: 0;
     }
     li::before {
-      content: "·";
-      color: var(--accent-2);
-      font-weight: 800;
-      font-size: 18px;
-      line-height: 1.2;
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent-2);
       flex-shrink: 0;
+      margin-top: 8px;
     }
     strong { color: var(--ink); font-weight: 600; }
     code {
@@ -201,11 +208,13 @@
       <p class="last-updated">Last updated: April 13, 2026</p>
       <div class="disclaimer">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        This is an independent project and is <strong>&nbsp;not endorsed by, affiliated with, or officially connected to VATSIM&nbsp;</strong> in any way.
+        This is an independent project and is <strong>not endorsed by, affiliated with, or officially connected to VATSIM</strong> in any way.
       </div>
     </div>
 
-    <p style="margin-bottom:20px">This Privacy Policy describes how ActuallyLeviticus ("we", "us", "our") collects, uses, and handles your personal information when you use <strong>actuallyleviticus.xyz</strong> and its associated services.</p>
+    <div class="section">
+      <p>This Privacy Policy describes how ActuallyLeviticus ("we", "us", "our") collects, uses, and handles your personal information when you use <strong>actuallyleviticus.xyz</strong> and its associated services.</p>
+    </div>
 
     <div class="section">
       <h2><span class="section-num">1</span>Information We Collect</h2>
@@ -215,15 +224,15 @@
         <li><div><strong>VATSIM CID</strong> — your unique VATSIM member identifier</div></li>
         <li><div><strong>First and last name</strong> — as registered on your VATSIM account</div></li>
       </ul>
-      <p style="margin-top:12px"><strong>Via Google Sign-In (admin only):</strong></p>
+      <p><strong>Via Google Sign-In (admin only):</strong></p>
       <ul>
         <li><div><strong>Email address</strong> — used solely to verify admin identity</div></li>
       </ul>
-      <p style="margin-top:12px"><strong>Uploaded files:</strong></p>
+      <p><strong>Uploaded files:</strong></p>
       <ul>
         <li><div>Plugin files you upload, along with metadata (file name, upload time, uploader CID)</div></li>
       </ul>
-      <p style="margin-top:12px">We do <strong>not</strong> collect passwords, payment information, IP addresses, or browsing analytics.</p>
+      <p>We do <strong>not</strong> collect passwords, payment information, IP addresses, or browsing analytics.</p>
     </div>
 
     <div class="section">
@@ -266,7 +275,7 @@
         <li><div><strong>Deletion</strong> of your data, including removal from the approved uploader list and any uploaded files.</div></li>
         <li><div><strong>Correction</strong> of any inaccurate information.</div></li>
       </ul>
-      <p style="margin-top:12px">To make a request, contact us at the email below.</p>
+      <p>To make a request, contact us at the email below.</p>
     </div>
 
     <div class="section">

@@ -198,6 +198,76 @@
       text-align: center;
       margin-bottom: 16px;
     }
+
+    /* ── Banner section ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label svg { opacity: 0.5; }
+    .banner-preview-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    .banner-preview-wrap img {
+      display: block;
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .banner-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 120px;
+      color: var(--muted);
+      font-size: 12px;
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    .banner-placeholder svg { margin-bottom: 6px; opacity: 0.4; }
+    .banner-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 120ms, color 120ms, background 120ms;
+      text-decoration: none;
+      flex: 1;
+    }
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.2);
+      color: var(--ink);
+      background: rgba(255,255,255,0.04);
+    }
+
     .progress-bar {
       width: 100%; height: 4px;
       background: var(--border);
@@ -279,6 +349,12 @@
     <div id="success-banner" class="banner banner-success" style="display:none"></div>
 
     <div class="card">
+      <div class="section-label" style="margin-bottom:8px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Plugin Name
+      </div>
+      <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect" style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.05);color:var(--ink);font-family:inherit;font-size:13px;outline:none;margin-bottom:16px;box-sizing:border-box;">
+
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
         <div class="drop-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -292,6 +368,33 @@
         <div class="progress-fill" id="progress-fill"></div>
       </div>
       <button class="btn btn-accent" id="upload-btn" onclick="uploadFile()" disabled style="width:100%">Upload</button>
+
+      <hr class="section-divider">
+
+      <!-- Banner section -->
+      <div class="section-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Plugin Banner
+      </div>
+      <div class="banner-preview-wrap" id="banner-preview-wrap">
+        <div class="banner-placeholder" id="banner-placeholder" onclick="document.getElementById('banner-input').click()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          No banner set — click to upload
+        </div>
+        <img id="banner-img" src="" alt="" style="display:none">
+      </div>
+      <div class="banner-actions">
+        <button class="btn-outline" onclick="document.getElementById('banner-input').click()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Choose Image
+        </button>
+        <button class="btn-outline" id="save-banner-btn" onclick="uploadBanner()" style="display:none">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Save Banner
+        </button>
+      </div>
+      <p class="allowed-types" style="margin-top:8px">.png &nbsp;·&nbsp; .jpg &nbsp;·&nbsp; .jpeg &nbsp;·&nbsp; .webp &nbsp;·&nbsp; Max 5 MB</p>
+      <input type="file" id="banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
     </div>
   </div>
 
@@ -299,6 +402,7 @@
     const API = "https://api.actuallyleviticus.xyz";
     let token = null;
     let selectedFile = null;
+    let selectedBanner = null;
 
     function init() {
       const hash = window.location.hash;
@@ -321,6 +425,8 @@
         } catch {}
         document.getElementById("upload-view").style.display = "block";
         setupDragDrop();
+        setupBanner();
+        loadExistingBanner();
       } else {
         document.getElementById("login-view").style.display = "block";
       }
@@ -386,6 +492,9 @@
     async function uploadFile() {
       if (!selectedFile || !token) return;
 
+      const pluginName = document.getElementById("plugin-name").value.trim();
+      if (!pluginName) { showError("Enter a plugin name first"); return; }
+
       const btn = document.getElementById("upload-btn");
       const bar = document.getElementById("progress-bar");
       const fill = document.getElementById("progress-fill");
@@ -398,6 +507,7 @@
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
+        formData.append("pluginName", pluginName);
 
         const res = await fetch(`${API}/upload`, {
           method: "POST",
@@ -427,6 +537,82 @@
           bar.style.display = "none";
           fill.style.width = "0%";
         }, 1500);
+      }
+    }
+
+    // ── Banner ──
+
+    function setupBanner() {
+      const input = document.getElementById("banner-input");
+      input.addEventListener("change", () => {
+        if (input.files.length) selectBannerFile(input.files[0]);
+      });
+    }
+
+    function selectBannerFile(file) {
+      const allowedExts = [".png", ".jpg", ".jpeg", ".webp"];
+      const ext = file.name.lastIndexOf(".") >= 0 ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
+      if (!allowedExts.includes(ext)) {
+        showError(`Banner must be an image (${allowedExts.join(", ")})`);
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showError("Banner too large (max 5 MB)");
+        return;
+      }
+      selectedBanner = file;
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById("banner-img");
+        img.src = e.target.result;
+        img.style.display = "block";
+        document.getElementById("banner-placeholder").style.display = "none";
+      };
+      reader.readAsDataURL(file);
+      document.getElementById("save-banner-btn").style.display = "inline-flex";
+    }
+
+    async function loadExistingBanner() {
+      // Banner is per-plugin, so we can't load until a plugin name is entered
+    }
+
+    async function uploadBanner() {
+      if (!selectedBanner || !token) return;
+
+      const pluginName = document.getElementById("plugin-name").value.trim();
+      if (!pluginName) { showError("Enter a plugin name first"); return; }
+
+      const btn = document.getElementById("save-banner-btn");
+      btn.textContent = "Saving…";
+      btn.style.pointerEvents = "none";
+
+      try {
+        const formData = new FormData();
+        formData.append("banner", selectedBanner);
+        formData.append("pluginName", pluginName);
+
+        const res = await fetch(`${API}/upload/banner`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: formData,
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+          if (res.status === 401) { logout(); showError("Session expired"); return; }
+          throw new Error(result.error || "Banner upload failed");
+        }
+
+        showSuccess("Banner saved!");
+        selectedBanner = null;
+        btn.style.display = "none";
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save Banner';
+        btn.style.pointerEvents = "";
       }
     }
 
