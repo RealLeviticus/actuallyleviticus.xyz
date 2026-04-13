@@ -13,9 +13,9 @@
       --muted: #cfd6e1;
       --accent: #9bff46;
       --accent-2: #4ae0ff;
-      --bg: #0a0e17;
-      --card-bg: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
+      --bg: #080c14;
+      --card-bg: rgba(255,255,255,0.035);
+      --border: rgba(255,255,255,0.07);
       --red: #ff5a5a;
       --green: #3fa63f;
     }
@@ -28,168 +28,270 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 48px 20px 64px;
     }
-    h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 480px;
-      width: 100%;
-      text-align: center;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      background-size: 180px 180px;
+      pointer-events: none;
+      z-index: 0;
     }
-    .card p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+    * { position: relative; z-index: 1; }
 
+    /* ── Buttons ── */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 24px;
+      padding: 13px 24px;
       border-radius: 12px;
       font-size: 14px;
       font-weight: 700;
       font-family: inherit;
       border: none;
       cursor: pointer;
-      transition: transform 100ms, filter 100ms;
+      transition: transform 120ms, filter 120ms;
       text-decoration: none;
     }
-    .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
-    .btn:active { transform: translateY(0); }
-    .btn-vatsim { background: #29b473; color: #fff; }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    .btn:active { transform: translateY(0); filter: brightness(0.97); }
+    .btn-vatsim {
+      background: #29b473;
+      color: #fff;
+      box-shadow: 0 8px 28px rgba(41,180,115,0.3);
+    }
     .btn-accent {
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: #06101b;
+      box-shadow: 0 8px 28px rgba(74,224,255,0.2);
     }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
 
+    /* ── Login ── */
+    .login-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      max-width: 440px;
+      width: 100%;
+    }
+    .login-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: #29b473;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 32px rgba(41,180,115,0.3);
+    }
+    .login-wrap h1 { font-size: 22px; font-weight: 800; }
+    .login-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      width: 100%;
+      backdrop-filter: blur(8px);
+    }
+    .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 13px; line-height: 1.65; }
+    .access-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: left;
+    }
+    .access-notice svg { flex-shrink: 0; opacity: 0.6; }
+
+    /* ── Topbar ── */
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 480px;
+      max-width: 500px;
       width: 100%;
       margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
     }
-    .topbar-user { color: var(--muted); font-size: 13px; }
-    .logout-link {
-      color: var(--muted); font-size: 13px; cursor: pointer;
-      text-decoration: underline; background: none; border: none; font-family: inherit;
+    .topbar-logo { display: flex; align-items: center; gap: 10px; }
+    .topbar-logo-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: #29b473;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-title { font-size: 16px; font-weight: 800; }
+    .topbar-right { text-align: right; }
+    .topbar-user { color: var(--muted); font-size: 12px; }
+    .btn-signout {
+      color: var(--muted); font-size: 12px; cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      padding: 4px 0; text-decoration: underline; text-underline-offset: 2px;
+    }
+    .btn-signout:hover { color: var(--ink); }
+
+    /* ── Upload card ── */
+    .upload-wrap { max-width: 500px; width: 100%; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      backdrop-filter: blur(8px);
     }
 
+    /* ── Drop zone ── */
     .drop-zone {
-      border: 2px dashed var(--border);
-      border-radius: 14px;
-      padding: 40px 20px;
-      margin-bottom: 20px;
-      transition: border-color 200ms, background 200ms;
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 48px 24px 36px;
+      text-align: center;
       cursor: pointer;
+      transition: border-color 200ms, background 200ms;
+      margin-bottom: 16px;
     }
-    .drop-zone.drag-over {
+    .drop-zone:hover, .drop-zone.drag-over {
       border-color: var(--accent);
-      background: rgba(155, 255, 70, 0.04);
+      background: rgba(155,255,70,0.03);
     }
-    .drop-zone p { margin-bottom: 0; }
-    .drop-zone .file-name {
+    .drop-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .drop-zone p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .drop-zone .browse { color: var(--accent-2); font-weight: 600; }
+    .file-name {
       color: var(--accent);
-      font-weight: 600;
-      margin-top: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 10px;
       word-break: break-all;
     }
-
-    .error-banner {
-      background: rgba(255,90,90,0.15);
-      border: 1px solid var(--red);
-      color: var(--red);
-      padding: 12px 16px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 13px;
+    .allowed-types {
+      color: var(--muted);
+      font-size: 11px;
+      opacity: 0.55;
       text-align: center;
-      max-width: 480px;
-      width: 100%;
-    }
-    .success-banner {
-      background: rgba(63,166,63,0.15);
-      border: 1px solid var(--green);
-      color: var(--green);
-      padding: 12px 16px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      text-align: center;
-      max-width: 480px;
-      width: 100%;
+      margin-bottom: 16px;
     }
     .progress-bar {
-      width: 100%;
-      height: 6px;
+      width: 100%; height: 4px;
       background: var(--border);
-      border-radius: 3px;
+      border-radius: 2px;
       overflow: hidden;
-      margin-top: 12px;
+      margin-bottom: 16px;
     }
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-radius: 3px;
+      border-radius: 2px;
       transition: width 200ms;
       width: 0%;
     }
 
-    .allowed-types {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 12px;
+    /* ── Banners ── */
+    .banner {
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
     }
+    .banner-error { background: rgba(255,90,90,0.12); border: 1px solid rgba(255,90,90,0.3); color: var(--red); }
+    .banner-success { background: rgba(63,166,63,0.12); border: 1px solid rgba(63,166,63,0.35); color: #6dde6d; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 12px; text-decoration: none;
+      margin-bottom: 28px; opacity: 0.7;
+      align-self: flex-start;
+    }
+    .back-link:hover { opacity: 1; }
   </style>
 </head>
 <body>
 
   <!-- Login view -->
-  <div id="login-view" style="display:none">
-    <h1>Plugin Upload</h1>
-    <p class="subtitle">Sign in with VATSIM to upload your plugin</p>
-    <div class="card">
-      <p>Only authorized users can upload plugins. Contact the admin to request access.</p>
+  <div id="login-view" style="display:none" class="login-wrap">
+    <a href="/" class="back-link" style="align-self:flex-start">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to home
+    </a>
+    <div class="login-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+    <h1>Upload a Plugin</h1>
+    <div class="login-card">
+      <p>Sign in with your VATSIM account to upload a plugin to the vatSys Plugin Installer.</p>
       <a class="btn btn-vatsim" href="https://api.actuallyleviticus.xyz/auth/vatsim">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Sign in with VATSIM
       </a>
+      <div class="access-notice">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Upload access is restricted to trusted developers. Contact the admin if you'd like to be added.
+      </div>
     </div>
   </div>
 
   <!-- Upload view -->
-  <div id="upload-view" style="display:none">
+  <div id="upload-view" style="display:none" class="upload-wrap">
     <div class="topbar">
-      <div>
-        <h1>Upload Plugin</h1>
+      <div class="topbar-logo">
+        <div class="topbar-logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <span class="topbar-title">Upload Plugin</span>
       </div>
-      <div style="text-align:right">
-        <span class="topbar-user" id="uploader-name"></span><br>
-        <button class="logout-link" onclick="logout()">Sign out</button>
+      <div class="topbar-right">
+        <div class="topbar-user" id="uploader-name"></div>
+        <button class="btn-signout" onclick="logout()">Sign out</button>
       </div>
     </div>
 
-    <div id="error-banner" class="error-banner" style="display:none"></div>
-    <div id="success-banner" class="success-banner" style="display:none"></div>
+    <div id="error-banner" class="banner banner-error" style="display:none"></div>
+    <div id="success-banner" class="banner banner-success" style="display:none"></div>
 
     <div class="card">
       <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-        <p>Drag & drop your plugin file here, or click to browse</p>
+        <div class="drop-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p>Drag &amp; drop your plugin here, or <span class="browse">browse files</span></p>
         <p class="file-name" id="file-name"></p>
         <input type="file" id="file-input" accept=".dll,.xml,.json,.zip" style="display:none">
       </div>
-      <p class="allowed-types">Allowed types: .dll, .xml, .json, .zip — Max 50 MB</p>
+      <p class="allowed-types">.dll &nbsp;·&nbsp; .xml &nbsp;·&nbsp; .json &nbsp;·&nbsp; .zip &nbsp;·&nbsp; Max 50 MB</p>
       <div class="progress-bar" id="progress-bar" style="display:none">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
-      <br>
-      <button class="btn btn-accent" id="upload-btn" onclick="uploadFile()" disabled>Upload</button>
+      <button class="btn btn-accent" id="upload-btn" onclick="uploadFile()" disabled style="width:100%">Upload</button>
     </div>
   </div>
 
