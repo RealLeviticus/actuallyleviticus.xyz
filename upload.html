@@ -36,654 +36,342 @@
       padding: 22px 16px 36px;
     }
 
-    .btn {
-      appearance: none;
-      border: 1px solid transparent;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
-    }
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn-accent,
-    .btn-primary {
-      background: var(--brand);
-      border-color: var(--brand);
-      color: #fff;
-    }
-    .btn-accent:hover,
-    .btn-primary:hover {
-      background: var(--brand-strong);
-      border-color: var(--brand-strong);
-    }
-    .btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    .btn-discord {
-      background: var(--discord);
-      border-color: var(--discord);
-      color: #fff;
-    }
-    .btn-discord:hover {
-      background: #4c58d7;
-      border-color: #4c58d7;
-    }
-
-    .login-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      width: min(640px, 100%);
-      margin: 5vh auto 0;
-      text-align: center;
-      animation: fadeInUp 400ms ease-out;
-    }
+    /* ── Animations ── */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes staggerIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .step-enter-right { animation: slideInRight 350ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .step-enter-left { animation: slideInLeft 350ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .stagger-1 { animation: staggerIn 400ms ease-out 80ms both; }
+    .stagger-2 { animation: staggerIn 400ms ease-out 140ms both; }
+    .stagger-3 { animation: staggerIn 400ms ease-out 200ms both; }
+
+    /* ── Buttons ── */
+    .btn {
+      appearance: none; border: 1px solid transparent; border-radius: 14px;
+      padding: 12px 20px; font: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; text-decoration: none;
+      transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease, opacity 140ms ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-strong); border-color: var(--brand-strong); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-discord { background: var(--discord); border-color: var(--discord); color: #fff; }
+    .btn-discord:hover { background: #4c58d7; border-color: #4c58d7; }
+    .btn-secondary { background: #fff; color: var(--muted); border: 1px solid var(--line); }
+    .btn-secondary:hover { border-color: #a8c4b2; color: var(--text); background: #f9fdfb; }
+
+    /* ── Login ── */
+    .login-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      width: min(520px, 100%); margin: 8vh auto 0; text-align: center;
+      animation: fadeInUp 400ms ease-out;
+    }
     .login-icon {
-      width: 62px;
-      height: 62px;
-      border-radius: 16px;
-      background: var(--brand-wash);
-      border: 1px solid #d7e7dd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--brand-strong);
+      width: 62px; height: 62px; border-radius: 16px;
+      background: var(--brand-wash); border: 1px solid #d7e7dd;
+      display: flex; align-items: center; justify-content: center; color: var(--brand-strong);
     }
-    .login-wrap h1 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(28px, 4vw, 36px);
-      letter-spacing: -0.03em;
-    }
-    .login-wrap p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.68;
-    }
+    .login-wrap h1 { font-family: "Space Grotesk", sans-serif; font-size: clamp(28px, 4vw, 36px); letter-spacing: -0.03em; }
+    .login-wrap .subtitle { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 400px; }
     .login-card {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      text-align: center;
-      box-shadow: var(--shadow);
+      width: 100%; background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius-lg); padding: 28px; text-align: center; box-shadow: var(--shadow);
     }
     .login-card p { color: var(--muted); margin-bottom: 22px; font-size: 14px; line-height: 1.7; }
     .access-notice {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      background: var(--surface-soft);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 11px 13px;
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
-      text-align: left;
-      line-height: 1.5;
+      display: flex; align-items: flex-start; gap: 8px;
+      background: var(--surface-soft); border: 1px solid var(--line);
+      border-radius: 12px; padding: 11px 13px; margin-top: 16px;
+      font-size: 12px; color: var(--muted); text-align: left; line-height: 1.5;
     }
     .access-notice svg { flex-shrink: 0; margin-top: 1px; }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 0;
-      padding: 16px 18px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--line);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-    .topbar-logo { display: flex; align-items: center; gap: 10px; }
-    .topbar-logo-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: var(--brand-wash);
-      border: 1px solid #d7e7dd;
-      color: var(--brand-strong);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .topbar-title {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 20px;
-      letter-spacing: -0.02em;
-    }
-    .topbar-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .topbar-user { color: var(--muted); font-size: 12px; }
-    .btn-signout {
-      color: var(--muted); font-size: 12px; cursor: pointer;
-      background: none; border: none; font-family: inherit;
-      padding: 0; text-decoration: underline; text-underline-offset: 3px;
-    }
-    .btn-signout:hover { color: var(--text); }
-
-    .upload-wrap {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 14px;
-      align-items: start;
-    }
-    .upload-wrap > .topbar,
-    .upload-wrap > .banner { grid-column: 1 / -1; }
-    .upload-wrap > .card { grid-column: 1 / span 5; }
-    .upload-wrap > .plugins-section { grid-column: 6 / -1; width: 100%; max-width: none; margin-top: 0; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      width: 100%;
-      box-shadow: var(--shadow);
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px 12px;
-      margin-bottom: 14px;
-    }
-    .form-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-field-wide {
-      grid-column: 1 / -1;
-    }
-    .input-label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .field-hint {
-      color: #8197a3;
-      font-size: 11px;
-      line-height: 1.45;
-    }
-    #plugin-match-hint.matching,
-    #banner-target-label.active {
-      color: var(--success);
-      font-weight: 600;
-    }
-    #plugin-name,
-    #upload-display-name,
-    #upload-version,
-    #upload-description {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-      box-sizing: border-box;
-      transition: border-color 140ms ease, box-shadow 140ms ease;
-    }
-    #upload-description {
-      min-height: 86px;
-      resize: vertical;
-    }
-    #plugin-name:focus,
-    #upload-display-name:focus,
-    #upload-version:focus,
-    #upload-description:focus {
-      border-color: #9fbeab;
-      box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
-    }
-    #plugin-name::placeholder,
-    #upload-display-name::placeholder,
-    #upload-version::placeholder,
-    #upload-description::placeholder { color: #8ea0aa; }
-
-    /* ── Drop zone ── */
-    .upload-dev-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: var(--surface-soft);
-    }
-    .upload-dev-row span {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .drop-zone {
-      border: 2px dashed #bfd0d8;
-      border-radius: var(--radius-md);
-      padding: 36px 18px 28px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color 160ms ease, background-color 160ms ease;
-      margin-bottom: 16px;
-      background: var(--surface-soft);
-    }
-    .drop-zone:hover, .drop-zone.drag-over {
-      border-color: #9fbeab;
-      background: #f1f8f4;
-    }
-    .drop-icon {
-      width: 50px; height: 50px;
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 14px;
-    }
-    .drop-zone p {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 4px;
-      line-height: 1.5;
-    }
-    .drop-zone .browse { color: var(--brand-strong); font-weight: 700; }
-    .file-name {
-      color: var(--brand-strong);
-      font-weight: 700;
-      font-size: 13px;
-      margin-top: 10px;
-      word-break: break-all;
-    }
-    .allowed-types {
-      color: #8ea0aa;
-      font-size: 11px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    /* ── Banner section ── */
-    .section-divider {
-      border: none;
-      border-top: 1px solid var(--line);
-      margin: 20px 0;
-    }
-    .section-label {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text);
-    }
-    .section-label svg { opacity: 0.62; }
-    .banner-preview-wrap {
-      position: relative;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      margin-bottom: 12px;
-      border: 1px solid var(--line);
-      background: var(--surface-soft);
-    }
-    .banner-preview-wrap img {
-      display: block;
-      width: 100%;
-      height: 132px;
-      object-fit: cover;
-    }
-    .banner-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 132px;
-      color: var(--muted);
-      font-size: 12px;
-      cursor: pointer;
-      text-align: center;
-      padding: 10px;
-    }
-    .banner-placeholder svg { margin-bottom: 6px; opacity: 0.55; }
-    .banner-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 600;
-      font-family: inherit;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--muted);
-      cursor: pointer;
-      transition: border-color 120ms, color 120ms, background 120ms;
-      text-decoration: none;
-      flex: 1;
-    }
-    .btn-outline:hover {
-      border-color: #a8c4b2;
-      color: var(--text);
-      background: #f9fdfb;
-    }
-
-    .progress-bar {
-      width: 100%; height: 4px;
-      background: #e8eef1;
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--brand), #9bc4a9);
-      border-radius: 2px;
-      transition: width 200ms;
-      width: 0%;
-    }
-
-    /* ── Banners ── */
-    .banner {
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 0;
-      font-size: 13px;
-      text-align: center;
-      width: 100%;
-    }
-    .banner-error { background: var(--danger-wash); border: 1px solid #f2cbcb; color: var(--danger); }
-    .banner-success { background: var(--success-wash); border: 1px solid #cfead8; color: var(--success); }
-
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
       color: var(--muted); font-size: 12px; text-decoration: none;
-      margin-bottom: 12px;
-      align-self: flex-start;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fff;
-      transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+      padding: 8px 12px; border-radius: 999px;
+      border: 1px solid var(--line); background: #fff;
+      transition: border-color 140ms, color 140ms, background 140ms;
     }
-    .back-link:hover {
-      color: var(--text);
-      border-color: #a8c4b2;
-      background: #f9fdfb;
+    .back-link:hover { color: var(--text); border-color: #a8c4b2; background: #f9fdfb; }
+
+    /* ── Wizard ── */
+    .wizard-shell { display: none; width: min(560px, 100%); margin: 0 auto; min-height: 75vh; flex-direction: column; }
+    .wizard-shell.active { display: flex; }
+    .wizard-topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; animation: fadeInUp 300ms ease-out; }
+    .wizard-back {
+      width: 40px; height: 40px; border-radius: 12px;
+      border: 1px solid var(--line); background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--muted);
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .wizard-back:hover { background: #f9fdfb; border-color: #a8c4b2; color: var(--text); }
+    .wizard-step-label { flex: 1; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
+    .wizard-cancel {
+      font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      text-decoration: underline; text-underline-offset: 3px; transition: color 120ms;
+    }
+    .wizard-cancel:hover { color: var(--text); }
+    .wizard-progress { height: 4px; width: 100%; border-radius: 4px; background: #e8eef1; overflow: hidden; margin-bottom: 28px; }
+    .wizard-progress-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--brand), #9bc4a9);
+      transition: width 400ms cubic-bezier(0.22, 1, 0.36, 1); width: 0%;
+    }
+    .wizard-body { flex: 1; overflow: hidden; position: relative; }
+    .wizard-step { display: none; width: 100%; }
+    .wizard-step.active { display: block; }
+    .wizard-step h2 { font-family: "Space Grotesk", sans-serif; font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.03em; margin-bottom: 6px; }
+    .wizard-step .step-subtitle { color: var(--muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5; }
+    .wizard-footer { margin-top: 24px; padding-top: 16px; }
+    .wizard-footer .btn { width: 100%; height: 48px; font-size: 14px; border-radius: 16px; }
+
+    /* ── Form inputs ── */
+    .w-input {
+      width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line);
+      background: #fff; color: var(--text); font-family: inherit; font-size: 14px; outline: none;
+      transition: border-color 140ms, box-shadow 140ms;
+    }
+    .w-input:focus { border-color: #9fbeab; box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.18); }
+    .w-input::placeholder { color: #a0b4bd; }
+    .w-textarea { min-height: 80px; resize: vertical; }
+    .w-label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .w-field { margin-bottom: 14px; }
+    .w-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .w-hint { color: #8197a3; font-size: 11px; line-height: 1.45; margin-top: 6px; }
+    .w-hint.match { color: var(--success); font-weight: 600; }
+
+    /* ── Toggle ── */
+    .toggle-card {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface-soft);
+    }
+    .toggle-card-label { font-size: 13px; font-weight: 600; color: var(--text); }
+    .toggle-card-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .toggle {
+      width: 44px; height: 24px; border-radius: 999px; background: #e8eef1; border: 1px solid #c8d6dd;
+      cursor: pointer; position: relative; transition: background 150ms; flex-shrink: 0;
+    }
+    .toggle.on { background: var(--brand); border-color: var(--brand); }
+    .toggle::after {
+      content: ""; position: absolute; top: 2px; left: 2px;
+      width: 18px; height: 18px; border-radius: 50%; background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.18); transition: transform 150ms;
+    }
+    .toggle.on::after { transform: translateX(20px); }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed #bfd0d8; border-radius: 16px; padding: 40px 18px 32px;
+      text-align: center; cursor: pointer; background: var(--surface-soft);
+      transition: border-color 160ms, background-color 160ms;
+    }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: #9fbeab; background: #f1f8f4; }
+    .drop-zone.has-file { border-color: var(--brand); background: var(--brand-wash); border-style: solid; }
+    .drop-icon {
+      width: 52px; height: 52px; border-radius: 14px; background: #fff; border: 1px solid var(--line);
+      color: var(--muted); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+    }
+    .drop-zone.has-file .drop-icon { display: none; }
+    .drop-zone p { color: var(--muted); font-size: 13px; margin-bottom: 4px; line-height: 1.5; }
+    .drop-zone .browse { color: var(--brand-strong); font-weight: 700; }
+    .drop-zone .file-name { color: var(--brand-strong); font-weight: 700; font-size: 13px; margin-top: 10px; word-break: break-all; }
+    .file-check {
+      display: none; margin: 0 auto 14px; width: 52px; height: 52px; border-radius: 14px;
+      background: var(--brand-wash); border: 1px solid #b8d8c3; color: var(--brand-strong);
+      align-items: center; justify-content: center;
+    }
+    .drop-zone.has-file .file-check { display: flex; }
+    .allowed-types { color: #8ea0aa; font-size: 11px; text-align: center; margin-top: 8px; }
+
+    /* ── Banner preview ── */
+    .banner-preview {
+      position: relative; border-radius: 16px; overflow: hidden;
+      border: 2px dashed #bfd0d8; background: var(--surface-soft);
+      cursor: pointer; transition: border-color 160ms, background 160ms; margin-bottom: 10px;
+    }
+    .banner-preview:hover { border-color: #9fbeab; background: #f1f8f4; }
+    .banner-preview.has-banner { border-style: solid; border-color: var(--brand); }
+    .banner-preview img { display: block; width: 100%; height: 140px; object-fit: cover; }
+    .banner-placeholder {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 140px; color: var(--muted); font-size: 12px; text-align: center; padding: 10px;
+    }
+    .banner-placeholder svg { margin-bottom: 6px; opacity: 0.5; }
+    .banner-preview.has-banner .banner-placeholder { display: none; }
+
+    /* ── Upload progress ── */
+    .upload-progress {
+      width: 100%; height: 4px; background: #e8eef1; border-radius: 2px;
+      overflow: hidden; margin-bottom: 16px; display: none;
+    }
+    .upload-progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--brand), #9bc4a9);
+      border-radius: 2px; transition: width 200ms; width: 0%;
     }
 
-    /* ── My Plugins list ── */
-    .plugins-section { width: 100%; }
-    .plugins-section .card {
-      margin-top: 0;
-      min-height: clamp(380px, 68vh, 840px);
-      display: flex;
-      flex-direction: column;
+    /* ── Review card ── */
+    .review-card {
+      border-radius: 16px; border: 1px solid var(--line);
+      background: #fff; padding: 20px; box-shadow: var(--shadow);
     }
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
+    .review-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f0f4f5;
     }
-    .section-header h2 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(22px, 2.2vw, 28px);
-      letter-spacing: -0.03em;
+    .review-row:last-child { border-bottom: none; }
+    .review-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .review-value { font-size: 14px; font-weight: 600; color: var(--text); text-align: right; max-width: 60%; word-break: break-all; }
+    .review-banner { border-radius: 12px; overflow: hidden; margin-top: 12px; border: 1px solid var(--line); }
+    .review-banner img { display: block; width: 100%; height: 100px; object-fit: cover; }
+    .review-edit-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .review-edit-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      border: 1px solid var(--line); border-radius: 8px;
+      padding: 5px 10px; cursor: pointer; background: #fff;
+      transition: border-color 120ms, color 120ms, background 120ms;
     }
-    .count-badge {
-      background: var(--brand-wash);
-      border: 1px solid #d7e7dd;
-      border-radius: 999px;
-      padding: 5px 11px;
-      font-size: 12px;
-      color: var(--brand-strong);
-      font-weight: 700;
-      line-height: 1;
+    .review-edit-link:hover { border-color: #a8c4b2; color: var(--text); background: #f9fdfb; }
+    .dev-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+    .dev-badge-on { background: #fff4e8; border: 1px solid #f3d8be; color: #9a5a1c; }
+    .dev-badge-off { background: #edf8f1; border: 1px solid #cfead8; color: #2f8c57; }
+
+    /* ── Banners ── */
+    .banner { border-radius: 14px; padding: 12px 16px; font-size: 13px; text-align: center; margin-bottom: 12px; display: none; animation: fadeInUp 200ms ease-out; }
+    .banner-error { background: var(--danger-wash); border: 1px solid #f2cbcb; color: var(--danger); }
+    .banner-success { background: var(--success-wash); border: 1px solid #cfead8; color: var(--success); }
+
+    /* ── Top bar ── */
+    .view-switcher {
+      display: none; width: min(560px, 100%); margin: 0 auto 16px;
+      align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-radius: var(--radius-lg);
+      border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow);
+      animation: fadeInUp 300ms ease-out;
     }
-    #plugin-list { flex: 1; overflow-y: auto; padding-right: 4px; }
-    .plugin-item {
-      padding: 14px 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .plugin-item:last-child { border-bottom: none; }
-    .plugin-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .plugin-info { flex: 1; min-width: 0; }
-    .plugin-name {
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .dev-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-    }
-    .dev-badge-on {
-      background: #fff4e8;
-      border: 1px solid #f3d8be;
-      color: #9a5a1c;
-    }
-    .dev-badge-off {
-      background: #edf8f1;
-      border: 1px solid #cfead8;
-      color: #2f8c57;
-    }
-    .plugin-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .plugin-meta span { display: inline-flex; align-items: center; gap: 4px; }
-    .plugin-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      flex-shrink: 0;
-    }
-    .btn-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--muted);
+    .view-switcher.active { display: flex; }
+    .view-switcher-left { display: flex; align-items: center; gap: 10px; }
+    .view-switcher-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--brand-wash); border: 1px solid #d7e7dd; color: var(--brand-strong);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+    }
+    .view-switcher-title { font-family: "Space Grotesk", sans-serif; font-size: 17px; letter-spacing: -0.02em; }
+    .view-switcher-right { display: flex; align-items: center; gap: 10px; }
+    .view-switcher-user { color: var(--muted); font-size: 12px; }
+    .btn-signout {
+      color: var(--muted); font-size: 12px; cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .btn-signout:hover { color: var(--text); }
+
+    /* ── Tab bar ── */
+    .tab-bar { display: none; width: min(560px, 100%); margin: 0 auto 16px; gap: 6px; }
+    .tab-bar.active { display: flex; }
+    .tab-btn {
+      flex: 1; padding: 10px 0; text-align: center;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      border-radius: 12px; border: 1px solid var(--line); background: #fff; cursor: pointer;
       transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .tab-btn:hover { border-color: #a8c4b2; color: var(--text); }
+    .tab-btn.active { background: var(--brand-wash); border-color: var(--brand); color: var(--brand-strong); }
+
+    /* ── Plugins panel ── */
+    .plugins-panel { display: none; width: min(560px, 100%); margin: 0 auto; animation: fadeInUp 300ms ease-out; }
+    .plugins-panel.active { display: block; }
+    .plugins-panel-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); }
+    .plugins-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .plugins-header h2 { font-family: "Space Grotesk", sans-serif; font-size: clamp(22px, 2.5vw, 28px); letter-spacing: -0.03em; }
+    .count-badge { background: var(--brand-wash); border: 1px solid #d7e7dd; border-radius: 999px; padding: 5px 11px; font-size: 12px; color: var(--brand-strong); font-weight: 700; }
+    .plugin-item { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .plugin-item:last-child { border-bottom: none; }
+    .plugin-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
+    .plugin-info { flex: 1; min-width: 0; }
+    .plugin-name { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .plugin-meta { font-size: 12px; color: var(--muted); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .plugin-meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .plugin-desc { font-size: 12px; color: var(--muted); opacity: 0.7; margin-top: 4px; }
+    .plugin-actions { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+    .btn-icon {
+      width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: #fff;
+      color: var(--muted); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 120ms, border-color 120ms, color 120ms;
     }
     .btn-icon:hover { background: #f9fdfb; border-color: #a8c4b2; color: var(--text); }
     .btn-icon.danger:hover { background: var(--danger-wash); border-color: #f2cbcb; color: var(--danger); }
-    .plugin-desc {
-      font-size: 12px;
-      color: var(--muted);
-      opacity: 0.7;
-      margin-top: 4px;
-    }
     .empty-plugins {
-      text-align: center;
-      padding: 24px;
-      color: var(--muted);
-      font-size: 13px;
-      border: 1px dashed var(--line);
-      border-radius: var(--radius-md);
-      background: #fcfdfd;
+      text-align: center; padding: 24px; color: var(--muted); font-size: 13px;
+      border: 1px dashed var(--line); border-radius: var(--radius-md); background: #fcfdfd;
     }
 
     /* ── Edit modal ── */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(16, 41, 53, 0.28);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      backdrop-filter: blur(2px);
+      position: fixed; inset: 0; background: rgba(16, 41, 53, 0.28);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; backdrop-filter: blur(2px);
     }
     .modal {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 22px;
-      max-width: 420px;
-      width: 90%;
-      box-shadow: var(--shadow);
+      background: #fff; border: 1px solid var(--line); border-radius: 20px;
+      padding: 22px; max-width: 420px; width: 90%; box-shadow: var(--shadow);
     }
-    .modal h3 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 24px;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
-    }
+    .modal h3 { font-family: "Space Grotesk", sans-serif; font-size: 22px; letter-spacing: -0.02em; margin-bottom: 14px; }
     .modal label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; margin-top: 14px; }
     .modal label:first-of-type { margin-top: 0; }
     .modal input, .modal textarea {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-      box-sizing: border-box;
+      width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
+      background: #fff; color: var(--text); font-family: inherit; font-size: 13px; outline: none;
     }
     .modal textarea { resize: vertical; min-height: 60px; }
-    .modal input:focus, .modal textarea:focus {
-      border-color: #9fbeab;
-      box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2);
-    }
+    .modal input:focus, .modal textarea:focus { border-color: #9fbeab; box-shadow: 0 0 0 3px rgba(136, 181, 151, 0.2); }
     .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface-soft);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 14px; padding: 10px 12px;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft);
     }
     .toggle-row span { font-size: 12px; color: var(--muted); font-weight: 600; }
-    .toggle {
-      width: 44px; height: 24px;
-      border-radius: 999px;
-      background: #e8eef1;
-      border: 1px solid #c8d6dd;
-      cursor: pointer;
-      position: relative;
-      transition: background 150ms;
-    }
-    .toggle.on { background: var(--brand); border-color: var(--brand); }
-    .toggle::after {
-      content: "";
-      position: absolute;
-      top: 2px; left: 2px;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-      transition: transform 150ms;
-    }
-    .toggle.on::after { transform: translateX(20px); }
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 20px;
-    }
+    .modal-actions { display: flex; gap: 8px; margin-top: 20px; }
     .modal-actions .btn { flex: 1; }
-    .btn-secondary {
-      background: #fff;
-      color: var(--muted);
-      border: 1px solid var(--line);
-    }
-    #login-error {
-      margin: 0 auto 12px;
-    }
 
-    @media (max-width: 1080px) {
-      .upload-wrap {
-        width: min(760px, 100%);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .plugins-section { width: 100%; }
-      .plugins-section .card { min-height: 360px; }
-    }
-
+    /* ── Responsive ── */
     @media (max-width: 620px) {
       body { padding: 12px 10px 24px; }
-      .login-wrap { margin-top: 24px; gap: 16px; }
-      .login-card { padding: 18px; }
-      #login-error { margin-bottom: 12px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-      }
-      .topbar-right { align-items: flex-start; text-align: left; }
-      .card { border-radius: 20px; padding: 14px; }
-      .plugin-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .plugin-actions {
-        width: 100%;
-        justify-content: flex-start;
-      }
+      .w-field-row { grid-template-columns: 1fr; }
+      .plugin-top { flex-direction: column; align-items: flex-start; }
+      .plugin-actions { width: 100%; justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Login error banner (shown above login card) -->
-  <div id="login-error" class="banner banner-error" style="display:none;max-width:620px;width:100%;position:relative;z-index:1"></div>
+  <!-- Login error banner -->
+  <div id="login-error" class="banner banner-error" style="max-width:520px;width:100%;margin:0 auto 12px"></div>
 
-  <!-- Login view -->
+  <!-- ═══════════ LOGIN VIEW ═══════════ -->
   <div id="login-view" style="display:none" class="login-wrap">
     <a href="/" class="back-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -693,9 +381,9 @@
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     </div>
     <h1>Upload a Plugin</h1>
-    <p class="login-wrap-subtitle" style="color:var(--muted);font-size:14px;line-height:1.6;max-width:420px">Publish and manage plugins for the vatSys Plugin Installer directly from here.</p>
+    <p class="subtitle">Publish and manage plugins for the vatSys Plugin Installer.</p>
     <div class="login-card">
-      <p>Sign in with Discord to upload a plugin to the vatSys Plugin Installer.</p>
+      <p>Sign in with Discord to get started.</p>
       <a class="btn btn-discord" href="https://api.actuallyleviticus.xyz/auth/discord" style="width:100%">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
         Sign in with Discord
@@ -707,113 +395,168 @@
     </div>
   </div>
 
-  <!-- Upload view -->
-  <div id="upload-view" style="display:none" class="upload-wrap">
-    <div class="topbar">
-      <div class="topbar-logo">
-        <div class="topbar-logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </div>
-        <span class="topbar-title">Upload Plugin</span>
+  <!-- ═══════════ AUTHENTICATED VIEW ═══════════ -->
+  <div id="view-switcher" class="view-switcher">
+    <div class="view-switcher-left">
+      <div class="view-switcher-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </div>
-      <div class="topbar-right">
-        <div class="topbar-user" id="uploader-name"></div>
-        <button class="btn-signout" onclick="logout()">Sign out</button>
-      </div>
+      <span class="view-switcher-title">Plugin Manager</span>
     </div>
-
-    <div id="error-banner" class="banner banner-error" style="display:none"></div>
-    <div id="success-banner" class="banner banner-success" style="display:none"></div>
-
-    <div class="card">
-      <div class="section-label" style="margin-bottom:8px">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        Plugin Setup
-      </div>
-      <div class="form-grid">
-        <div class="form-field form-field-wide">
-          <label class="input-label" for="plugin-name">Plugin Key</label>
-          <input type="text" id="plugin-name" placeholder="e.g. MumbleReconnect">
-          <p class="field-hint" id="plugin-match-hint">New plugin key. Use letters, numbers, dashes, or underscores.</p>
-        </div>
-        <div class="form-field">
-          <label class="input-label" for="upload-display-name">Display Name</label>
-          <input type="text" id="upload-display-name" placeholder="e.g. Mumble Reconnect">
-        </div>
-        <div class="form-field">
-          <label class="input-label" for="upload-version">Version</label>
-          <input type="text" id="upload-version" placeholder="1.0.0">
-        </div>
-        <div class="form-field form-field-wide">
-          <label class="input-label" for="upload-description">Description</label>
-          <textarea id="upload-description" placeholder="What does this plugin do?"></textarea>
-        </div>
-      </div>
-      <div class="upload-dev-row">
-        <span>In Development</span>
-        <div class="toggle" id="upload-dev-toggle" onclick="this.classList.toggle('on')"></div>
-      </div>
-
-      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-        <div class="drop-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        </div>
-        <p>Drag &amp; drop your plugin here, or <span class="browse">browse files</span></p>
-        <p class="file-name" id="file-name"></p>
-        <input type="file" id="file-input" accept=".dll,.xml,.json,.zip" style="display:none">
-      </div>
-      <p class="allowed-types">.dll &nbsp;·&nbsp; .xml &nbsp;·&nbsp; .json &nbsp;·&nbsp; .zip &nbsp;·&nbsp; Max 50 MB</p>
-      <div class="progress-bar" id="progress-bar" style="display:none">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-      <button class="btn btn-accent" id="upload-btn" onclick="uploadFile()" disabled style="width:100%">Upload</button>
-
-      <hr class="section-divider">
-
-      <!-- Banner section -->
-      <div class="section-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-        Plugin Banner
-      </div>
-      <p class="field-hint" id="banner-target-label" style="margin-bottom:8px">Banner target: enter or select a plugin key above.</p>
-      <div class="banner-preview-wrap" id="banner-preview-wrap">
-        <div class="banner-placeholder" id="banner-placeholder" onclick="document.getElementById('banner-input').click()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          No banner set — click to upload
-        </div>
-        <img id="banner-img" src="" alt="" style="display:none">
-      </div>
-      <div class="banner-actions">
-        <button class="btn-outline" onclick="document.getElementById('banner-input').click()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Choose Image
-        </button>
-        <button class="btn-outline" id="save-banner-btn" onclick="uploadBanner()" style="display:none">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Save Banner
-        </button>
-      </div>
-      <p class="allowed-types" style="margin-top:8px">.png &nbsp;·&nbsp; .jpg &nbsp;·&nbsp; .jpeg &nbsp;·&nbsp; .webp &nbsp;·&nbsp; Max 5 MB</p>
-      <input type="file" id="banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
-      <input type="file" id="quick-banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
-      <input type="file" id="replace-file-input" accept=".dll,.xml,.json,.zip" style="display:none">
-    </div>
-
-    <!-- My Plugins -->
-    <div class="plugins-section">
-      <div class="card">
-        <div class="section-header">
-          <h2>My Plugins</h2>
-          <span class="count-badge" id="plugin-count">–</span>
-        </div>
-        <div id="plugin-list">
-          <div class="empty-plugins">Loading…</div>
-        </div>
-      </div>
+    <div class="view-switcher-right">
+      <span class="view-switcher-user" id="uploader-name"></span>
+      <button class="btn-signout" onclick="logout()">Sign out</button>
     </div>
   </div>
 
-  <!-- Edit modal -->
+  <div id="tab-bar" class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('upload')" id="tab-upload">Upload New</button>
+    <button class="tab-btn" onclick="switchTab('plugins')" id="tab-plugins">My Plugins</button>
+  </div>
+
+  <div id="error-banner" class="banner banner-error" style="max-width:560px;margin:0 auto 12px"></div>
+  <div id="success-banner" class="banner banner-success" style="max-width:560px;margin:0 auto 12px"></div>
+
+  <!-- ═══════════ WIZARD ═══════════ -->
+  <div id="wizard" class="wizard-shell">
+    <div class="wizard-topbar">
+      <button class="wizard-back" onclick="wizardBack()" id="wizard-back-btn" style="visibility:hidden">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="wizard-step-label" id="wizard-step-label">Step 1 of 5</span>
+      <button class="wizard-cancel" onclick="wizardReset()">Reset</button>
+    </div>
+    <div class="wizard-progress"><div class="wizard-progress-fill" id="wizard-progress-fill"></div></div>
+
+    <div class="wizard-body">
+      <!-- STEP 1: Plugin Key -->
+      <div class="wizard-step active" id="step-key">
+        <h2 class="stagger-1">What's your plugin called?</h2>
+        <p class="step-subtitle stagger-2">Enter the unique key for your plugin — this is the folder name in the registry.</p>
+        <div class="stagger-3">
+          <div class="w-field">
+            <label class="w-label" for="w-plugin-key">Plugin Key</label>
+            <input class="w-input" type="text" id="w-plugin-key" placeholder="e.g. MumbleReconnect" autocomplete="off">
+            <p class="w-hint" id="w-key-hint">Use letters, numbers, dashes, or underscores.</p>
+          </div>
+          <div id="w-existing-pills" style="display:none;margin-top:10px">
+            <p class="w-label" style="margin-bottom:8px">Or update an existing plugin</p>
+            <div id="w-existing-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Details -->
+      <div class="wizard-step" id="step-details">
+        <h2 class="stagger-1">Tell us about it</h2>
+        <p class="step-subtitle stagger-2">Set the display name, version, and a short description.</p>
+        <div class="stagger-3">
+          <div class="w-field-row">
+            <div class="w-field">
+              <label class="w-label" for="w-display-name">Display Name</label>
+              <input class="w-input" type="text" id="w-display-name" placeholder="e.g. Mumble Reconnect">
+            </div>
+            <div class="w-field">
+              <label class="w-label" for="w-version">Version</label>
+              <input class="w-input" type="text" id="w-version" placeholder="1.0.0">
+            </div>
+          </div>
+          <div class="w-field">
+            <label class="w-label" for="w-description">Description</label>
+            <textarea class="w-input w-textarea" id="w-description" placeholder="What does this plugin do?"></textarea>
+          </div>
+          <div class="toggle-card">
+            <div>
+              <div class="toggle-card-label">In Development</div>
+              <div class="toggle-card-desc">Hide from the stable plugin list in the installer</div>
+            </div>
+            <div class="toggle" id="w-dev-toggle" onclick="this.classList.toggle('on')"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: File -->
+      <div class="wizard-step" id="step-file">
+        <h2 class="stagger-1">Upload your plugin file</h2>
+        <p class="step-subtitle stagger-2">Drag and drop or browse for your plugin package.</p>
+        <div class="stagger-3">
+          <div class="drop-zone" id="w-drop-zone" onclick="document.getElementById('w-file-input').click()">
+            <div class="drop-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="file-check">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p>Drag &amp; drop your file here, or <span class="browse">browse</span></p>
+            <p class="file-name" id="w-file-name"></p>
+            <input type="file" id="w-file-input" accept=".dll,.xml,.json,.zip" style="display:none">
+          </div>
+          <p class="allowed-types">.dll · .xml · .json · .zip · Max 50 MB</p>
+        </div>
+      </div>
+
+      <!-- STEP 4: Banner -->
+      <div class="wizard-step" id="step-banner">
+        <h2 class="stagger-1">Add a banner image</h2>
+        <p class="step-subtitle stagger-2">Optional — this appears in the plugin installer as the card background.</p>
+        <div class="stagger-3">
+          <div class="banner-preview" id="w-banner-preview" onclick="document.getElementById('w-banner-input').click()">
+            <div class="banner-placeholder" id="w-banner-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Click to choose a banner image
+            </div>
+            <img id="w-banner-img" src="" alt="" style="display:none">
+          </div>
+          <p class="allowed-types">.png · .jpg · .jpeg · .webp · Max 5 MB</p>
+          <input type="file" id="w-banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
+        </div>
+      </div>
+
+      <!-- STEP 5: Review -->
+      <div class="wizard-step" id="step-review">
+        <h2 class="stagger-1">Looking good!</h2>
+        <p class="step-subtitle stagger-2">Review everything before uploading.</p>
+        <div class="stagger-3">
+          <div class="review-card">
+            <div class="review-row"><span class="review-label">Plugin Key</span><span class="review-value" id="r-key"></span></div>
+            <div class="review-row"><span class="review-label">Display Name</span><span class="review-value" id="r-display"></span></div>
+            <div class="review-row"><span class="review-label">Version</span><span class="review-value" id="r-version"></span></div>
+            <div class="review-row"><span class="review-label">Description</span><span class="review-value" id="r-desc" style="font-size:12px;font-weight:500"></span></div>
+            <div class="review-row"><span class="review-label">Status</span><span class="review-value" id="r-status"></span></div>
+            <div class="review-row"><span class="review-label">File</span><span class="review-value" id="r-file"></span></div>
+            <div class="review-banner" id="r-banner-wrap" style="display:none"><img id="r-banner-img" src="" alt=""></div>
+          </div>
+          <div class="review-edit-links">
+            <button class="review-edit-link" onclick="wizardGoTo(0)">Edit Key</button>
+            <button class="review-edit-link" onclick="wizardGoTo(1)">Edit Details</button>
+            <button class="review-edit-link" onclick="wizardGoTo(2)">Change File</button>
+            <button class="review-edit-link" onclick="wizardGoTo(3)">Change Banner</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-progress" id="w-upload-progress"><div class="upload-progress-fill" id="w-upload-progress-fill"></div></div>
+
+    <div class="wizard-footer">
+      <button class="btn btn-primary" id="wizard-next-btn" onclick="wizardNext()">
+        Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ MY PLUGINS ═══════════ -->
+  <div id="plugins-panel" class="plugins-panel">
+    <div class="plugins-panel-card">
+      <div class="plugins-header">
+        <h2>My Plugins</h2>
+        <span class="count-badge" id="plugin-count">–</span>
+      </div>
+      <div id="plugin-list"><div class="empty-plugins">Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ EDIT MODAL ═══════════ -->
   <div id="edit-modal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
     <div class="modal">
       <h3>Edit Plugin</h3>
@@ -821,7 +564,7 @@
       <label>Display Name</label>
       <input type="text" id="edit-display-name">
       <label>Description</label>
-      <textarea id="edit-description" placeholder="Short description of your plugin…"></textarea>
+      <textarea id="edit-description" placeholder="Short description…"></textarea>
       <label>Version</label>
       <input type="text" id="edit-version" placeholder="1.0.0">
       <div class="toggle-row">
@@ -830,10 +573,13 @@
       </div>
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-accent" onclick="savePluginEdit()">Save</button>
+        <button class="btn btn-primary" onclick="savePluginEdit()">Save</button>
       </div>
     </div>
   </div>
+
+  <input type="file" id="quick-banner-input" accept=".png,.jpg,.jpeg,.webp" style="display:none">
+  <input type="file" id="replace-file-input" accept=".dll,.xml,.json,.zip" style="display:none">
 
   <script>
     const API = "https://api.actuallyleviticus.xyz";
@@ -842,81 +588,61 @@
     const MAX_PLUGIN_BYTES = 50 * 1024 * 1024;
     const MAX_BANNER_BYTES = 5 * 1024 * 1024;
     const VERSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,29}$/;
+
     let token = null;
-    let selectedFile = null;
-    let selectedBanner = null;
     let pluginLookup = new Map();
     let replaceTargetPlugin = null;
     let quickBannerTargetPlugin = null;
 
+    const STEPS = ["step-key", "step-details", "step-file", "step-banner", "step-review"];
+    let currentStep = 0;
+    let wizardFile = null;
+    let wizardBanner = null;
+    let wizardBannerDataUrl = null;
+
+    // ── Utilities ──
+
     function isTokenValid(t) {
-      try {
-        const payload = JSON.parse(atob(t));
-        const data = JSON.parse(payload.data);
-        return data.exp && Date.now() < data.exp;
-      } catch { return false; }
+      try { const p = JSON.parse(atob(t)); const d = JSON.parse(p.data); return d.exp && Date.now() < d.exp; } catch { return false; }
     }
-
     function getTokenData(t) {
-      try {
-        const payload = JSON.parse(atob(t));
-        return JSON.parse(payload.data);
-      } catch { return null; }
+      try { const p = JSON.parse(atob(t)); return JSON.parse(p.data); } catch { return null; }
+    }
+    function sanitizePluginKey(v) { return String(v || "").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100); }
+    function getFileExt(n) { const i = String(n || "").lastIndexOf("."); return i >= 0 ? n.slice(i).toLowerCase() : ""; }
+    function escapeHtml(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
+    function escapeAttr(s) { return String(s||"").replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/'/g,"\\'").replace(/"/g,"&quot;"); }
+    function toCdnUrl(k) { return k ? `https://cdn.actuallyleviticus.xyz/${String(k).split("/").map(s=>encodeURIComponent(s)).join("/")}` : ""; }
+    function setToggleState(el, on) { if (!el) return; if (on) el.classList.add("on"); else el.classList.remove("on"); }
+    function getToggleState(el) { return !!(el && el.classList.contains("on")); }
+
+    function validatePluginFile(f) {
+      const e = getFileExt(f.name);
+      if (!FILE_EXTS.includes(e)) throw new Error(`File type "${e}" not allowed. Use: ${FILE_EXTS.join(", ")}`);
+      if (f.size > MAX_PLUGIN_BYTES) throw new Error("File too large (max 50 MB)");
+    }
+    function validateBannerFile(f) {
+      const e = getFileExt(f.name);
+      if (!BANNER_EXTS.includes(e)) throw new Error(`Banner must be an image (${BANNER_EXTS.join(", ")})`);
+      if (f.size > MAX_BANNER_BYTES) throw new Error("Banner too large (max 5 MB)");
     }
 
-    function sanitizePluginKey(value) {
-      return String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 100);
+    // ── Banners ──
+
+    function showError(msg) {
+      const b = document.getElementById("error-banner");
+      b.textContent = msg; b.style.display = "block";
+      document.getElementById("success-banner").style.display = "none";
+      setTimeout(() => b.style.display = "none", 6000);
+    }
+    function showSuccess(msg) {
+      const b = document.getElementById("success-banner");
+      b.textContent = msg; b.style.display = "block";
+      document.getElementById("error-banner").style.display = "none";
+      setTimeout(() => b.style.display = "none", 6000);
     }
 
-    function getFileExt(name) {
-      const idx = String(name || "").lastIndexOf(".");
-      return idx >= 0 ? name.slice(idx).toLowerCase() : "";
-    }
-
-    function getPluginMatch(pluginNameInput) {
-      const safe = sanitizePluginKey(String(pluginNameInput || "").trim());
-      if (!safe) return null;
-      return pluginLookup.get(safe) || null;
-    }
-
-    function setToggleState(el, isOn) {
-      if (!el) return;
-      if (isOn) el.classList.add("on");
-      else el.classList.remove("on");
-    }
-
-    function getToggleState(el) {
-      return !!(el && el.classList.contains("on"));
-    }
-
-    function validatePluginFile(file) {
-      const ext = getFileExt(file.name);
-      if (!FILE_EXTS.includes(ext)) {
-        throw new Error(`File type "${ext}" not allowed. Use: ${FILE_EXTS.join(", ")}`);
-      }
-      if (file.size > MAX_PLUGIN_BYTES) {
-        throw new Error("File too large (max 50 MB)");
-      }
-    }
-
-    function validateBannerFile(file) {
-      const ext = getFileExt(file.name);
-      if (!BANNER_EXTS.includes(ext)) {
-        throw new Error(`Banner must be an image (${BANNER_EXTS.join(", ")})`);
-      }
-      if (file.size > MAX_BANNER_BYTES) {
-        throw new Error("Banner too large (max 5 MB)");
-      }
-    }
-
-    function toCdnUrl(key) {
-      if (!key) return "";
-      const encoded = String(key)
-        .split("/")
-        .map((segment) => encodeURIComponent(segment))
-        .join("/");
-      return `https://cdn.actuallyleviticus.xyz/${encoded}`;
-    }
+    // ── Init ──
 
     function init() {
       const hash = window.location.hash;
@@ -926,574 +652,399 @@
         history.replaceState(null, "", window.location.pathname);
       } else if (hash.startsWith("#error=")) {
         const errMsg = decodeURIComponent(hash.slice(7));
-        // Show error on login screen since user isn't authenticated
-        const loginErr = document.getElementById("login-error");
-        loginErr.textContent = errMsg;
-        loginErr.style.display = "block";
-        setTimeout(() => loginErr.style.display = "none", 8000);
+        const el = document.getElementById("login-error");
+        el.textContent = errMsg; el.style.display = "block";
+        setTimeout(() => el.style.display = "none", 8000);
         history.replaceState(null, "", window.location.pathname);
       }
-
       if (!token) token = localStorage.getItem("uploadToken");
-
-      // Check token validity
-      if (token && !isTokenValid(token)) {
-        localStorage.removeItem("uploadToken");
-        token = null;
-      }
+      if (token && !isTokenValid(token)) { localStorage.removeItem("uploadToken"); token = null; }
 
       if (token) {
         const data = getTokenData(token);
-        if (data) {
-          document.getElementById("uploader-name").textContent = data.name;
-        }
-        document.getElementById("upload-view").style.display = "grid";
-        document.getElementById("upload-version").value = "1.0.0";
-        setupDragDrop();
-        setupBanner();
-        setupQuickActions();
-        setupFormSync();
-        loadMyPlugins().then(() => syncUploadFormWithPluginKey());
+        if (data) document.getElementById("uploader-name").textContent = data.name;
+        showAuthenticatedView();
       } else {
         document.getElementById("login-view").style.display = "flex";
       }
     }
 
+    function showAuthenticatedView() {
+      document.getElementById("login-view").style.display = "none";
+      document.getElementById("view-switcher").classList.add("active");
+      document.getElementById("tab-bar").classList.add("active");
+      document.getElementById("wizard").classList.add("active");
+      wizardReset();
+      setupWizardInputs();
+      loadMyPlugins();
+    }
+
     function logout() {
-      localStorage.removeItem("uploadToken");
-      token = null;
-      document.getElementById("upload-view").style.display = "none";
+      localStorage.removeItem("uploadToken"); token = null;
+      document.getElementById("view-switcher").classList.remove("active");
+      document.getElementById("tab-bar").classList.remove("active");
+      document.getElementById("wizard").classList.remove("active");
+      document.getElementById("plugins-panel").classList.remove("active");
       document.getElementById("login-view").style.display = "flex";
     }
 
-    function showError(msg) {
-      const banner = document.getElementById("error-banner");
-      banner.textContent = msg;
-      banner.style.display = "block";
-      document.getElementById("success-banner").style.display = "none";
-      setTimeout(() => banner.style.display = "none", 6000);
+    // ── Tabs ──
+
+    function switchTab(tab) {
+      document.getElementById("tab-upload").classList.toggle("active", tab === "upload");
+      document.getElementById("tab-plugins").classList.toggle("active", tab === "plugins");
+      document.getElementById("wizard").classList.toggle("active", tab === "upload");
+      document.getElementById("plugins-panel").classList.toggle("active", tab === "plugins");
     }
 
-    function showSuccess(msg) {
-      const banner = document.getElementById("success-banner");
-      banner.textContent = msg;
-      banner.style.display = "block";
-      document.getElementById("error-banner").style.display = "none";
+    // ── Wizard navigation ──
+
+    function wizardGoTo(targetIdx, direction) {
+      const dir = direction || (targetIdx > currentStep ? "right" : "left");
+      const oldStep = document.getElementById(STEPS[currentStep]);
+      const newStep = document.getElementById(STEPS[targetIdx]);
+      oldStep.classList.remove("active");
+      newStep.classList.remove("step-enter-right", "step-enter-left");
+      newStep.classList.add("active", dir === "right" ? "step-enter-right" : "step-enter-left");
+      currentStep = targetIdx;
+      updateWizardChrome();
+      const fi = newStep.querySelector("input[type=text], textarea");
+      if (fi) setTimeout(() => fi.focus(), 100);
+      if (currentStep === 4) populateReview();
     }
 
-    function renderBannerPreview(url) {
-      const img = document.getElementById("banner-img");
-      const placeholder = document.getElementById("banner-placeholder");
-      img.src = url;
-      img.style.display = "block";
-      placeholder.style.display = "none";
+    function wizardNext() {
+      if (currentStep === 4) { submitWizard(); return; }
+      if (!validateStep(currentStep)) return;
+      wizardGoTo(currentStep + 1, "right");
     }
 
-    function clearBannerPreview(clearPending = false) {
-      const img = document.getElementById("banner-img");
-      const placeholder = document.getElementById("banner-placeholder");
-      const saveBtn = document.getElementById("save-banner-btn");
-      img.src = "";
-      img.style.display = "none";
-      placeholder.style.display = "flex";
-      saveBtn.style.display = "none";
-      if (clearPending) {
-        selectedBanner = null;
-        document.getElementById("banner-input").value = "";
+    function wizardBack() {
+      if (currentStep === 0) return;
+      wizardGoTo(currentStep - 1, "left");
+    }
+
+    function wizardReset() {
+      currentStep = 0;
+      wizardFile = null; wizardBanner = null; wizardBannerDataUrl = null;
+      document.getElementById("w-plugin-key").value = "";
+      document.getElementById("w-display-name").value = "";
+      document.getElementById("w-version").value = "1.0.0";
+      document.getElementById("w-description").value = "";
+      setToggleState(document.getElementById("w-dev-toggle"), false);
+      document.getElementById("w-file-name").textContent = "";
+      document.getElementById("w-file-input").value = "";
+      document.getElementById("w-banner-input").value = "";
+      document.getElementById("w-banner-img").style.display = "none";
+      document.getElementById("w-banner-img").src = "";
+      document.getElementById("w-banner-placeholder").style.display = "flex";
+      document.getElementById("w-banner-preview").classList.remove("has-banner");
+      document.getElementById("w-drop-zone").classList.remove("has-file");
+      document.getElementById("w-key-hint").textContent = "Use letters, numbers, dashes, or underscores.";
+      document.getElementById("w-key-hint").classList.remove("match");
+      STEPS.forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.classList.remove("active", "step-enter-right", "step-enter-left");
+        if (i === 0) el.classList.add("active");
+      });
+      updateWizardChrome();
+      renderExistingPills();
+    }
+
+    function updateWizardChrome() {
+      const pct = ((currentStep + 1) / STEPS.length) * 100;
+      document.getElementById("wizard-progress-fill").style.width = `${pct}%`;
+      document.getElementById("wizard-step-label").textContent = `Step ${currentStep + 1} of ${STEPS.length}`;
+      const btn = document.getElementById("wizard-next-btn");
+      if (currentStep === 4) {
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Plugin`;
+      } else if (currentStep === 3) {
+        btn.innerHTML = `Review <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+      } else {
+        btn.innerHTML = `Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
       }
+      document.getElementById("wizard-back-btn").style.visibility = currentStep === 0 ? "hidden" : "visible";
     }
 
-    function setupFormSync() {
-      const pluginNameInput = document.getElementById("plugin-name");
-      pluginNameInput.addEventListener("input", syncUploadFormWithPluginKey);
-      pluginNameInput.addEventListener("change", syncUploadFormWithPluginKey);
-    }
-
-    function syncUploadFormWithPluginKey() {
-      const pluginNameInput = document.getElementById("plugin-name");
-      const displayNameInput = document.getElementById("upload-display-name");
-      const versionInput = document.getElementById("upload-version");
-      const descriptionInput = document.getElementById("upload-description");
-      const devToggle = document.getElementById("upload-dev-toggle");
-      const matchHint = document.getElementById("plugin-match-hint");
-      const bannerTarget = document.getElementById("banner-target-label");
-      const rawName = pluginNameInput.value.trim();
-
-      if (!rawName) {
-        matchHint.textContent = "New plugin key. Use letters, numbers, dashes, or underscores.";
-        matchHint.classList.remove("matching");
-        bannerTarget.textContent = "Banner target: enter or select a plugin key above.";
-        bannerTarget.classList.remove("active");
-        clearBannerPreview(true);
-        return;
-      }
-
-      const safeName = sanitizePluginKey(rawName);
-      const existing = getPluginMatch(rawName);
-
-      if (existing) {
-        displayNameInput.value = existing.display_name || existing.name;
-        versionInput.value = existing.version || "1.0.0";
-        descriptionInput.value = existing.description || "";
-        setToggleState(devToggle, !!existing.is_dev);
-        matchHint.textContent = `Editing existing plugin "${existing.display_name}" (${existing.name}).`;
-        matchHint.classList.add("matching");
-        bannerTarget.textContent = `Banner target: ${existing.display_name} (${existing.name})`;
-        bannerTarget.classList.add("active");
-        loadExistingBanner(existing);
-        return;
-      }
-
-      if (!displayNameInput.value.trim()) displayNameInput.value = rawName;
-      if (!versionInput.value.trim()) versionInput.value = "1.0.0";
-      matchHint.textContent = `Creating new plugin folder "${safeName}".`;
-      matchHint.classList.remove("matching");
-      bannerTarget.textContent = `Banner target: ${safeName}`;
-      bannerTarget.classList.add("active");
-      if (!selectedBanner) clearBannerPreview(false);
-    }
-
-    function setupQuickActions() {
-      const quickBannerInput = document.getElementById("quick-banner-input");
-      quickBannerInput.addEventListener("change", async () => {
-        if (!quickBannerInput.files.length || !quickBannerTargetPlugin) return;
-        const file = quickBannerInput.files[0];
-        quickBannerInput.value = "";
-
-        try {
-          validateBannerFile(file);
-          await uploadBannerForPlugin(quickBannerTargetPlugin.name, file);
-          showSuccess(`Banner updated for "${quickBannerTargetPlugin.display_name}"`);
-          await loadMyPlugins();
-          syncUploadFormWithPluginKey();
-        } catch (err) {
-          showError(err.message);
-        } finally {
-          quickBannerTargetPlugin = null;
+    function validateStep(idx) {
+      switch (idx) {
+        case 0: if (!document.getElementById("w-plugin-key").value.trim()) { showError("Enter a plugin key"); return false; } return true;
+        case 1: {
+          const dn = document.getElementById("w-display-name").value.trim();
+          const v = document.getElementById("w-version").value.trim() || "1.0.0";
+          if (!dn) { showError("Display name is required"); return false; }
+          if (!VERSION_PATTERN.test(v)) { showError("Invalid version format (letters, numbers, dots, underscores, dashes, max 30 chars)"); return false; }
+          return true;
         }
-      });
-
-      const replaceInput = document.getElementById("replace-file-input");
-      replaceInput.addEventListener("change", async () => {
-        if (!replaceInput.files.length || !replaceTargetPlugin) return;
-        const file = replaceInput.files[0];
-        replaceInput.value = "";
-
-        try {
-          validatePluginFile(file);
-          await uploadPluginFile({
-            file,
-            pluginName: replaceTargetPlugin.name,
-            displayName: replaceTargetPlugin.display_name || replaceTargetPlugin.name,
-            description: replaceTargetPlugin.description || "",
-            version: replaceTargetPlugin.version || "1.0.0",
-            isDev: !!replaceTargetPlugin.is_dev,
-          });
-          showSuccess(`Package replaced for "${replaceTargetPlugin.display_name}"`);
-          await loadMyPlugins();
-          syncUploadFormWithPluginKey();
-        } catch (err) {
-          showError(err.message);
-        } finally {
-          replaceTargetPlugin = null;
-        }
-      });
+        case 2: if (!wizardFile) { showError("Select a plugin file to upload"); return false; } return true;
+        case 3: return true;
+        default: return true;
+      }
     }
 
-    function setupDragDrop() {
-      const zone = document.getElementById("drop-zone");
-      const input = document.getElementById("file-input");
+    // ── Wizard inputs ──
 
-      zone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        zone.classList.add("drag-over");
-      });
+    function setupWizardInputs() {
+      const ki = document.getElementById("w-plugin-key");
+      ki.addEventListener("input", onPluginKeyChange);
+      ki.addEventListener("change", onPluginKeyChange);
+
+      const zone = document.getElementById("w-drop-zone");
+      const fi = document.getElementById("w-file-input");
+      zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
       zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
-      zone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        zone.classList.remove("drag-over");
-        if (e.dataTransfer.files.length) selectFile(e.dataTransfer.files[0]);
+      zone.addEventListener("drop", e => { e.preventDefault(); zone.classList.remove("drag-over"); if (e.dataTransfer.files.length) selectWizardFile(e.dataTransfer.files[0]); });
+      fi.addEventListener("change", () => { if (fi.files.length) selectWizardFile(fi.files[0]); });
+
+      document.getElementById("w-banner-input").addEventListener("change", function() {
+        if (this.files.length) selectWizardBanner(this.files[0]);
       });
-      input.addEventListener("change", () => {
-        if (input.files.length) selectFile(input.files[0]);
-      });
+
+      setupQuickActions();
     }
 
-    function selectFile(file) {
+    function onPluginKeyChange() {
+      const raw = document.getElementById("w-plugin-key").value.trim();
+      const hint = document.getElementById("w-key-hint");
+      if (!raw) { hint.textContent = "Use letters, numbers, dashes, or underscores."; hint.classList.remove("match"); return; }
+      const safe = sanitizePluginKey(raw);
+      const existing = pluginLookup.get(safe);
+      if (existing) {
+        hint.textContent = `Editing existing plugin "${existing.display_name}"`;
+        hint.classList.add("match");
+        document.getElementById("w-display-name").value = existing.display_name || existing.name;
+        document.getElementById("w-version").value = existing.version || "1.0.0";
+        document.getElementById("w-description").value = existing.description || "";
+        setToggleState(document.getElementById("w-dev-toggle"), !!existing.is_dev);
+      } else {
+        hint.textContent = `New plugin folder "${safe}" will be created.`;
+        hint.classList.remove("match");
+        if (!document.getElementById("w-display-name").value.trim()) document.getElementById("w-display-name").value = raw;
+      }
+    }
+
+    function renderExistingPills() {
+      const c = document.getElementById("w-existing-list");
+      const w = document.getElementById("w-existing-pills");
+      c.innerHTML = "";
+      if (pluginLookup.size === 0) { w.style.display = "none"; return; }
+      w.style.display = "block";
+      for (const [key, plugin] of pluginLookup) {
+        const pill = document.createElement("button");
+        pill.className = "review-edit-link";
+        pill.textContent = plugin.display_name || key;
+        pill.onclick = () => { document.getElementById("w-plugin-key").value = key; onPluginKeyChange(); };
+        c.appendChild(pill);
+      }
+    }
+
+    function selectWizardFile(file) {
+      try { validatePluginFile(file); } catch (err) { showError(err.message); return; }
+      wizardFile = file;
+      document.getElementById("w-file-name").textContent = file.name;
+      document.getElementById("w-drop-zone").classList.add("has-file");
+    }
+
+    function selectWizardBanner(file) {
+      try { validateBannerFile(file); } catch (err) { showError(err.message); return; }
+      wizardBanner = file;
+      const reader = new FileReader();
+      reader.onload = e => {
+        wizardBannerDataUrl = e.target.result;
+        const img = document.getElementById("w-banner-img");
+        img.src = e.target.result; img.style.display = "block";
+        document.getElementById("w-banner-placeholder").style.display = "none";
+        document.getElementById("w-banner-preview").classList.add("has-banner");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ── Review ──
+
+    function populateReview() {
+      const key = sanitizePluginKey(document.getElementById("w-plugin-key").value.trim());
+      const dn = document.getElementById("w-display-name").value.trim() || key;
+      const v = document.getElementById("w-version").value.trim() || "1.0.0";
+      const desc = document.getElementById("w-description").value.trim();
+      const isDev = getToggleState(document.getElementById("w-dev-toggle"));
+      document.getElementById("r-key").textContent = key;
+      document.getElementById("r-display").textContent = dn;
+      document.getElementById("r-version").textContent = `v${v}`;
+      document.getElementById("r-desc").textContent = desc || "—";
+      document.getElementById("r-status").innerHTML = isDev
+        ? '<span class="dev-badge dev-badge-on">In Development</span>'
+        : '<span class="dev-badge dev-badge-off">Stable</span>';
+      document.getElementById("r-file").textContent = wizardFile ? wizardFile.name : "—";
+      const bw = document.getElementById("r-banner-wrap");
+      if (wizardBannerDataUrl) { document.getElementById("r-banner-img").src = wizardBannerDataUrl; bw.style.display = "block"; }
+      else {
+        const ex = pluginLookup.get(key);
+        if (ex && ex.banner) { document.getElementById("r-banner-img").src = `${toCdnUrl(ex.banner)}?t=${Date.now()}`; bw.style.display = "block"; }
+        else bw.style.display = "none";
+      }
+    }
+
+    // ── Submit ──
+
+    async function submitWizard() {
+      const pluginName = document.getElementById("w-plugin-key").value.trim();
+      const displayName = document.getElementById("w-display-name").value.trim() || pluginName;
+      const version = document.getElementById("w-version").value.trim() || "1.0.0";
+      const description = document.getElementById("w-description").value.trim();
+      const isDev = getToggleState(document.getElementById("w-dev-toggle"));
+      if (!wizardFile) { showError("No file selected"); return; }
+
+      const btn = document.getElementById("wizard-next-btn");
+      const bar = document.getElementById("w-upload-progress");
+      const fill = document.getElementById("w-upload-progress-fill");
+      btn.disabled = true;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Uploading…`;
+      bar.style.display = "block"; fill.style.width = "20%";
+
       try {
-        validatePluginFile(file);
+        await uploadPluginFile({ file: wizardFile, pluginName, displayName, description, version, isDev });
+        fill.style.width = "60%";
+        if (wizardBanner) { await uploadBannerForPlugin(pluginName, wizardBanner); fill.style.width = "90%"; }
+        fill.style.width = "100%";
+        showSuccess(`Plugin "${displayName}" uploaded successfully!`);
+        await loadMyPlugins();
+        wizardReset();
+        switchTab("plugins");
       } catch (err) {
         showError(err.message);
-        return;
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Plugin`;
+      } finally {
+        setTimeout(() => { bar.style.display = "none"; fill.style.width = "0%"; }, 1200);
       }
-
-      selectedFile = file;
-      document.getElementById("file-name").textContent = file.name;
-      document.getElementById("upload-btn").disabled = false;
     }
 
+    // ── API calls ──
+
     async function uploadPluginFile({ file, pluginName, displayName, description, version, isDev }) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("pluginName", pluginName);
-      formData.append("displayName", displayName);
-      formData.append("description", description);
-      formData.append("version", version);
-      formData.append("isDev", isDev ? "1" : "0");
-
-      const res = await fetch(`${API}/upload`, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${token}` },
-        body: formData,
-      });
+      const fd = new FormData();
+      fd.append("file", file); fd.append("pluginName", pluginName); fd.append("displayName", displayName);
+      fd.append("description", description); fd.append("version", version); fd.append("isDev", isDev ? "1" : "0");
+      const res = await fetch(`${API}/upload`, { method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: fd });
       const data = await res.json();
-
-      if (res.status === 401) {
-        logout();
-        throw new Error("Session expired");
-      }
-      if (!res.ok) {
-        throw new Error(data.error || "Upload failed");
-      }
+      if (res.status === 401) { logout(); throw new Error("Session expired"); }
+      if (!res.ok) throw new Error(data.error || "Upload failed");
       return data;
     }
 
-    async function uploadFile() {
-      if (!selectedFile || !token) return;
-
-      const pluginName = document.getElementById("plugin-name").value.trim();
-      const displayName = document.getElementById("upload-display-name").value.trim() || pluginName;
-      const description = document.getElementById("upload-description").value.trim();
-      const versionInput = document.getElementById("upload-version");
-      const version = versionInput.value.trim() || "1.0.0";
-      const isDev = getToggleState(document.getElementById("upload-dev-toggle"));
-
-      if (!pluginName) {
-        showError("Enter a plugin key first");
-        return;
-      }
-      if (!displayName) {
-        showError("Display name is required");
-        return;
-      }
-      if (!VERSION_PATTERN.test(version)) {
-        showError("Version can only use letters, numbers, dots, underscores, and dashes (max 30 chars)");
-        return;
-      }
-      versionInput.value = version;
-
-      const btn = document.getElementById("upload-btn");
-      const bar = document.getElementById("progress-bar");
-      const fill = document.getElementById("progress-fill");
-
-      btn.disabled = true;
-      btn.textContent = "Uploading...";
-      bar.style.display = "block";
-      fill.style.width = "22%";
-
-      try {
-        const data = await uploadPluginFile({
-          file: selectedFile,
-          pluginName,
-          displayName,
-          description,
-          version,
-          isDev,
-        });
-
-        fill.style.width = "100%";
-        showSuccess(`Plugin uploaded: ${data.key}`);
-        selectedFile = null;
-        document.getElementById("file-name").textContent = "";
-        document.getElementById("file-input").value = "";
-        btn.textContent = "Upload";
-        btn.disabled = true;
-        await loadMyPlugins();
-        syncUploadFormWithPluginKey();
-      } catch (err) {
-        showError(err.message);
-        btn.textContent = "Upload";
-        btn.disabled = false;
-      } finally {
-        setTimeout(() => {
-          bar.style.display = "none";
-          fill.style.width = "0%";
-        }, 1200);
-      }
-    }
-
-    // ── Banner ──
-
-    function setupBanner() {
-      const bannerInput = document.getElementById("banner-input");
-      bannerInput.addEventListener("change", () => {
-        if (bannerInput.files.length) selectBannerFile(bannerInput.files[0]);
-      });
-    }
-
-    function selectBannerFile(file) {
-      try {
-        validateBannerFile(file);
-      } catch (err) {
-        showError(err.message);
-        return;
-      }
-
-      selectedBanner = file;
-
-      const reader = new FileReader();
-      reader.onload = (e) => renderBannerPreview(e.target.result);
-      reader.readAsDataURL(file);
-      document.getElementById("save-banner-btn").style.display = "inline-flex";
-    }
-
-    function loadExistingBanner(existingPlugin = null) {
-      const plugin = existingPlugin || getPluginMatch(document.getElementById("plugin-name").value.trim());
-      if (!plugin || !plugin.banner) {
-        if (!selectedBanner) clearBannerPreview(false);
-        return;
-      }
-      renderBannerPreview(`${toCdnUrl(plugin.banner)}?t=${Date.now()}`);
-      document.getElementById("save-banner-btn").style.display = selectedBanner ? "inline-flex" : "none";
-    }
-
     async function uploadBannerForPlugin(pluginName, file) {
-      const formData = new FormData();
-      formData.append("banner", file);
-      formData.append("pluginName", pluginName);
-
-      const res = await fetch(`${API}/upload/banner`, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${token}` },
-        body: formData,
-      });
-      const result = await res.json();
-
-      if (res.status === 401) {
-        logout();
-        throw new Error("Session expired");
-      }
-      if (!res.ok) {
-        throw new Error(result.error || "Banner upload failed");
-      }
-
-      return result;
+      const fd = new FormData();
+      fd.append("banner", file); fd.append("pluginName", pluginName);
+      const res = await fetch(`${API}/upload/banner`, { method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: fd });
+      const data = await res.json();
+      if (res.status === 401) { logout(); throw new Error("Session expired"); }
+      if (!res.ok) throw new Error(data.error || "Banner upload failed");
+      return data;
     }
 
-    async function uploadBanner() {
-      if (!selectedBanner || !token) return;
-
-      const pluginName = document.getElementById("plugin-name").value.trim();
-      if (!pluginName) {
-        showError("Enter a plugin key first");
-        return;
-      }
-
-      const btn = document.getElementById("save-banner-btn");
-      btn.textContent = "Saving...";
-      btn.style.pointerEvents = "none";
-
-      try {
-        await uploadBannerForPlugin(pluginName, selectedBanner);
-        showSuccess("Banner saved");
-        selectedBanner = null;
-        document.getElementById("banner-input").value = "";
-        btn.style.display = "none";
-        await loadMyPlugins();
-        syncUploadFormWithPluginKey();
-      } catch (err) {
-        showError(err.message);
-      } finally {
-        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save Banner';
-        btn.style.pointerEvents = "";
-      }
-    }
-
-    // ── Plugin Management ──
+    // ── My Plugins ──
 
     async function loadMyPlugins() {
       try {
-        const res = await fetch(`${API}/my-plugins`, {
-          headers: { "Authorization": `Bearer ${token}` },
-        });
-        if (res.status === 401) {
-          logout();
-          showError("Session expired");
-          return;
-        }
+        const res = await fetch(`${API}/my-plugins`, { headers: { "Authorization": `Bearer ${token}` } });
+        if (res.status === 401) { logout(); return; }
         const data = await res.json();
         const plugins = Array.isArray(data.plugins) ? data.plugins : [];
-        pluginLookup = new Map(plugins.map((p) => [p.name, p]));
-
+        pluginLookup = new Map(plugins.map(p => [p.name, p]));
         const list = document.getElementById("plugin-list");
         document.getElementById("plugin-count").textContent = plugins.length;
 
         if (!plugins.length) {
-          list.innerHTML = '<div class="empty-plugins">No plugins uploaded yet. Use the form above to upload your first plugin.</div>';
-          return;
+          list.innerHTML = '<div class="empty-plugins">No plugins uploaded yet. Use the wizard to upload your first plugin.</div>';
+          renderExistingPills(); return;
         }
 
         list.innerHTML = plugins.map(p => {
-          const fileCount = p.files ? p.files.length : 0;
-          const totalSize = p.files ? p.files.reduce((s, f) => s + f.size, 0) : 0;
-          const sizeStr = totalSize > 1048576 ? (totalSize / 1048576).toFixed(1) + " MB" : (totalSize / 1024).toFixed(0) + " KB";
-          const devBadge = p.is_dev
-            ? '<span class="dev-badge dev-badge-on">In Development</span>'
-            : '<span class="dev-badge dev-badge-off">Stable</span>';
-          const bannerStatus = p.banner ? "Banner set" : "No banner";
+          const fc = p.files ? p.files.length : 0;
+          const ts = p.files ? p.files.reduce((s, f) => s + f.size, 0) : 0;
+          const sz = ts > 1048576 ? (ts / 1048576).toFixed(1) + " MB" : (ts / 1024).toFixed(0) + " KB";
+          const db = p.is_dev ? '<span class="dev-badge dev-badge-on">In Development</span>' : '<span class="dev-badge dev-badge-off">Stable</span>';
           const desc = p.description ? `<div class="plugin-desc">${escapeHtml(p.description)}</div>` : "";
-
-          return `
-            <div class="plugin-item">
-              <div class="plugin-top">
-                <div class="plugin-info">
-                  <div class="plugin-name">${escapeHtml(p.display_name)} ${devBadge}</div>
-                  <div class="plugin-meta">
-                    <span>Key: ${escapeHtml(p.name)}</span>
-                    <span>v${escapeHtml(p.version)}</span>
-                    <span>${fileCount} file${fileCount !== 1 ? "s" : ""} · ${sizeStr}</span>
-                    <span>${escapeHtml(bannerStatus)}</span>
-                    <span>${new Date(p.updated_at).toLocaleDateString()}</span>
-                  </div>
-                  ${desc}
-                </div>
-                <div class="plugin-actions">
-                  <button class="btn-icon" onclick="openEditModalByName('${escapeAttr(p.name)}')" title="Edit details">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="promptReplaceFile('${escapeAttr(p.name)}')" title="Replace package file">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="promptQuickBanner('${escapeAttr(p.name)}')" title="Change banner">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  </button>
-                  <button class="btn-icon danger" onclick="deletePluginConfirm('${escapeAttr(p.name)}')" title="Delete plugin">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          `;
+          return `<div class="plugin-item"><div class="plugin-top"><div class="plugin-info"><div class="plugin-name">${escapeHtml(p.display_name)} ${db}</div><div class="plugin-meta"><span>${escapeHtml(p.name)}</span><span>v${escapeHtml(p.version)}</span><span>${fc} file${fc!==1?"s":""} · ${sz}</span><span>${new Date(p.updated_at).toLocaleDateString()}</span></div>${desc}</div><div class="plugin-actions"><button class="btn-icon" onclick="openEditModalByName('${escapeAttr(p.name)}')" title="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn-icon" onclick="promptReplaceFile('${escapeAttr(p.name)}')" title="Replace file"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button><button class="btn-icon" onclick="promptQuickBanner('${escapeAttr(p.name)}')" title="Change banner"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button><button class="btn-icon danger" onclick="deletePluginConfirm('${escapeAttr(p.name)}')" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></div></div>`;
         }).join("");
-      } catch (err) {
-        document.getElementById("plugin-list").innerHTML = '<div class="empty-plugins">Failed to load plugins</div>';
-      }
+        renderExistingPills();
+      } catch { document.getElementById("plugin-list").innerHTML = '<div class="empty-plugins">Failed to load plugins</div>'; }
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement("div");
-      div.textContent = str;
-      return div.innerHTML;
+    // ── Quick actions ──
+
+    function setupQuickActions() {
+      document.getElementById("quick-banner-input").addEventListener("change", async function() {
+        if (!this.files.length || !quickBannerTargetPlugin) return;
+        const file = this.files[0]; this.value = "";
+        try { validateBannerFile(file); await uploadBannerForPlugin(quickBannerTargetPlugin.name, file); showSuccess(`Banner updated for "${quickBannerTargetPlugin.display_name}"`); await loadMyPlugins(); }
+        catch (err) { showError(err.message); } finally { quickBannerTargetPlugin = null; }
+      });
+      document.getElementById("replace-file-input").addEventListener("change", async function() {
+        if (!this.files.length || !replaceTargetPlugin) return;
+        const file = this.files[0]; this.value = "";
+        try {
+          validatePluginFile(file);
+          await uploadPluginFile({ file, pluginName: replaceTargetPlugin.name, displayName: replaceTargetPlugin.display_name || replaceTargetPlugin.name, description: replaceTargetPlugin.description || "", version: replaceTargetPlugin.version || "1.0.0", isDev: !!replaceTargetPlugin.is_dev });
+          showSuccess(`File replaced for "${replaceTargetPlugin.display_name}"`); await loadMyPlugins();
+        } catch (err) { showError(err.message); } finally { replaceTargetPlugin = null; }
+      });
     }
 
-    function escapeAttr(str) {
-      return String(str || "")
-        .replace(/\\/g, "\\\\")
-        .replace(/\r?\n/g, "\\n")
-        .replace(/'/g, "\\'")
-        .replace(/"/g, "&quot;");
+    function promptReplaceFile(name) {
+      const p = pluginLookup.get(sanitizePluginKey(name));
+      if (!p) { showError("Plugin not found"); return; }
+      replaceTargetPlugin = p; document.getElementById("replace-file-input").click();
     }
+    function promptQuickBanner(name) {
+      const p = pluginLookup.get(sanitizePluginKey(name));
+      if (!p) { showError("Plugin not found"); return; }
+      quickBannerTargetPlugin = p; document.getElementById("quick-banner-input").click();
+    }
+
+    // ── Edit modal ──
 
     function openEditModalByName(name) {
-      const plugin = pluginLookup.get(sanitizePluginKey(name));
-      if (!plugin) {
-        showError("Plugin not found");
-        return;
-      }
-
-      document.getElementById("edit-plugin-name").value = plugin.name;
-      document.getElementById("edit-display-name").value = plugin.display_name || plugin.name;
-      document.getElementById("edit-description").value = plugin.description || "";
-      document.getElementById("edit-version").value = plugin.version || "1.0.0";
-      setToggleState(document.getElementById("edit-dev-toggle"), !!plugin.is_dev);
+      const p = pluginLookup.get(sanitizePluginKey(name));
+      if (!p) { showError("Plugin not found"); return; }
+      document.getElementById("edit-plugin-name").value = p.name;
+      document.getElementById("edit-display-name").value = p.display_name || p.name;
+      document.getElementById("edit-description").value = p.description || "";
+      document.getElementById("edit-version").value = p.version || "1.0.0";
+      setToggleState(document.getElementById("edit-dev-toggle"), !!p.is_dev);
       document.getElementById("edit-modal").style.display = "flex";
     }
-
-    function closeModal() {
-      document.getElementById("edit-modal").style.display = "none";
-    }
+    function closeModal() { document.getElementById("edit-modal").style.display = "none"; }
 
     async function savePluginEdit() {
       const name = document.getElementById("edit-plugin-name").value;
       const displayName = document.getElementById("edit-display-name").value.trim();
       const description = document.getElementById("edit-description").value.trim();
-      const versionInput = document.getElementById("edit-version");
-      const version = versionInput.value.trim() || "1.0.0";
+      const version = document.getElementById("edit-version").value.trim() || "1.0.0";
       const isDev = getToggleState(document.getElementById("edit-dev-toggle"));
-
-      if (!displayName) {
-        showError("Display name is required");
-        return;
-      }
-      if (!VERSION_PATTERN.test(version)) {
-        showError("Version can only use letters, numbers, dots, underscores, and dashes (max 30 chars)");
-        return;
-      }
-      versionInput.value = version;
-
+      if (!displayName) { showError("Display name is required"); return; }
+      if (!VERSION_PATTERN.test(version)) { showError("Invalid version format"); return; }
       try {
-        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
-          method: "PUT",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ displayName, description, version, isDev }),
-        });
+        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, { method: "PUT", headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ displayName, description, version, isDev }) });
         const data = await res.json();
         if (res.status === 401) { logout(); showError("Session expired"); return; }
         if (!res.ok) throw new Error(data.error || "Update failed");
-        closeModal();
-        showSuccess("Plugin details updated");
-        await loadMyPlugins();
-        syncUploadFormWithPluginKey();
-      } catch (err) {
-        showError(err.message);
-      }
+        closeModal(); showSuccess("Plugin updated"); await loadMyPlugins();
+      } catch (err) { showError(err.message); }
     }
 
-    function promptReplaceFile(name) {
-      const plugin = pluginLookup.get(sanitizePluginKey(name));
-      if (!plugin) {
-        showError("Plugin not found");
-        return;
-      }
-      document.getElementById("plugin-name").value = plugin.name;
-      syncUploadFormWithPluginKey();
-      replaceTargetPlugin = plugin;
-      document.getElementById("replace-file-input").click();
-    }
-
-    function promptQuickBanner(name) {
-      const plugin = pluginLookup.get(sanitizePluginKey(name));
-      if (!plugin) {
-        showError("Plugin not found");
-        return;
-      }
-      document.getElementById("plugin-name").value = plugin.name;
-      syncUploadFormWithPluginKey();
-      quickBannerTargetPlugin = plugin;
-      document.getElementById("quick-banner-input").click();
-    }
+    // ── Delete ──
 
     async function deletePluginConfirm(name) {
-      const plugin = pluginLookup.get(sanitizePluginKey(name));
-      const displayName = plugin ? plugin.display_name : name;
-      if (!confirm(`Delete "${displayName}" and all its files? This cannot be undone.`)) return;
+      const p = pluginLookup.get(sanitizePluginKey(name));
+      if (!confirm(`Delete "${p ? p.display_name : name}" and all its files? This cannot be undone.`)) return;
       try {
-        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, {
-          method: "DELETE",
-          headers: { "Authorization": `Bearer ${token}` },
-        });
+        const res = await fetch(`${API}/plugins/${encodeURIComponent(name)}`, { method: "DELETE", headers: { "Authorization": `Bearer ${token}` } });
         const data = await res.json();
         if (res.status === 401) { logout(); showError("Session expired"); return; }
         if (!res.ok) throw new Error(data.error || "Delete failed");
-        showSuccess("Plugin deleted");
-        await loadMyPlugins();
-        syncUploadFormWithPluginKey();
-      } catch (err) {
-        showError(err.message);
-      }
+        showSuccess("Plugin deleted"); await loadMyPlugins();
+      } catch (err) { showError(err.message); }
     }
 
     init();
