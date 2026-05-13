@@ -1,6 +1,6 @@
 // Cloudflare Worker — Plugin Upload API
 // Bindings: DB (D1), PLUGINS_BUCKET (R2)
-// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, VATSIM_CLIENT_ID, VATSIM_CLIENT_SECRET, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_BOT_TOKEN
+// Secrets: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_BOT_TOKEN
 // Vars: ADMIN_EMAIL, SITE_ORIGIN
 
 export default {
@@ -19,10 +19,6 @@ export default {
       // --- Google OAuth (Admin) ---
       if (path === "/auth/google") return googleRedirect(env, url);
       if (path === "/auth/google/callback") return googleCallback(request, env, url);
-
-      // --- VATSIM OAuth (Uploaders) ---
-      if (path === "/auth/vatsim") return vatsimRedirect(env, url);
-      if (path === "/auth/vatsim/callback") return vatsimCallback(request, env, url);
 
       // --- Discord OAuth (Uploaders) ---
       if (path === "/auth/discord") return discordRedirect(env, url);
@@ -204,62 +200,6 @@ async function googleCallback(request, env, url) {
   );
 
   return Response.redirect(`${env.SITE_ORIGIN}/admin.html#token=${token}`, 302);
-}
-
-// ──────────────────────────────────────
-// VATSIM OAuth (Uploaders)
-// ──────────────────────────────────────
-
-function vatsimRedirect(env, url) {
-  const state = crypto.randomUUID();
-  const params = new URLSearchParams({
-    client_id: env.VATSIM_CLIENT_ID,
-    redirect_uri: `${url.origin}/auth/vatsim/callback`,
-    response_type: "code",
-    scope: "full_name vatsim_details",
-    state,
-  });
-  return Response.redirect(`https://auth.vatsim.net/oauth/authorize?${params}`, 302);
-}
-
-async function vatsimCallback(request, env, url) {
-  const code = url.searchParams.get("code");
-  if (!code) return redirectWithError(env, "/upload.html", "Missing code");
-
-  // Exchange code
-  const tokenRes = await fetch("https://auth.vatsim.net/oauth/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      client_id: env.VATSIM_CLIENT_ID,
-      client_secret: env.VATSIM_CLIENT_SECRET,
-      redirect_uri: `${url.origin}/auth/vatsim/callback`,
-      code,
-    }),
-  });
-  const tokens = await tokenRes.json();
-  if (!tokens.access_token) return redirectWithError(env, "/upload.html", "Auth failed");
-
-  // Get user info
-  const userRes = await fetch("https://auth.vatsim.net/api/user", {
-    headers: { Authorization: `Bearer ${tokens.access_token}` },
-  });
-  const user = await userRes.json();
-  const cid = String(user.data.cid);
-  const name = `${user.data.personal.name_first} ${user.data.personal.name_last}`;
-
-  // Check if allowed by vatsim_cid
-  const row = await env.DB.prepare("SELECT id, name FROM allowed_users WHERE vatsim_cid = ?").bind(cid).first();
-  if (!row) return redirectWithError(env, "/upload.html", "Not authorized to upload");
-
-  // Issue upload token (8h) — use DB id so plugins are tied to the person
-  const token = await createToken(
-    { role: "uploader", id: String(row.id), name: row.name, authType: "vatsim", exp: Date.now() + 28800000 },
-    env.GOOGLE_CLIENT_SECRET
-  );
-
-  return Response.redirect(`${env.SITE_ORIGIN}/upload.html#token=${token}`, 302);
 }
 
 // ──────────────────────────────────────
@@ -480,9 +420,18 @@ async function handleUpload(request, env, origin) {
     return json({ error: "File too large (max 50MB)" }, 400, origin);
   }
 
-  // Sanitize filename
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const key = `${safeFolderName}/${safeName}`;
+  // Delete old plugin files (not banners or metadata) before uploading the new one
+  const existingFiles = await env.PLUGINS_BUCKET.list({ prefix: `${safeFolderName}/` });
+  const oldPluginFiles = existingFiles.objects.filter(o =>
+    !o.key.includes("/Banner/") && !o.key.endsWith("/metadata.json")
+  );
+  if (oldPluginFiles.length) {
+    await env.PLUGINS_BUCKET.delete(oldPluginFiles.map(o => o.key));
+  }
+
+  // Name the file as PluginName-v{version}{ext} so the scanner can detect the version
+  const versionedName = `${safeFolderName}-v${version}${ext}`;
+  const key = `${safeFolderName}/${versionedName}`;
 
   await env.PLUGINS_BUCKET.put(key, file.stream(), {
     httpMetadata: { contentType: file.type || "application/octet-stream" },
@@ -501,7 +450,30 @@ async function handleUpload(request, env, origin) {
       updated_at = datetime('now')
   `).bind(safeFolderName, displayName, description, version, isDev, payload.id, payload.name).run();
 
+  // Write metadata.json to R2 so the plugin scanner can read it
+  await writePluginMetadata(env, safeFolderName, { displayName, description, version, isDev, author: payload.name });
+
   return json({ ok: true, key }, 200, origin);
+}
+
+// ──────────────────────────────────────
+// Plugin metadata (R2 sync for scanner)
+// ──────────────────────────────────────
+
+async function writePluginMetadata(env, pluginName, { displayName, description, version, isDev, author }) {
+  const metadata = {
+    title: displayName || pluginName,
+    description: description || "",
+    version: version || "1.0.0",
+    author: author || "Unknown",
+    isDev: !!isDev,
+    inDevelopment: !!isDev,
+    is_dev: isDev ? 1 : 0,
+  };
+  const key = `${pluginName}/metadata.json`;
+  await env.PLUGINS_BUCKET.put(key, JSON.stringify(metadata, null, 2), {
+    httpMetadata: { contentType: "application/json" },
+  });
 }
 
 // ──────────────────────────────────────
@@ -656,6 +628,20 @@ async function updatePlugin(request, env, origin, path) {
   await env.DB.prepare(
     `UPDATE plugins SET ${updates.join(", ")} WHERE name = ? AND uploader_id = ?`
   ).bind(...binds).run();
+
+  // Re-read the updated plugin to sync metadata.json
+  const updated = await env.DB.prepare(
+    "SELECT * FROM plugins WHERE name = ? AND uploader_id = ?"
+  ).bind(safeName, user.id).first();
+  if (updated) {
+    await writePluginMetadata(env, safeName, {
+      displayName: updated.display_name,
+      description: updated.description,
+      version: updated.version,
+      isDev: updated.is_dev,
+      author: updated.uploader_name,
+    });
+  }
 
   return json({ ok: true }, 200, origin);
 }

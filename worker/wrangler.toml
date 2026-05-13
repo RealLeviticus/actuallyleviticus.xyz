@@ -12,8 +12,6 @@ SITE_ORIGIN = "https://actuallyleviticus.xyz"
 # Set these as secrets via `wrangler secret put`:
 # GOOGLE_CLIENT_ID
 # GOOGLE_CLIENT_SECRET
-# VATSIM_CLIENT_ID
-# VATSIM_CLIENT_SECRET
 # DISCORD_CLIENT_ID
 # DISCORD_CLIENT_SECRET
 # DISCORD_BOT_TOKEN
